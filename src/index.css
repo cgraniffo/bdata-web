@@ -1,0 +1,102 @@
+/* ==============================
+   index.css (Tailwind v3)
+   ============================== */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==============================
+   THEME Y ESTILOS BASE
+   ============================== */
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply font-sans bg-zinc-50 text-zinc-900;
+  }
+}
+
+/* ==============================
+   COMPONENTES REUSABLES
+   ============================== */
+@layer components {
+  /* Contenedor general */
+  .container-bd {
+    @apply max-w-7xl mx-auto px-4;
+  }
+
+  /* Tarjetas */
+  .card {
+    @apply bg-white border border-zinc-200 rounded-2xl p-6 shadow-sm transition
+           hover:shadow-lg hover:-translate-y-0.5;
+  }
+
+  /* Botones */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg px-5 py-3
+           text-sm font-semibold transition shadow-sm;
+  }
+
+  .btn-primary {
+    @apply bg-emerald-600 text-white hover:bg-emerald-700;
+  }
+
+  .btn-outline {
+    @apply border border-white/70 text-white/95 hover:bg-white/10;
+  }
+
+  .btn-ghost {
+    @apply text-emerald-600 hover:text-emerald-700;
+  }
+
+  /* Navbar */
+  .nav-link {
+    @apply px-3 py-2 rounded-lg hover:bg-zinc-100;
+  }
+
+  .nav-link-active {
+    @apply text-emerald-700 font-semibold;
+  }
+
+  /* Inputs */
+  .input {
+    @apply w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-800
+           placeholder-zinc-400 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500;
+  }
+
+  /* Animaciones */
+  .fade-in {
+    animation: fade 400ms ease-out both;
+  }
+
+  @keyframes fade {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Enlaces especiales (ejemplo GlideApp) */
+  a[href*="glideapp.io"] {
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+  }
+
+  a[href*="glideapp.io"]:hover {
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
+  }
+
+  /* Exportación PDF */
+  .pdf-safe img {
+    image-rendering: -webkit-optimize-contrast;
+  }
+}

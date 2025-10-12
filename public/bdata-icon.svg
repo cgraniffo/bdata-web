@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="600" height="600" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="BData icon">
+  <defs>
+    <linearGradient id="gradLeft" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+    <linearGradient id="gradRight" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#6b7280"/>
+      <stop offset="100%" stop-color="#374151"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(600,550) scale(1.6)">
+    <!-- Left leaf -->
+    <path d="M -40 -170 C -200 -120 -280 0 -230 120 C -180 240 -60 260 -5 155 C 20 110 25 60 22 15 C 18 -50 -5 -120 -40 -170 Z" fill="url(#gradLeft)"/>
+    <path d="M -30 -150 C -10 -60 -5 10 -5 150" stroke="#ffffff" stroke-width="8" fill="none" opacity="0.9"/>
+    <g stroke="#ffffff" stroke-width="8" stroke-linecap="round" fill="none">
+      <path d="M -180 -90 C -120 -70 -80 -40 -50 -10"/><circle cx="-180" cy="-90" r="8" fill="#ffffff"/>
+      <path d="M -210 -30 C -150 -20 -100 5 -60 35"/><circle cx="-210" cy="-30" r="8" fill="#ffffff"/>
+      <path d="M -200 30 C -130 45 -95 70 -70 95"/><circle cx="-200" cy="30" r="8" fill="#ffffff"/>
+      <path d="M -170 85 C -120 95 -95 120 -80 140"/><circle cx="-170" cy="85" r="8" fill="#ffffff"/>
+    </g>
+
+    <!-- Right leaf -->
+    <path d="M 40 -170 C 5 -120 -18 -50 -22 15 C -25 60 -20 110 5 155 C 60 260 180 240 230 120 C 280 0 200 -120 40 -170 Z" fill="url(#gradRight)"/>
+    <path d="M 30 -150 C 10 -60 5 10 5 150" stroke="#ffffff" stroke-width="8" fill="none" opacity="0.9"/>
+    <g stroke="#ffffff" stroke-width="8" stroke-linecap="round" fill="none">
+      <path d="M 180 -90 C 120 -70 80 -40 50 -10"/><circle cx="180" cy="-90" r="8" fill="#ffffff"/>
+      <path d="M 210 -30 C 150 -20 100 5 60 35"/><circle cx="210" cy="-30" r="8" fill="#ffffff"/>
+      <path d="M 200 30 C 130 45 95 70 70 95"/><circle cx="200" cy="30" r="8" fill="#ffffff"/>
+      <path d="M 170 85 C 120 95 95 120 80 140"/><circle cx="170" cy="85" r="8" fill="#ffffff"/>
+    </g>
+  </g>
+</svg>
