@@ -62,6 +62,21 @@
 <meta name="twitter:card" content="summary_large_image" />
 
   </head>
+
+<!-- Hidden Netlify form for build-time detection -->
+<form name="contact" netlify netlify-honeypot="bot-field" hidden>
+  <input type="text" name="name" />
+  <input type="email" name="email" />
+  <input type="tel" name="phone" />
+  <select name="plan">
+    <option>Plan Semilla</option>
+    <option>Plan Agro Digital</option>
+    <option>Red de Profesionales</option>
+  </select>
+  <textarea name="message"></textarea>
+</form>
+
+
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
