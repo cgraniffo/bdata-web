@@ -39,6 +39,18 @@ export default function ContactoForm() {
   {/* Capa verde semitransparente */}
   <div className="absolute inset-0 bg-brand-700/70 backdrop-blur-[2px]"></div>
 
+{/* Mini-Hero con fondo agrícola */}
+<div
+  className="relative text-white overflow-hidden"
+  style={{
+    backgroundImage: "url('/images/hero-agro.jpg')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  }}
+>
+  {/* Capa verde semitransparente */}
+  <div className="absolute inset-0 bg-brand-700/70 backdrop-blur-[2px]"></div>
+
   {/* Contenido hero */}
   <div className="relative container-bd py-16 md:py-20">
     <div className="max-w-3xl">
@@ -68,6 +80,8 @@ export default function ContactoForm() {
       </p>
     </div>
   </div>
+</div>
+
 </div>
 
 

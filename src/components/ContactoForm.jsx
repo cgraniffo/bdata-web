@@ -25,9 +25,8 @@ export default function ContactoForm() {
   );
 
   return (
-   
-
-    {/* Mini-Hero con fondo agrícola */}
+    <section className="bg-white">
+       {/* Mini-Hero con fondo agrícola */}
 <div
   className="relative text-white overflow-hidden"
   style={{
@@ -69,7 +68,7 @@ export default function ContactoForm() {
     </div>
   </div>
 </div>
-
+ 
 
       {/* Tarjeta de formulario */}
       <div className="container-bd -mt-8 md:-mt-10 pb-16">
