@@ -25,37 +25,51 @@ export default function ContactoForm() {
   );
 
   return (
-    <section className="bg-white">
-      {/* Mini-Hero */}
-      <div className="bg-brand-600 text-white">
-        <div className="container-bd py-10 md:py-12">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-2 backdrop-blur">
-              {/* Icono “sobre” simple */}
-              <svg
-                aria-hidden="true"
-                className="h-5 w-5"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M2 6.5A2.5 2.5 0 0 1 4.5 4h15A2.5 2.5 0 0 1 22 6.5v11A2.5 2.5 0 0 1 19.5 20h-15A2.5 2.5 0 0 1 2 17.5v-11Zm2.2-.3 7.67 5.19a1.5 1.5 0 0 0 1.66 0L21.2 6.2a1 1 0 0 0-.7-1.7h-15a1 1 0 0 0-.7 1.7ZM21 8.29l-6.86 4.64a3.5 3.5 0 0 1-3.88 0L3.4 8.3v9.2c0 .44.36.8.8.8h15c.44 0 .8-.36.8-.8V8.29Z" />
-              </svg>
-              <span className="text-sm/5 font-semibold tracking-wide">
-                Conversemos de tu campo
-              </span>
-            </div>
+   
 
-            <h1 className="mt-4 text-3xl md:text-4xl font-extrabold">
-              Agenda una consultoría inicial
-            </h1>
-            <p className="mt-2 text-white/90 max-w-2xl">
-              Te respondemos rápido. Nada de “herramienta de moda”: primero
-              entendemos tus procesos y solo luego proponemos tecnología con
-              retorno real.
-            </p>
-          </div>
-        </div>
+    {/* Mini-Hero con fondo agrícola */}
+<div
+  className="relative text-white overflow-hidden"
+  style={{
+    backgroundImage: "url('/images/hero-agro.jpg')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  }}
+>
+  {/* Capa verde semitransparente */}
+  <div className="absolute inset-0 bg-brand-700/70 backdrop-blur-[2px]"></div>
+
+  {/* Contenido hero */}
+  <div className="relative container-bd py-16 md:py-20">
+    <div className="max-w-3xl">
+      <div className="inline-flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-2 backdrop-blur">
+        {/* Icono sobre */}
+        <svg
+          aria-hidden="true"
+          className="h-5 w-5"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path d="M2 6.5A2.5 2.5 0 0 1 4.5 4h15A2.5 2.5 0 0 1 22 6.5v11A2.5 2.5 0 0 1 19.5 20h-15A2.5 2.5 0 0 1 2 17.5v-11Zm2.2-.3 7.67 5.19a1.5 1.5 0 0 0 1.66 0L21.2 6.2a1 1 0 0 0-.7-1.7h-15a1 1 0 0 0-.7 1.7ZM21 8.29l-6.86 4.64a3.5 3.5 0 0 1-3.88 0L3.4 8.3v9.2c0 .44.36.8.8.8h15c.44 0 .8-.36.8-.8V8.29Z" />
+        </svg>
+        <span className="text-sm/5 font-semibold tracking-wide">
+          Conversemos de tu campo
+        </span>
       </div>
+
+      <h1 className="mt-5 text-3xl md:text-5xl font-extrabold drop-shadow-sm">
+        Rentabiliza tu campo con datos e inteligencia
+      </h1>
+
+      <p className="mt-3 text-white/90 max-w-2xl leading-relaxed">
+        Agenda una consultoría inicial sin costo. 
+        Evaluamos tus procesos y te mostramos 
+        cómo transformar tus datos en decisiones rentables.
+      </p>
+    </div>
+  </div>
+</div>
+
 
       {/* Tarjeta de formulario */}
       <div className="container-bd -mt-8 md:-mt-10 pb-16">
