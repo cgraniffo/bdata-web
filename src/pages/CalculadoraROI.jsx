@@ -235,7 +235,7 @@ export default function CalculadoraROI() {
       {/* HERO */}
       <section className="bg-[color:var(--color-primario,#047857)] text-white py-10 text-center">
         <h1 className="text-4xl font-extrabold">Calculadora de ROI agrícola</h1>
-        <p className="mt-2 text-white/80">Zona sur (Maule → Los Lagos) • CLP</p>
+        <p className="mt-2 text-white/80">Selecciona tus datos en la sección inicial y verás tu resultado</p>
       </section>
 
       <main className="container-bd max-w-6xl mx-auto p-4 md:p-8">
@@ -258,7 +258,7 @@ export default function CalculadoraROI() {
 
               <SelectField
                 label="Cultivo"
-                tip="Cultivos tradicionales del sur (Maule–Los Lagos)."
+                tip="Cultivos tradicionales."
                 value={cultivo}
                 onChange={(v) => setCultivo(v)}
                 options={CULTIVOS.map((c) => [c, c.charAt(0) + c.slice(1).toLowerCase()])}
@@ -643,7 +643,7 @@ function CredibilityPanel({
               rel="noreferrer"
               className="text-emerald-700 hover:underline"
             >
-              SAG: primer registro fitosanitario 100 % digital — trazabilidad y gestión sin papel.
+              SAG: primer registro fitosanitario 100 % digital — trazabilidad y gestión sin papel logra importante eficiencia en costos..
             </a>
           </li>
           <li>
@@ -653,7 +653,7 @@ function CredibilityPanel({
               rel="noreferrer"
               className="text-emerald-700 hover:underline"
             >
-              RedAgrícola: ecosistema digital latinoamericano acelerado por la pandemia.
+              RedAgrícola: ecosistema digital latinoamericano acelerado por la pandemia disminuye costos y eficiencia.
             </a>
           </li>
           <li>
@@ -673,7 +673,7 @@ function CredibilityPanel({
               rel="noreferrer"
               className="text-emerald-700 hover:underline"
             >
-              Michigan State University: herramientas de gestión de predios (Farm Management).
+              Michigan State University: herramientas de gestión de predios (Farm Management) generan eficiencias en campo.
             </a>
           </li>
           <li>
@@ -683,7 +683,7 @@ function CredibilityPanel({
               rel="noreferrer"
               className="text-emerald-700 hover:underline"
             >
-              FAO: digitalización para agricultura familiar — eficiencia y reducción de pérdidas.
+              FAO: digitalización para agricultura familiar — eficiencia y reducción de pérdidas generan ahorros y calidad de vida.
             </a>
           </li>
           <li>
@@ -693,7 +693,7 @@ function CredibilityPanel({
               rel="noreferrer"
               className="text-emerald-700 hover:underline"
             >
-              FIA / OPIA: innovación tecnológica en la gestión agrícola chilena.
+              FIA / OPIA: innovación tecnológica en la gestión agrícola chilena y sus consecuencias.
             </a>
           </li>
           <li>

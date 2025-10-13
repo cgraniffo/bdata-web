@@ -23,7 +23,7 @@ export default function Home() {
       {/* HERO */}
       <div className="relative bg-green-700 text-white py-16 md:py-20">
         <div className="container-bd text-center">
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-2">
+          <h1 className="text-6xl md:text-6xl font-extrabold mb-2">
             Digitalizamos el campo Chileno<br />
             <br />
           </h1>
