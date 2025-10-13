@@ -12,7 +12,7 @@ export default function EnfoqueEstrategico() {
         Después (sólo si corresponde) automatizamos y aplicamos IA 🤖.
       </p>
 
-      <p className="text-sm md:text-base text-emerald-700 max-w-3xl mx-auto leading-relaxed">
+      <p className="text-sm md:text-base text-emerald-700 max-w-4xl mx-auto leading-relaxed">
         No partimos con herramientas, partimos con <strong>propósito</strong>.<br />
         Entramos en tus procesos, medimos, y recién ahí aplicamos tecnología
         cuando tiene sentido y genera retorno real.
@@ -49,7 +49,7 @@ export default function EnfoqueEstrategico() {
 
         {/* Nota editorial suave */}
         <p className="text-xs text-emerald-900/70 mt-6 text-center">
-          Nuestro enfoque evita el “brillo por moda”: primero el proceso, luego la
+          Nuestro enfoque evita el <strong> “brillo por moda”</strong>: primero el proceso, luego la
           herramienta (sólo si es necesario).
         </p>
       </div>

@@ -29,27 +29,30 @@ export default function Home() {
           </h1>
 
           <p className="text-lg md:text-xl opacity-90 max-w-6xl mx-auto mb-4 leading-relaxed">
-            Somos una consultora de datos <strong>especializada en el campo Chileno</strong>🌾,<br /> ayudamos a agricultores de todos los tamaños a <strong>gestionar mejor con datos</strong>, no con promesas.<br />
-            Usamos <strong>ROI (Retorno sobre la Inversión)</strong> en todos nuestros proyectos,
-            medimos cuánto inviertes y cuánto ganas gracias a la implementación de nuestra metodología.<br />
-            
+            Somos tu aliado en la digitalización de <strong> tu campo y el de todo Chile</strong>🌾,<br /> ayudamos a agricultores de todos los tamaños a <strong>gestionar mejor con datos, no con promesas.</strong><br />
+            <br />            
           </p>
 
-          <p className="text-sm mt-6 opacity-80 max-w-xxl mx-auto">
-            [ROI significa <em>Retorno sobre la Inversión</em> y sirve para saber objetivamente (en $ y %)
-            cuánto ganas con la mejora digital respecto a lo que invertiste].<br />
-            <strong>En simple: si no genera retorno, no lo implementamos</strong>.<br />
-            <br />
-          </p>
+
 
           <div className="mt-6">
             <Link
               to="/calculadora-roi"
               className="inline-block bg-transparent border-2 border-white text-white font-semibold px-8 py-3 rounded-lg hover:bg-white hover:text-green-900 transition"
             >
-              Calcular tu ROI agrícola
+              Calcular tu ROI por trabajar con nosotros
             </Link>
           </div>
+
+          <p className="text-sm mt-6 opacity-80 max-w-xxl mx-auto">
+            ¿Sabías que el ROI es el <em>Retorno sobre la Inversión</em> y sirve para saber objetivamente (en $ y %) cuánto inviertes y cuánto ganas gracias a la implementación de nuestra metodología?<br />
+            Usamos <strong>ROI (Retorno sobre la Inversión)</strong> en todos nuestros proyectos,
+            medimos 
+            cuánto ganas con la mejora digital respecto a lo que invertiste.<br />
+            <strong>Simple: si no genera retorno, no lo implementamos</strong>.<br />
+            <br />
+          </p>
+
         </div>
       </div>
 

@@ -50,7 +50,7 @@ export default function NavBar() {
     className="h-20 w-auto md:h-14" // antes probablemente era h-6 u 8
   />
   <span className="font-semibold text-lg md:text-l text-emerald-700">
-    Digitaliza el campo chileno
+    Digitalizando el campo chileno
   </span>
 </Link>
 
