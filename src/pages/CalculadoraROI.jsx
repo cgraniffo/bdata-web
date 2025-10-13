@@ -90,50 +90,84 @@ const BASE_OFICIAL_POR_HA = {
   TRIGO: {
     label: "Trigo (sur de Chile)",
     margenNetoHa: -177_607,
+    esReal: true,
+    nota: "Dato verificado según fuentes oficiales",
     fuentes: [
       {
         t: "SNA (con ODEPA): costos/ingresos trigo; margen -$177.607/ha (2023/24)",
         url: "https://www.sna.cl/2024/05/10/sna-detallo-razones-de-la-crisis-en-los-productores-de-trigo-chilenos/",
+      },
+      {
+        t: "SNA • Boletín Cereales 2024 (contexto precios/trigo)",
+        url: "https://www.sna.cl/wp-content/uploads/2024/09/2024-09-10-Cereales_1.pdf",
       },
     ],
   },
   MAIZ: {
     label: "Maíz grano (sur)",
     margenNetoHa: 300_000,
+    esReal: false,
+    nota: "Estimación conservadora basada en rangos típicos del cultivo según fichas ODEPA. Para tu caso específico, el cálculo de mejora sobre tu gasto gestionable es más preciso.",
     fuentes: [
       {
         t: "Chile Agrícola (ODEPA): Fichas de costo Maíz",
         url: "https://www.chileagricola.cl/ficha_de_costos/maiz/",
+      },
+      {
+        t: "Boletín Cereales (cap. Maíz: costos por ha según rendimiento)",
+        url: "https://opia.fia.cl/601/articles-128385_archivo_01.pdf",
       },
     ],
   },
   AVENA: {
     label: "Avena (sur)",
     margenNetoHa: 150_000,
+    esReal: false,
+    nota: "Estimación conservadora basada en rangos típicos del cultivo según fichas ODEPA/INDAP. Para tu caso específico, el cálculo de mejora sobre tu gasto gestionable es más preciso.",
     fuentes: [
       {
         t: "Chile Agrícola (ODEPA): Fichas de costo Avena",
         url: "https://www.chileagricola.cl/ficha_de_costos/avena/",
+      },
+      {
+        t: "INDAP: planilla costo Avena (Excel)",
+        url: "https://www.indap.gob.cl/sites/default/files/2023-06/avena-grano_1.xlsx",
+      },
+      {
+        t: "Boletín Avena (contexto de mercado)",
+        url: "https://opia.fia.cl/601/articles-128371_archivo_02.pdf",
       },
     ],
   },
   CEBADA: {
     label: "Cebada (sur)",
     margenNetoHa: 200_000,
+    esReal: false,
+    nota: "Estimación conservadora basada en rangos típicos del cultivo según fichas INDAP/INIA. Para tu caso específico, el cálculo de mejora sobre tu gasto gestionable es más preciso.",
     fuentes: [
       {
         t: "INDAP: planilla costo Cebada (Excel)",
         url: "https://www.indap.gob.cl/sites/default/files/2022-10/CEBADA.xlsx",
+      },
+      {
+        t: "INIA: publicaciones técnicas (cebada/avena)",
+        url: "https://biblioteca.inia.cl/bitstreams/0c3212b6-2f45-4fde-a461-de710e50c45d/download",
       },
     ],
   },
   RAPS: {
     label: "Raps/Canola (sur)",
     margenNetoHa: 400_000,
+    esReal: false,
+    nota: "Estimación conservadora basada en rangos típicos del cultivo según fichas INDAP. Para tu caso específico, el cálculo de mejora sobre tu gasto gestionable es más preciso.",
     fuentes: [
       {
         t: "INDAP: planilla costo Raps (Excel)",
         url: "https://www.indap.gob.cl/sites/default/files/2023-06/raps.xlsx",
+      },
+      {
+        t: "Artículo ODEPA (contexto mercado raps/canola)",
+        url: "https://colegioingenierosagronomoschile.cl/el-mercado-del-raps-canola/",
       },
     ],
   },
@@ -233,7 +267,7 @@ export default function CalculadoraROI() {
     <div className="min-h-screen bg-gray-50 text-gray-900">
       <section className="bg-emerald-700 text-white py-10 text-center">
         <h1 className="text-4xl font-extrabold">Calculadora de ROI agrícola</h1>
-        <p className="mt-2 text-white/80">Zona sur (Maule → Los Lagos) • CLP</p>
+        <p className="mt-2 text-white/80">Ingresa tus datos y revisa los resultados</p>
         
         <div className="mt-4">
           <button
@@ -374,6 +408,51 @@ export default function CalculadoraROI() {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
+
+              {/* Fuentes oficiales con indicador de dato real vs estimado */}
+              {usarBaseOficial && refCultivo && (
+                <div className="mt-4 text-sm bg-white border rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="font-medium text-emerald-800">
+                      Fuentes para {refCultivo.label}
+                    </div>
+                    {refCultivo.esReal ? (
+                      <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium">
+                        ✓ Dato verificado
+                      </span>
+                    ) : (
+                      <span className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-medium">
+                        ⚠️ Estimación
+                      </span>
+                    )}
+                  </div>
+
+                  {refCultivo.nota && (
+                    <p className="text-xs text-zinc-600 mb-3 bg-zinc-50 p-2 rounded border border-zinc-200">
+                      <strong>Nota metodológica:</strong> {refCultivo.nota}
+                    </p>
+                  )}
+
+                  <ul className="list-disc pl-5 space-y-1">
+                    {refCultivo.fuentes.map((f, i) => (
+                      <li key={i}>
+                        <a
+                          href={f.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-emerald-700 hover:underline"
+                        >
+                          {f.t}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <p className="text-[11px] text-zinc-500 mt-2">
+                    Margen base utilizado: {fmtCLP(refCultivo.margenNetoHa)}/ha × {superficieHa} ha = {fmtCLP(baselineOficialAnualReal)} anual
+                  </p>
+                </div>
+              )}
             </>
           )}
 
