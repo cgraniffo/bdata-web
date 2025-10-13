@@ -38,7 +38,7 @@ export default function Home() {
           <div className="mt-6">
             <Link
               to="/calculadora-roi"
-              className="inline-block bg-emerald-700 text-white px-6 py-3 rounded-lg font-semibold text-sm hover:bg-emerald-800 transition-all shadow-sm"
+              className="bg-white text-green-700 px-8 py-4 rounded-lg font-semibold hover:bg-green-50 transition-colors shadow-lg"
             >
               Calcular tu ROI por trabajar con nosotros
             </Link>
