@@ -19,13 +19,13 @@ export default function Contacto() {
     <div className="bg-white">
       {/* === HERO con imagen + overlay === */}
       <section
-        className="relative min-h-[42vh] md:min-h-[46vh] flex items-end"
+        className="relative min-h-[46vh] md:min-h-[50vh] flex items-end pb-12 md:pb-20"
         style={heroStyle}
       >
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-emerald-900/25 to-transparent" />
         <div className="container-bd relative z-10 py-10 md:py-14">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)] max-w-4xl">
-            Rentabiliza tu campo con datos e inteligencia
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)] max-w-3xl">
+            Rentabiliza tu campo con datos e inteligencia🧠💸
           </h1>
         </div>
       </section>
