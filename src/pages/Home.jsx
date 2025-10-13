@@ -29,7 +29,7 @@ export default function Home() {
           </h1>
 
           <p className="text-lg md:text-xl opacity-90 max-w-6xl mx-auto mb-4 leading-relaxed">
-            Somos tu aliado en la digitalización de <strong> tu campo y el de todo Chile</strong>🌾,<br /> ayudamos a agricultores de todos los tamaños a <strong>gestionar mejor con datos, no con promesas.</strong><br />
+            Somos tu aliado en la digitalización de <strong> tu campo </strong>🌾,<br /> ayudamos a agricultores de todos los tamaños a <strong>gestionar mejor con datos, no con promesas.</strong><br />
             <br />            
           </p>
 
@@ -38,7 +38,7 @@ export default function Home() {
           <div className="mt-6">
             <Link
               to="/calculadora-roi"
-              className="inline-block bg-transparent border-2 border-white text-white font-semibold px-8 py-3 rounded-lg hover:bg-white hover:text-green-900 transition"
+              className="inline-block bg-emerald-700 text-white px-6 py-3 rounded-lg font-semibold text-sm hover:bg-emerald-800 transition-all shadow-sm"
             >
               Calcular tu ROI por trabajar con nosotros
             </Link>

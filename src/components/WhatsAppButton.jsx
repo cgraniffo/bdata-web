@@ -1,6 +1,6 @@
 export default function WhatsAppButton({ theme }) {
   const numero = "+56944645774"; // Cámbialo por tu número real
-  const mensaje = "Hola, quiero saber más sobre BData Agro.";
+  const mensaje = "Hola, quiero digitalizar mi campo con BData, ¿hablemos?.";
   const url = `https://api.whatsapp.com/send?phone=${numero}&text=${encodeURIComponent(mensaje)}`;
 
   return (
