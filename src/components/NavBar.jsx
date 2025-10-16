@@ -87,32 +87,34 @@ export default function NavBar() {
             <button className={baseLink + " text-sm md:text-base"}>
               Herramientas IA
             </button>
-            <div className="absolute left-0 mt-2 hidden group-hover:block bg-white border rounded-md shadow-lg min-w-[12rem]">
-              <ul className="py-2">
-                {aiTools.map((item) => (
-                  <li key={item.label}>
-                    {item.type === "route" ? (
-                      <NavLink
-                        to={item.to}
-                        className={({ isActive }) =>
-                          (isActive ? activeLink : baseLink) + " block px-4 py-2 text-sm"
-                        }
-                        onClick={() => setOpen(false)}
-                      >
-                        {item.label}
-                      </NavLink>
-                    ) : (
-                      <a
-                        href={item.href}
-                        className={baseLink + " block px-4 py-2 text-sm"}
-                        onClick={() => setOpen(false)}
-                      >
-                        {item.label}
-                      </a>
-                    )}
-                  </li>
-                ))}
-              </ul>
+            <div className="absolute left-0 top-full z-10 pt-2">
+              <div className="hidden group-hover:block group-focus-within:block bg-white border rounded-md shadow-lg min-w-[12rem]">
+                <ul className="py-2">
+                  {aiTools.map((item) => (
+                    <li key={item.label}>
+                      {item.type === "route" ? (
+                        <NavLink
+                          to={item.to}
+                          className={({ isActive }) =>
+                            (isActive ? activeLink : baseLink) + " block px-4 py-2 text-sm"
+                          }
+                          onClick={() => setOpen(false)}
+                        >
+                          {item.label}
+                        </NavLink>
+                      ) : (
+                        <a
+                          href={item.href}
+                          className={baseLink + " block px-4 py-2 text-sm"}
+                          onClick={() => setOpen(false)}
+                        >
+                          {item.label}
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </li>
           {extraItems.map(({ to, label }) => (
