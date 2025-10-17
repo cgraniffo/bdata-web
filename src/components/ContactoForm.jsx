@@ -13,8 +13,8 @@ export default function ContactoForm() {
   return (
     <div className="rounded-2xl border border-zinc-200 bg-white shadow-lg">
       {/* Header de la tarjeta */}
-      <div className="border-b border-zinc-100 p-6 md:p-7">
-        <div className="flex items-start justify-between gap-4">
+      <div className="container-bd mt-6 md:mt-8 lg:-mt-8 xl:-mt-8 pb-16">
+        <div className="rounded-2xl border border-zinc-200 bg-white shadow-lg">
           <div>
             <h2 className="text-xl md:text-2xl font-bold text-zinc-900">
               Cuéntanos en qué estás
