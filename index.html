@@ -62,6 +62,13 @@
 <meta name="twitter:card" content="summary_large_image" />
 
   </head>
+<!-- Formulario fantasma para que Netlify detecte "lead-roi" en build -->
+<form name="lead-roi" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="text" name="name" />
+  <input type="email" name="email" />
+  <input type="text" name="sim_query" />
+  <input type="text" name="kpis" />
+</form>
 
   <body>
     <div id="root"></div>

@@ -376,6 +376,27 @@ const simQuery = encodeStateToQuery({
   inv: inversionManual,
 });
 
+// ENVÍO A NETLIFY SIN RECARGAR Y LUEGO DESBLOQUEA
+const handleLeadSubmit = async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const fd = new FormData(form);
+
+  // Requerido por Netlify Forms:
+  fd.append("form-name", "lead-roi");
+
+  try {
+    await fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(fd).toString(),
+    });
+    setIsUnlocked(true);       // ✅ desbloquea el detalle
+    window.scrollTo({ top: form.offsetTop - 40, behavior: "smooth" });
+  } catch (err) {
+    alert("Hubo un problema enviando el formulario. Intenta de nuevo.");
+  }
+};
 
   /* ===================== UI ===================== */
   return (
@@ -705,6 +726,99 @@ const simQuery = encodeStateToQuery({
 {isUnlocked && (
   <>
 
+{/* =================== GATE DE LEAD: muestra formulario hasta desbloquear =================== */}
+{!isUnlocked && (
+  <div className="mt-6 rounded-xl border p-5 bg-emerald-50/60">
+    <h3 className="text-emerald-800 font-semibold mb-2">
+      Mira el resultado completo de tu simulación
+    </h3>
+    <p className="text-sm text-emerald-900/80 mb-4">
+      Déjanos tus datos y te mostramos el detalle (resumen ejecutivo, barras, payback y desglose).
+    </p>
+
+    <form
+      name="lead-roi"
+      method="POST"
+      data-netlify="true"
+      data-netlify-honeypot="bot-field"
+      onSubmit={handleLeadSubmit}
+      className="bg-white rounded-lg border p-4 grid md:grid-cols-3 gap-4"
+    >
+      {/* Requeridos por Netlify */}
+      <input type="hidden" name="form-name" value="lead-roi" />
+      <input type="text" name="bot-field" className="hidden" />
+
+      {/* Campos visibles */}
+      <div>
+        <label className="block text-sm font-medium text-emerald-900">Nombre</label>
+        <input name="nombre" required className="w-full border rounded-lg p-2" />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-emerald-900">Email</label>
+        <input type="email" name="email" required className="w-full border rounded-lg p-2" />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-emerald-900">Teléfono</label>
+        <input name="telefono" className="w-full border rounded-lg p-2" />
+      </div>
+
+      {/* Botón */}
+      <div className="md:col-span-3">
+        <button
+          type="submit"
+          className="w-full md:w-auto bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium"
+        >
+          Ver detalle ahora
+        </button>
+      </div>
+
+      {/* Campos ocultos con el contexto de la simulación (para que el lead llegue enriquecido) */}
+      <input type="hidden" name="pagina" value={typeof window !== "undefined" ? window.location.href : ""} />
+      <input type="hidden" name="cultivo" value={cultivo} />
+      <input type="hidden" name="superficie_ha" value={superficieHa} />
+      <input type="hidden" name="nivel_digital" value={nivelDigital} />
+      <input type="hidden" name="escenario" value={escenario} />
+      <input type="hidden" name="inversion_inicial_clp" value={inversionInicial} />
+      <input type="hidden" name="ganancia_mensual_clp" value={beneficioMensual} />
+      <input type="hidden" name="roi_12m_pct" value={roiRed} />
+      <input
+        type="hidden"
+        name="payback_meses"
+        value={Number.isFinite(paybackMeses) ? paybackMeses.toFixed(1) : "N/A"}
+      />
+      <input
+        type="hidden"
+        name="roi_horizonte_pct"
+        value={isFinite(roiHorizonte) ? roiHorizonte.toFixed(1) : "0.0"}
+      />
+      <input
+        type="hidden"
+        name="sim_query"
+        value={encodeStateToQuery({
+          ha: superficieHa,
+          cultivo,
+          nivel: nivelDigital,
+          escenario,
+          sliders: usarSliders ? 1 : 0,
+          ahorro: ahorroUserPct,
+          prod: prodUserPct,
+          hz: horizonteMeses,
+          invMode: modoInversion,
+          plan: planId,
+          inv: inversionManual,
+        })}
+      />
+    </form>
+
+    <p className="text-xs text-zinc-600 mt-3">
+      Al enviar aceptas que te contactemos para revisar tus resultados. Nunca compartimos tus datos.
+    </p>
+  </div>
+)}
+
+{/* Resumen + gráficos SOLO cuando está desbloqueado */}
+{isUnlocked && (
+  <>
             {/* Resumen Ejecutivo */}
             <div className="mt-6 rounded-xl border p-5 bg-white">
               <h3 className="text-emerald-800 font-semibold mb-3">Resumen ejecutivo</h3>
@@ -888,7 +1002,8 @@ const simQuery = encodeStateToQuery({
             )}
   </>
 )}
-
+  </>
+)}
             {/* Compartir */}
             <div className="mt-6 flex flex-wrap gap-3 justify-end">
               <button
