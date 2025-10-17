@@ -61,12 +61,47 @@ function calcularInversionInicial(ha) {
 
 // Presets de planes (ajústalos a lo de bdata.cl/planes)
 const PLANES = [
-  { id: "BASICO", nombre: "Plan Básico", monto: 1_200_000 },
-  { id: "PRO",    nombre: "Plan Pro",    monto: 2_500_000 },
-  { id: "FULL",   nombre: "Plan Full",   monto: 4_000_000 },
+  { id: "BASICO", nombre: "Plan Semilla", monto: 1_200_000 },
+  { id: "PRO",    nombre: "Plan Campo Digital",    monto: 2_500_000 },
+  { id: "FULL",   nombre: "Plan Red de Profesionales",   monto: 4_000_000 },
 ];
 
 /* ===================== URL helpers ===================== */
+
+// === Labels custom para el BarChart ===
+function TotalLabel({ x, y, width, value }) {
+  if (value == null) return null;
+  return (
+    <text
+      x={x + width / 2}
+      y={y - 6}
+      textAnchor="middle"
+      fontWeight={700}
+      fill="#065f46"
+      style={{ fontSize: 12 }}
+    >
+      {fmtCLP(value)}
+    </text>
+  );
+}
+
+function MejoraLabel({ x, y, width, value }) {
+  if (!value) return null;
+  return (
+    <text
+      x={x + width / 2}
+      y={y + 14}
+      textAnchor="middle"
+      fontWeight={600}
+      fill="#065f46"
+      style={{ fontSize: 12 }}
+    >
+      {`+${fmtCLP(value)} Mejora`}
+    </text>
+  );
+}
+
+
 function encodeStateToQuery(state) {
   const params = new URLSearchParams();
   Object.entries(state).forEach(([k, v]) => params.set(k, String(v)));
@@ -154,6 +189,10 @@ export default function CalculadoraROI() {
 
   // Modal de ayuda / glosario
   const [showHelp, setShowHelp] = useState(false);
+
+  // ¿muestra el detalle completo (resumen + gráficos) o pide el lead?
+const [isUnlocked, setIsUnlocked] = useState(false);
+
 
 
 
@@ -247,9 +286,30 @@ export default function CalculadoraROI() {
   const baselineParaGrafico = evitarNegativosGrafico ? Math.max(0, baselineBase) : baselineBase;
   const conDigitalParaGrafico = evitarNegativosGrafico ? Math.max(0, baselineBase + mejoraAnual) : baselineBase + mejoraAnual;
   const dataChart = [
-    { name: "Sin digitalización (ref.)", value: baselineParaGrafico },
+    { name: "Sin digitalización", value: baselineParaGrafico },
     { name: "Con digitalización", value: conDigitalParaGrafico },
   ];
+
+// ccccccccccccccccDatos apilados: base (resultado actual) + mejora (incremento por digitalizar)
+const dataChartStack = [
+  {
+    name: "Sin digitalización",
+    base: baselineParaGrafico,
+    mejora: 0,
+    total: baselineParaGrafico,
+  },
+  {
+    name: "Con digitalización",
+    base: baselineParaGrafico,
+    mejora: Math.max(0, mejoraAnual),
+    total: baselineParaGrafico + Math.max(0, mejoraAnual),
+  },
+];
+
+// Colores sobrios (sin textura)
+const COLOR_BASE = "#0f766e";   // teal-700
+const COLOR_MEJORA = "#34d399"; // emerald-400
+
 
   // curva de payback según horizonte
   const HORIZONTE = horizonteMeses; // 24 o 36
@@ -296,33 +356,106 @@ export default function CalculadoraROI() {
   const margenConDigital = baselineBase + beneficioAnual;
   const paybackMesesRed = Number.isFinite(paybackMeses) ? Math.max(0, Math.round(paybackMeses)) : null;
   const roiRed = isFinite(roi) ? roi.toFixed(1) : "0.0";
+  // === NO MOVER: sirve para que el payback salga bonito en el formulario del lead ===
+const paybackTxt = Number.isFinite(paybackMeses)
+  ? `${paybackMeses.toFixed(1)} meses`
+  : "N/A";
+
+// === NO MOVER: estado de la simulación para mandarlo oculto en el formulario / WhatsApp ===
+const simQuery = encodeStateToQuery({
+  ha: superficieHa,
+  cultivo,
+  nivel: nivelDigital,
+  escenario,
+  sliders: usarSliders ? 1 : 0,
+  ahorro: ahorroUserPct,
+  prod: prodUserPct,
+  hz: horizonteMeses,
+  invMode: modoInversion,
+  plan: planId,
+  inv: inversionManual,
+});
+
 
   /* ===================== UI ===================== */
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
-      <section className="bg-emerald-700 text-white py-10 text-center">
-        <h1 className="text-4xl font-extrabold">Calculadora de ROI agrícola</h1>
-        <p className="mt-2 text-white/80">
-          {bdData?.periodo
-            ? `Fuente: Datos reales temporada ${bdData.periodo} — clientes BData`
-            : "Cargando datos BData…"}
-        </p>
-        <div className="mt-4 flex items-center gap-2 justify-center">
-          <button
-            onClick={() => setModoSimple(!modoSimple)}
-            className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm transition"
-          >
-            {modoSimple ? "🔬 Ver modo completo" : "⚡ Ver modo simple"}
-          </button>
-          {/* NUEVO: Botón ayuda */}
+      {/* ===== Header principal con gradiente y mejor contraste ===== */}
+<div className="relative bg-gradient-to-b from-emerald-700 via-emerald-600 to-emerald-500 text-white text-center py-12">
+  {/* Decor de líneas suaves (opcional, sutil) */}
+  <div className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:radial-gradient(ellipse_at_top,white_0.5px,transparent_0.5px)] [background-size:16px_16px]" />
+
+  <div className="relative max-w-3xl mx-auto px-4">
+    <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
+      Calculadora de ROI agrícola
+    </h1>
+
+    <p className="mt-3 text-emerald-100 text-[15px] leading-relaxed">
+      Con esta herramienta puedes estimar de forma simple
+      <span className="font-semibold text-white"> cuánto podrías ganar digitalizando tu gestión agrícola</span>.
+      Ajusta a tus parámetros y mira en tiempo real tu curva de ganancia y recuperación de la inversón.
+    </p>
+
+    <p className="mt-3 text-sm text-emerald-200">
+      {bdData?.periodo
+        ? `Fuente: Datos reales temporada ${bdData.periodo} — clientes BData`
+        : "Fuente: Datos reales — clientes BData"}
+    </p>
+
+    <div className="mt-4 flex flex-wrap items-center gap-2 justify-center">
+  <button
+    onClick={() => setModoSimple(!modoSimple)}
+    className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm transition"
+  >
+    {modoSimple ? "🔬 Ver modo completo" : "⚡ Ver modo simple"}
+  </button>
+
   <button
     onClick={() => setShowHelp(true)}
     className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm transition"
   >
     📘 Ayuda / Glosario
   </button>
-        </div>
-      </section>
+
+  {/* NUEVO: Agendar por WhatsApp (CTA) */}
+  <a
+    href={`https://wa.me/56944645774?text=${encodeURIComponent(
+      [
+        "👋 Hola, quiero agendar una reunión para revisar mi simulación de ROI.",
+        "",
+        `• Cultivo: ${cultivo}`,
+        `• Superficie: ${superficieHa} ha`,
+        `• Inversión: ${fmtCLP(inversionInicial)} (modo ${modoInversion.toLowerCase()})`,
+        `• ROI neto (12m): ${isFinite(roi) ? roi.toFixed(1) : "0.0"}%`,
+        `• Payback: ${Number.isFinite(paybackMeses) ? `${paybackMeses.toFixed(1)} meses` : "N/A"}`,
+        "",
+        "Link a mi simulación:",
+        `${typeof window !== "undefined" ? `${window.location.origin}${window.location.pathname}?` + encodeStateToQuery({
+          ha: superficieHa,
+          cultivo,
+          nivel: nivelDigital,
+          escenario,
+          sliders: usarSliders ? 1 : 0,
+          ahorro: ahorroUserPct,
+          prod: prodUserPct,
+          hz: horizonteMeses,
+          invMode: modoInversion,
+          plan: planId,
+          inv: inversionManual,
+        }) : ""}`,
+      ].join("\n")
+    )}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-flex items-center gap-2 bg-emerald-50/10 hover:bg-emerald-50/20 text-white border border-white/40 px-4 py-2 rounded-lg text-sm transition"
+  >
+    <span>📅 Hablemos de tu ROI</span>
+  </a>
+</div>
+
+  </div>
+</div>
+
 
       <main className="max-w-6xl mx-auto p-4 md:p-8">
         {isLoading && (
@@ -507,6 +640,21 @@ export default function CalculadoraROI() {
       </div>
     )}
 
+   {/* Sustento 10% (linkea al modal de ayuda) */}
+<div className="text-xs text-zinc-600 mt-3 italic">
+  Referencia efecto digitalización: Por defecto se considera un <strong>10&nbsp;%</strong> (ahorro/productividad), que es un
+  benchmark empírico y conservador observado en adopción tecnológica agrícola en función de diversos artículos y experiencia en terreno de BData. {" "}
+  <button
+    type="button"
+    onClick={() => setShowHelp(true)}
+    className="underline text-emerald-700 hover:text-emerald-800"
+    title="Abrir Ayuda / Glosario con sustento técnico"
+  >
+     Ver sustentos en Ayuda/Glosario
+  </button>.
+</div>
+ 
+
     {!modoSimple && (
       <div className="flex items-center gap-3 mt-4">
         <label className="inline-flex items-center gap-2 text-sm text-emerald-900">
@@ -544,6 +692,19 @@ export default function CalculadoraROI() {
               )}
             </div>
 
+{/* ===== BLOQUEO PARA CAPTURAR DATOS (se ve solo si NO está desbloqueado) ===== */}
+{!isUnlocked && (
+  <LeadGate
+    onUnlock={() => setIsUnlocked(true)}
+    simQuery={simQuery}
+    kpis={{ beneficioMensual, roi: roiRed, payback: paybackTxt }}
+  />
+)}
+
+
+{isUnlocked && (
+  <>
+
             {/* Resumen Ejecutivo */}
             <div className="mt-6 rounded-xl border p-5 bg-white">
               <h3 className="text-emerald-800 font-semibold mb-3">Resumen ejecutivo</h3>
@@ -574,22 +735,42 @@ export default function CalculadoraROI() {
             {/* Barras y Curva */}
             {!modoSimple && (
               <>
-                <h3 className="mt-8 text-emerald-700 font-semibold">Comparación anual: sin vs con digitalización</h3>
+                <h3 className="mt-8 text-emerald-700 font-semibold">Comparación anual de resultados: escenarios sin vs con digitalización</h3>
                 <div className="h-72 mt-3">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={dataChart} barSize={80}>
-                      <XAxis dataKey="name" />
-                      <YAxis tickFormatter={(v) => abreviaCLP(v)} />
-                      <Tooltip formatter={(v) => fmtCLP(v)} />
-                      <Bar dataKey="value" radius={[8, 8, 0, 0]}>
-                        {dataChart.map((d, i) => (
-                          <Cell key={i} fill={d.value < 0 ? "#dc2626" : "#047857"} />
-                        ))}
-                        <LabelList dataKey="value" position="top" formatter={(v) => fmtCLP(v)} />
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
+  <ResponsiveContainer width="100%" height="100%">
+    <BarChart
+      data={dataChartStack}
+      barSize={80}
+      barGap={6}
+      barCategoryGap="20%"
+      margin={{ top: 40, right: 10, left: 0, bottom: 5 }}
+    >
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="name" />
+      {/* margen superior extra para que jamás se corte el label */}
+      <YAxis tickFormatter={(v) => abreviaCLP(v)} domain={[0, (max) => (max || 0) * 1.18]} />
+      <Tooltip
+        formatter={(v, k) => [fmtCLP(v), k === "mejora" ? "Mejora por digitalización" : "Resultado base"]}
+      />
+
+      {/* BASE: siempre debajo */}
+      <Bar dataKey="base" stackId="a" fill={COLOR_BASE} radius={[8, 8, 0, 0]}>
+        {/* Etiqueta TOTAL arriba de la barra (usa el total del payload) */}
+        <LabelList
+          valueAccessor={(props) => props.payload.total}
+          content={(props) => <TotalLabel {...props} />}
+        />
+      </Bar>
+
+      {/* MEJORA: segmento superior en verde claro */}
+      <Bar dataKey="mejora" stackId="a" fill={COLOR_MEJORA} radius={[8, 8, 0, 0]}>
+        {/* Etiqueta de la mejora dentro del segmento */}
+        <LabelList dataKey="mejora" content={(props) => <MejoraLabel {...props} />} />
+      </Bar>
+    </BarChart>
+  </ResponsiveContainer>
+</div>
+
 
                 {/* Curva de payback */}
                 <h3 className="mt-8 text-emerald-700 font-semibold">Curva de payback (flujo acumulado mensual)</h3>
@@ -705,6 +886,8 @@ export default function CalculadoraROI() {
                 )}
               </>
             )}
+  </>
+)}
 
             {/* Compartir */}
             <div className="mt-6 flex flex-wrap gap-3 justify-end">
@@ -771,6 +954,40 @@ export default function CalculadoraROI() {
         onClose={() => setShowHelp(false)}
         tips={TIPS}
       />
+          <a
+      href={`https://wa.me/56944645774?text=${encodeURIComponent(
+        [
+          "👋 Hola, quiero agendar una reunión para revisar mi simulación de ROI.",
+          "",
+          `• Cultivo: ${cultivo}`,
+          `• Superficie: ${superficieHa} ha`,
+          `• Inversión: ${fmtCLP(inversionInicial)} (modo ${modoInversion.toLowerCase()})`,
+          `• ROI neto (12m): ${isFinite(roi) ? roi.toFixed(1) : "0.0"}%`,
+          `• Payback: ${Number.isFinite(paybackMeses) ? `${paybackMeses.toFixed(1)} meses` : "N/A"}`,
+          "",
+          "Link a mi simulación:",
+          `${typeof window !== "undefined" ? `${window.location.origin}${window.location.pathname}?` + encodeStateToQuery({
+            ha: superficieHa,
+            cultivo,
+            nivel: nivelDigital,
+            escenario,
+            sliders: usarSliders ? 1 : 0,
+            ahorro: ahorroUserPct,
+            prod: prodUserPct,
+            hz: horizonteMeses,
+            invMode: modoInversion,
+            plan: planId,
+            inv: inversionManual,
+          }) : ""}`,
+        ].join("\n")
+      )}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="fixed bottom-5 left-5 z-50 shadow-lg rounded-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-medium"
+      title="Agendar por WhatsApp"
+    >
+      📅 Hablemos de tu ROI
+    </a>
     </div>
   );
 }
@@ -839,7 +1056,7 @@ function KPI({ label, value }) {
 
 
 function HelpModal({ open, onClose, tips }) {
-  const [tab, setTab] = useState("glosario"); // glosario | entradas | salidas | conceptos
+  const [tab, setTab] = useState("glosario"); // glosario | entradas | salidas | conceptos | evidencia
 
   useEffect(() => {
     if (!open) return;
@@ -871,10 +1088,7 @@ function HelpModal({ open, onClose, tips }) {
   return (
     <div className="fixed inset-0 z-50">
       {/* Overlay */}
-      <div
-        className="absolute inset-0 bg-black/40"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
       {/* Dialog */}
       <div className="absolute inset-x-0 top-8 mx-auto w-[min(900px,92vw)] rounded-2xl bg-white shadow-xl border">
         <div className="p-4 border-b flex items-center justify-between">
@@ -887,6 +1101,7 @@ function HelpModal({ open, onClose, tips }) {
           </button>
         </div>
 
+        {/* Tabs */}
         <div className="px-4 pt-3">
           <div className="inline-flex rounded-lg border overflow-hidden text-sm">
             <button
@@ -913,9 +1128,17 @@ function HelpModal({ open, onClose, tips }) {
             >
               Conceptos clave
             </button>
+            <button
+              className={`px-3 py-1 border-l ${tab === "evidencia" ? "bg-emerald-600 text-white" : "bg-white hover:bg-zinc-50"}`}
+              onClick={() => setTab("evidencia")}
+              title="Sustento del benchmark 10 %"
+            >
+              Evidencia digitalización
+            </button>
           </div>
         </div>
 
+        {/* Content */}
         <div className="p-4 max-h-[70vh] overflow-auto text-sm text-zinc-800">
           {tab === "glosario" && (
             <div className="grid md:grid-cols-2 gap-4">
@@ -982,6 +1205,84 @@ function HelpModal({ open, onClose, tips }) {
               />
             </div>
           )}
+
+          {tab === "evidencia" && (
+            <div className="space-y-4">
+              <p>
+                El <strong>10&nbsp;%</strong> usado como mejora base (ahorro/productividad) es un
+                <strong> benchmark empírico conservador</strong> observado en adopciones
+                de herramientas digitales (gestión de riego, bitácoras, sensores, FMS, etc.).
+                Aquí un compendio breve de fuentes:
+              </p>
+
+              <div>
+                <h4 className="font-semibold text-emerald-800">🌎 Evidencia internacional</h4>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>
+                    MSU Extension — Farm Management (compendio de buenas prácticas y herramientas digitales).{" "}
+                    <a href="https://www.canr.msu.edu/farm_management/" target="_blank" rel="noreferrer" className="text-emerald-700 underline">
+                      canr.msu.edu/farm_management
+                    </a>
+                  </li>
+                  <li>
+                    FAO — Agricultura familiar y digitalización: informes sobre eficiencia y adopción.{" "}
+                    <a href="https://www.fao.org/family-farming/detail/en/c/1738911/" target="_blank" rel="noreferrer" className="text-emerald-700 underline">
+                      fao.org/family-farming/…
+                    </a>
+                  </li>
+                  <li>
+                    Alabama Cooperative Extension — “Spreadsheets vs Farm Management Software”
+                    (mejoras de eficiencia administrativa/operacional).{" "}
+                    <a href="https://www.aces.edu/blog/topics/farm-management/spreadsheets-vs-farm-management-software/" target="_blank" rel="noreferrer" className="text-emerald-700 underline">
+                      aces.edu/…/farm-management-software
+                    </a>
+                  </li>
+                  <li>
+                    ResearchGate — “Understanding Farmers' Data Collection Practices…”
+                    (diseño de FMS y productividad/eficiencia).{" "}
+                    <a href="https://www.researchgate.net/publication/380191673_Understanding_Farmers'_Data_Collection_Practices_on_Small-to-Medium_Farms_for_the_Design_of_Future_Farm_Management_Information_Systems" target="_blank" rel="noreferrer" className="text-emerald-700 underline">
+                      researchgate.net/publication/380191673
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-emerald-800">🇨🇱 Evidencia nacional / LatAm</h4>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>
+                    Red Agrícola — “El ecosistema de la agricultura digital en América Latina…” (aceleración post-pandemia).{" "}
+                    <a href="https://redagricola.com/el-ecosistema-de-la-agricultura-digital-en-america-latina-acelerado-sin-querer-por-la-pandemia/" target="_blank" rel="noreferrer" className="text-emerald-700 underline">
+                      redagricola.com/…agricultura-digital…
+                    </a>
+                  </li>
+                  <li>
+                    SAG — Registro fitosanitario 100% digital (eficiencia administrativa).{" "}
+                    <a href="https://www.sag.gob.cl/noticias/sag-logra-primer-registro-fitosanitario-100-digital" target="_blank" rel="noreferrer" className="text-emerald-700 underline">
+                      sag.gob.cl/…/registro-fitosanitario-100-digital
+                    </a>
+                  </li>
+                  <li>
+                    SAG — Digitalización que reduce hasta 80% tiempos de vigilancias (eficiencia de procesos).{" "}
+                    <a href="https://www.sag.gob.cl/noticias/sag-implementa-digitalizacion-que-disminuye-hasta-un-80-los-tiempos-en-vigilancias-fitosanitarias" target="_blank" rel="noreferrer" className="text-emerald-700 underline">
+                      sag.gob.cl/…/disminuye-hasta-un-80
+                    </a>
+                  </li>
+                  <li>
+                    OPIA/FIA — Estudios y boletines de costos/productividad por rubro (base para benchmarks).{" "}
+                    <a href="https://opia.fia.cl/601/articles-120616_archivo_15.pdf" target="_blank" rel="noreferrer" className="text-emerald-700 underline">
+                      opia.fia.cl/…/articles-120616_archivo_15.pdf
+                    </a>
+                  </li>
+                </ul>
+                <p className="text-[12px] text-zinc-600 mt-2">
+                  **Interpretación**: el 10% no es una cifra universal,
+                  sino una media conservadora para “digitalización moderada”.
+                  Los sliders te permiten subir/bajar según contexto del predio.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="p-4 border-t flex items-center justify-between">
@@ -1000,11 +1301,100 @@ function HelpModal({ open, onClose, tips }) {
   );
 }
 
-function ItemConcepto({ t, d }) {
+function LeadGate({ onUnlock, simQuery, kpis }) {
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    fd.set("form-name", "roi-lead");
+
+    try {
+      await fetch("/", { method: "POST", body: fd });
+    } catch (_) {
+      // si falla el POST (por ejemplo en dev), no bloqueamos la UX
+    }
+
+    onUnlock();
+    alert("✅ Gracias. Ya puedes ver el resultado completo.");
+  }
+
   return (
-    <div className="bg-emerald-50/40 border border-emerald-100 rounded-lg p-3">
-      <div className="font-semibold text-emerald-900">{t}</div>
-      <div className="text-zinc-700">{d}</div>
+    <div className="mt-6 rounded-2xl border p-6 bg-emerald-50/40">
+      <h3 className="text-emerald-800 font-semibold text-lg">
+        ¿Quieres ver el resultado completo?
+      </h3>
+      <p className="text-sm text-emerald-900/80 mt-1">
+        Desbloquea el <strong>Resumen ejecutivo</strong>, la{" "}
+        <strong>curva de payback</strong>, el <strong>ROI acumulado</strong> y el{" "}
+        <strong>desglose de costos más todo el potencial de la digitalización de tu campo 🌾</strong>.
+      </p>
+
+      {/* Mini KPIs como “muestra” */}
+      <div className="mt-4 grid sm:grid-cols-3 gap-3">
+        <div className="rounded-lg border bg-white p-3 text-center">
+          <div className="text-xs text-emerald-800/70">Ganancia extra mensual</div>
+          <div className="text-base font-bold text-emerald-800">{fmtCLP(kpis.beneficioMensual)}</div>
+        </div>
+        <div className="rounded-lg border bg-white p-3 text-center">
+          <div className="text-xs text-emerald-800/70">ROI neto (12 meses)</div>
+          <div className="text-base font-bold text-emerald-800">{kpis.roi} %</div>
+        </div>
+        <div className="rounded-lg border bg-white p-3 text-center">
+          <div className="text-xs text-emerald-800/70">Recuperas inversión en</div>
+          <div className="text-base font-bold text-emerald-800">{kpis.payback}</div>
+        </div>
+      </div>
+
+      {/* Form de captura */}
+      <form
+        name="roi-lead"
+        method="POST"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        onSubmit={handleSubmit}
+        className="mt-5 grid sm:grid-cols-3 gap-3"
+      >
+        <input type="hidden" name="form-name" value="roi-lead" />
+        <input type="hidden" name="simQuery" value={simQuery} />
+        <input type="text" name="bot-field" className="hidden" onChange={() => {}} />
+
+        <input
+          type="text"
+          name="name"
+          placeholder="Tu nombre"
+          required
+          className="border rounded-lg p-2 w-full"
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Tu correo"
+          required
+          className="border rounded-lg p-2 w-full"
+        />
+        <button
+          type="submit"
+          className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-4 py-2 font-medium"
+        >
+          Ver resultado completo
+        </button>
+      </form>
+
+      <div className="text-[12px] text-emerald-900/70 mt-2">
+        Sin spam. Usamos tus datos para enviarte el resultado y asesorarte en cómo mejorar tu ROI.
+      </div>
+
+      <div className="mt-3">
+        <a
+          href={`https://wa.me/56944645774?text=${encodeURIComponent(
+            "Hola, quiero que me ayuden a revisar mi simulación de ROI. Mis datos: " + simQuery
+          )}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white rounded-lg px-4 py-2 text-sm"
+        >
+          💬 Prefiero coordinar por WhatsApp
+        </a>
+      </div>
     </div>
   );
 }

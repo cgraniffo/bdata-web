@@ -41,7 +41,7 @@ export default function App() {
       <WhatsAppButton theme={theme} />
 
       <footer className="text-center text-xs text-gray-500 py-6">
-        © {new Date().getFullYear()} BData • Junto al campo Chileno 🌾
+        © {new Date().getFullYear()} BData • Digitalizando el campo Chileno 🌾
       </footer>
     </div>
   );
