@@ -1,0 +1,110 @@
+Entiendes que hace esta "CalculadoraROI"?
+
+
+
+Entiendes que hace esta "CalculadoraROI"?
+
+
+Sí. Es una calculadora de ROI agrícola que estima el beneficio económico de “digitalizar” la operación según tus datos. Resumen de lo que hace:
+
+Entradas clave: superficie en hectáreas, cultivo (trigo/maíz/avena/cebada/raps), gasto anual “gestionable”, nivel de digitalización (bajo/medio/alto) y escenario (conservador/realista/optimista). Archivo: src/pages/CalculadoraROI.jsx
+Porcentajes base por cultivo: aplica % de ahorro y % de productividad propios del cultivo, luego ajusta por:
+Nivel de digitalización (más bajo = mayor potencial).
+Factor suave por superficie (más ha → leve aumento del impacto).
+Multiplicador de escenario (sensibilidad).
+Cálculos principales:
+Ahorro mensual e incremento mensual de ingresos a partir del gasto gestionable.
+Beneficio mensual total = ahorro + incremento (ajustado por escenario).
+Inversión inicial escalonada según hectáreas.
+ROI a 12 meses y payback (meses para recuperar la inversión).
+Modo simple vs completo: el simple oculta algunos controles; el completo permite elegir escenario, usar bases oficiales y ajustar visualización.
+Comparación anual: grafica “sin digitalización (ref.)” vs “con digitalización” usando Recharts, con opción para evitar valores negativos en el gráfico.
+Base oficial por cultivo: puede usar un “margen neto por ha” de referencias (INDAP/INIA/ODEPA, etc.) para mostrar un baseline anual y las fuentes, indicando si el dato es “verificado” o “estimado”.
+Validaciones: límites razonables para superficie y gasto (muestra avisos si te sales de rango).
+Compartir estado: codifica los parámetros en la URL (query string), permite copiar enlace al portapapeles y enviar un resumen por WhatsApp.
+Si quieres, puedo explicarte una fórmula específica (ROI, payback, factores por ha) o revisar/ajustar los parámetros por cultivo.
+
+Tengo una estructura de costos propias que me gustaria fuera la base para los costos e ingresos "reales"..basados en experiencia de agricultores y sacar las referencias de INDAO/INIA/ODEPA)...ves alguna factibilidad de esto?
+
+
+Sí, es totalmente factible. La calculadora ya separa “baseline oficial” de “mejoras por digitalización”, así que podemos enchufar una base de costos/ingresos propia y usar INIA/INDAP/ODEPA solo como referencia y respaldo.
+
+Propuesta técnica
+
+Modelo de datos propio
+
+Estructura por cultivo, zona, temporada, con detalle de:
+rendimiento_ha, precio_kg o precio_ton, ingresos_ha (si ya viene calculado).
+Costos variables por ha: semilla, fertilizantes, fitosanitarios, riego, labores, cosecha, transporte, servicios, otros.
+Costos fijos/indirectos por ha: maquinaria, administración, arriendo, financiamiento, seguros, etc.
+margen_neto_ha (puede calcularse o venir dado).
+Metadatos: fuentes (lista con t, url), esReal (true si viene de experiencia interna), confianza o rango.
+Ejemplo JSON mínimo:
+src/data/costos_propios.json
+[ { "cultivo": "TRIGO", "zona": "SUR", "temporada": "2024-25", "rendimiento_ha": 6.2, "precio_ton": 220000, "costos": { "variables": { "semilla": 180000, "fertilizantes": 520000, "fitosanitarios": 180000, "labores": 220000, "riego": 0, "cosecha": 150000, "transporte": 80000, "servicios": 60000 }, "fijos": { "maquinaria": 120000, "administracion": 70000, "otros": 40000 } }, "fuentes": [ { "t": "Experiencia Agricultores Maule 2023-24" }, { "t": "Validación ODEPA precios promedio", "url": "https://www.odepa.gob.cl/" } ] } ]
+Cálculo del margen real
+
+Si ingresos_ha no viene:
+ingresos_ha = rendimiento_ha * precio_ton
+costos_totales_ha = sum(variables) + sum(fijos)
+margen_neto_ha = ingresos_ha - costos_totales_ha
+Multiplicar por superficie para baseline anual real.
+Integración en la UI
+
+Agregar selector de fuente: Fuente de baseline: (Costos propios | Oficial)
+Si “Costos propios”: usa tu dataset para calcular baselineOficialAnualReal (renombrar internamente a baselineAnualReal) y mostrar “Dato verificado” con esReal = true.
+Mantener la comparación “sin vs con digitalización” exactamente igual; solo cambia el baseline.
+Mantener la opción de compartir por URL (podemos codificar fuente=propios|oficial y temporada/zona si aplica).
+Validación y consistencia
+
+Chequear que exista combinación cultivo/zona/temporada; si no hay, mostrar aviso y fallback a oficial o a “sin baseline”.
+Límites de sanity: precios y rendimientos positivos, costos totales no mayores a ingresos por magnitudes absurdas, etc.
+Campo confianza para mostrar una etiqueta visual (Alta/Media/Baja) junto a “verificado/estimado”.
+Fuentes oficiales como respaldo
+
+Guardar fuentes también para costos propios (pueden ser notas internas + links a INIA/INDAP/ODEPA para precios/rendimientos).
+Mantener la sección de “Fuentes” en la tarjeta, cambiando el texto de la insignia según esReal y confianza.
+Opciones de implementación
+
+Opción A (rápida y sin backend)
+
+Archivo estático src/data/costos_propios.json o src/data/costos_propios.js exportando el array/objeto.
+Función utilitaria getBaselinePropio(cultivo, zona?, temporada?) que devuelve margen_neto_ha y metadatos.
+Cambios en CalculadoraROI.jsx: añadir estado fuenteBaseline y usar useMemo para computar el baseline desde el dataset propio cuando se elige esa fuente.
+Opción B (admin + carga dinámica)
+
+CSV/Excel upload en una vista admin, transformado a JSON local.
+O usar Google Sheets/SharePoint como fuente, con un script de build que lo descargue (requiere red/credenciales).
+Opción C (backend/API)
+
+Si ya tienes backend, guardar y versionar estructuras de costo por usuario/empresa y traer por API.
+Snippets de integración (orientativo)
+
+Datos: src/data/costosPropios.js
+
+export const COSTOS_PROPIOS = { TRIGO: { SUR: { '2024-25': { rendimiento_ha: 6.2, precio_ton: 220000, costos: { variables: {...}, fijos: {...} }, esReal: true, fuentes: [...] } } } }
+Utilidad:
+
+function computeMargenNetoHa(entry){ const ingresos = entry.ingresos_ha ?? entry.rendimiento_ha * entry.precio_ton; const costos = Object.values(entry.costos?.variables||{}).reduce((a,b)=>a+b,0) + Object.values(entry.costos?.fijos||{}).reduce((a,b)=>a+b,0); return ingresos - costos; }
+En CalculadoraROI.jsx:
+
+Estado: const [fuenteBaseline, setFuenteBaseline] = useState('PROPIOS');
+Cálculo:
+const baselineAnualReal = useMemo(() => { const ha = Math.max(0, Number(superficieHa)||0); if (fuenteBaseline==='PROPIOS') { const entry = findCostosPropios(cultivo, zona, temporada); if (!entry) return 0; return computeMargenNetoHa(entry) * ha; } if (usarBaseOficial && refCultivo?.margenNetoHa) return refCultivo.margenNetoHa * ha; return 0; }, [fuenteBaseline, cultivo, zona, temporada, superficieHa, usarBaseOficial, refCultivo]);
+Cómo avanzar
+
+¿Tienes ya una planilla con tu estructura de costos/ingresos por cultivo y zona? Si me la compartes (o un ejemplo anónimo), la convierto a un src/data/costos_propios.*, integro el selector de fuente y actualizo los cálculos para usar ese baseline “real”.
+Si prefieres, puedo implementar la Opción A ahora mismo con un esquema de ejemplo y dejar los hooks listos para tus datos. ¿Quieres que lo haga?
+
+
+
+
+Auto context
+
+
+Local
+
+Agent
+
+gpt-5
+low

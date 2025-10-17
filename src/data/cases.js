@@ -29,6 +29,7 @@ export const cases = [
     crop: "Maíz",
     region: "Región del Biobío",
     client_size: "100–150 ha",
+    
     kpis: {
       merma: -0.18,                // -18% (ejemplo)
       rotura_stock: -0.35,         // -35% (ejemplo)

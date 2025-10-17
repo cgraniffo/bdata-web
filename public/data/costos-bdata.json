@@ -1,0 +1,22 @@
+{
+  "version": "2024.10",
+  "periodo": "2024-2025",
+  "updated_at": "17/10/2025",
+  "cultivos": {
+    "RAPS": {
+      "ingresos_ha_clp": 2070000,
+      "costos_totales_ha_clp": 1813214,
+      "desglose": {
+        "INSUMOS": 1084970,
+        "MAQUINARIAS": 291900,
+        "ARRIENDO": 230000,
+        "FLETES": 66000,
+        "MANO DE OBRA": 54000,
+        "GENERALES (5%)": 86344,
+        "COSTO FINANCIERO (12%)": 216900,
+        "TOTAL COSTOS": 1813214
+      },
+      "meta": { "sistema": "SECANO", "region": "Araucanía" }
+    }
+  }
+}
