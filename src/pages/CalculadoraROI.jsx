@@ -1431,12 +1431,12 @@ function LeadGate({ onUnlock, simQuery, kpis }) {
     // Convertimos a x-www-form-urlencoded
     const body = new URLSearchParams(fd).toString();
 
-    const resp = await fetch(window.location.pathname, {
+    try {
+      const resp = await fetch(window.location.pathname, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body,
-    });
-
+      });
 
       if (!resp.ok) {
         const txt = await resp.text().catch(() => "");
