@@ -1417,15 +1417,35 @@ function HelpModal({ open, onClose, tips }) {
 }
 
 function LeadGate({ onUnlock, simQuery, kpis }) {
+  // ENVÍO url-encodeado a Netlify con el form-name correcto: lead-roi
   async function handleSubmit(e) {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    fd.set("form-name", "roi-lead");
+    const form = e.currentTarget;
+
+    // Armamos los datos tal cual Netlify Forms los espera
+    const fd = new FormData(form);
+    // Asegurar el form-name correcto (debe calzar con el "fantasma" de index.html)
+    fd.set("form-name", "lead-roi");
+
+    // Convertimos a x-www-form-urlencoded
+    const body = new URLSearchParams(fd).toString();
 
     try {
-      await fetch("/", { method: "POST", body: fd });
+      const resp = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body,
+      });
+
+      if (!resp.ok) {
+        const txt = await resp.text().catch(() => "");
+        console.error("Netlify form error", resp.status, txt);
+        alert("No se pudo enviar. Intenta de nuevo.");
+        return;
+      }
     } catch (_) {
       // si falla el POST (por ejemplo en dev), no bloqueamos la UX
+      console.warn("Fallo el POST a Netlify, desbloqueo igual.");
     }
 
     onUnlock();
@@ -1440,7 +1460,7 @@ function LeadGate({ onUnlock, simQuery, kpis }) {
       <p className="text-sm text-emerald-900/80 mt-1">
         Desbloquea el <strong>Resumen ejecutivo</strong>, la{" "}
         <strong>curva de payback</strong>, el <strong>ROI acumulado</strong> y el{" "}
-        <strong>desglose de costos más todo el potencial de la digitalización de tu campo 🌾</strong>.
+        <strong>desglose de costos</strong> de tu simulación 🌾.
       </p>
 
       {/* Mini KPIs como “muestra” */}
@@ -1459,22 +1479,24 @@ function LeadGate({ onUnlock, simQuery, kpis }) {
         </div>
       </div>
 
-      {/* Form de captura */}
+      {/* Form de captura: nombre EXACTO = lead-roi */}
       <form
-        name="roi-lead"
+        name="lead-roi"
         method="POST"
         data-netlify="true"
         netlify-honeypot="bot-field"
         onSubmit={handleSubmit}
-        className="mt-5 grid sm:grid-cols-3 gap-3"
+        className="mt-5 grid sm:grid-cols-3 gap-3 bg-white border rounded-lg p-4"
       >
-        <input type="hidden" name="form-name" value="roi-lead" />
-        <input type="hidden" name="simQuery" value={simQuery} />
+        {/* Requeridos por Netlify */}
+        <input type="hidden" name="form-name" value="lead-roi" />
+        <input type="hidden" name="sim_query" value={simQuery} />
         <input type="text" name="bot-field" className="hidden" onChange={() => {}} />
 
+        {/* Campos visibles */}
         <input
           type="text"
-          name="name"
+          name="nombre"
           placeholder="Tu nombre"
           required
           className="border rounded-lg p-2 w-full"
