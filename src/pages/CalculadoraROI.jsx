@@ -399,6 +399,15 @@ const handleLeadSubmit = async (e) => {
   }
 };
 
+// ✅ Lanzamos evento GA4 manualmente (para GTM)
+window.dataLayer = window.dataLayer || [];
+window.dataLayer.push({
+  event: "lead_roi_submit",
+  nombre: fd.get("name"),      // <- el nombre que ingresó el usuario
+  email: fd.get("email"),      // <- email
+  sim_query: simQuery          // <- los parámetros de la simulación
+});
+
   /* ===================== UI ===================== */
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
