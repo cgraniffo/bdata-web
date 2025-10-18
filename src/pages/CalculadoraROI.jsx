@@ -1512,11 +1512,11 @@ function LeadGate({ onUnlock, simQuery, kpis }) {
         <input
           type="tel"
           name="telefono"
-          placeholder="+56912345678 (opcional)"
+          placeholder="+56 9 1234 5678 (opcional)"
           inputMode="tel"
           autoComplete="tel"
-          pattern="^\\+569\\d{8}$"
-          title="Formato chileno: +569 seguido de 8 dígitos"
+          pattern="^\\+56\\s*9(?:\\s*\\d){8}$"
+          title="Formato chileno móvil: +56 9 seguido de 8 dígitos. Ej: +56912345678 o +56 9 1234 5678"
           className="border rounded-lg p-2 w-full"
         />
         <button
