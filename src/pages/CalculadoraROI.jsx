@@ -392,13 +392,6 @@ const handleLeadSubmit = async (e) => {
   body: new URLSearchParams(fd).toString(),
 });
 
-    setIsUnlocked(true);       // ✅ desbloquea el detalle
-    window.scrollTo({ top: form.offsetTop - 40, behavior: "smooth" });
-  } catch (err) {
-    alert("Hubo un problema enviando el formulario. Intenta de nuevo.");
-  }
-};
-
 // ✅ Lanzamos evento GA4 manualmente (para GTM)
 window.dataLayer = window.dataLayer || [];
 window.dataLayer.push({
@@ -407,6 +400,14 @@ window.dataLayer.push({
   email: fd.get("email"),      // <- email
   sim_query: simQuery          // <- los parámetros de la simulación
 });
+
+    setIsUnlocked(true);       // ✅ desbloquea el detalle
+    window.scrollTo({ top: form.offsetTop - 40, behavior: "smooth" });
+  } catch (err) {
+    alert("Hubo un problema enviando el formulario. Intenta de nuevo.");
+  }
+};
+
 
   /* ===================== UI ===================== */
   return (
