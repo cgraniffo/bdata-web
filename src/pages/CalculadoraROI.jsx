@@ -1509,6 +1509,16 @@ function LeadGate({ onUnlock, simQuery, kpis }) {
           required
           className="border rounded-lg p-2 w-full"
         />
+        <input
+          type="tel"
+          name="telefono"
+          placeholder="+56912345678 (opcional)"
+          inputMode="tel"
+          autoComplete="tel"
+          pattern="^\\+569\\d{8}$"
+          title="Formato chileno: +569 seguido de 8 dígitos"
+          className="border rounded-lg p-2 w-full"
+        />
         <button
           type="submit"
           className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-4 py-2 font-medium"
