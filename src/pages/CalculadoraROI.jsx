@@ -1497,7 +1497,7 @@ function LeadGate({ onUnlock, simQuery, kpis }) {
         {/* Campos visibles */}
         <input
           type="text"
-          name="name"
+          name="nombre"
           placeholder="Tu nombre"
           required
           className="border rounded-lg p-2 w-full"
