@@ -386,11 +386,12 @@ const handleLeadSubmit = async (e) => {
   fd.append("form-name", "lead-roi");
 
   try {
-    await fetch("/", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams(fd).toString(),
-    });
+    await fetch(window.location.pathname, {
+  method: "POST",
+  headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  body: new URLSearchParams(fd).toString(),
+});
+
     setIsUnlocked(true);       // ✅ desbloquea el detalle
     window.scrollTo({ top: form.offsetTop - 40, behavior: "smooth" });
   } catch (err) {
@@ -1430,12 +1431,12 @@ function LeadGate({ onUnlock, simQuery, kpis }) {
     // Convertimos a x-www-form-urlencoded
     const body = new URLSearchParams(fd).toString();
 
-    try {
-      const resp = await fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body,
-      });
+    const resp = await fetch(window.location.pathname, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body,
+    });
+
 
       if (!resp.ok) {
         const txt = await resp.text().catch(() => "");
