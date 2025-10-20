@@ -1,0 +1,11 @@
+$env:PATH += ";C:\Users\cgraniffo\Apps\node-v22.20.0-win-x64\"
+node -v
+npm -v
+
+
+cd C:\Users\cgraniffo\CascadeProjects\WebBData\bdata-web
+npm ci
+npx netlify dev
+
+
+npm install openai@^4 --save

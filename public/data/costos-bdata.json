@@ -17,6 +17,96 @@
         "TOTAL COSTOS": 1813214
       },
       "meta": { "sistema": "SECANO", "region": "Araucanía" }
+    },
+    "TRIGO": {
+      "ingresos_ha_clp": 1500000,
+      "costos_totales_ha_clp": 1200000,
+      "desglose": {
+        "INSUMOS": 700000,
+        "MAQUINARIAS": 200000,
+        "ARRIENDO": 150000,
+        "FLETES": 50000,
+        "MANO DE OBRA": 35000,
+        "GENERALES (5%)": 60000,
+        "COSTO FINANCIERO (12%)": 120000,
+        "TOTAL COSTOS": 1200000
+      },
+      "meta": { "sistema": "SECANO", "region": "Araucanía" }
+    },
+    "MAIZ": {
+      "ingresos_ha_clp": 2500000,
+      "costos_totales_ha_clp": 1800000,
+      "desglose": {
+        "INSUMOS": 1000000,
+        "MAQUINARIAS": 300000,
+        "ARRIENDO": 200000,
+        "FLETES": 80000,
+        "MANO DE OBRA": 70000,
+        "GENERALES (5%)": 90000,
+        "COSTO FINANCIERO (12%)": 200000,
+        "TOTAL COSTOS": 1800000
+      },
+      "meta": { "sistema": "RIEGO", "region": "Biobío" }
+    },
+    "CEREZOS": {
+      "ingresos_ha_clp": 14000000,
+      "costos_totales_ha_clp": 8500000,
+      "desglose": {
+        "INSUMOS": 3800000,
+        "MAQUINARIAS": 1200000,
+        "ARRIENDO": 900000,
+        "FLETES": 450000,
+        "MANO DE OBRA": 1400000,
+        "GENERALES (5%)": 600000,
+        "COSTO FINANCIERO (12%)": 1050000,
+        "TOTAL COSTOS": 8500000
+      },
+      "meta": { "sistema": "RIEGO", "region": "Maule" }
+    },
+    "ARANDANOS": {
+      "ingresos_ha_clp": 11000000,
+      "costos_totales_ha_clp": 7500000,
+      "desglose": {
+        "INSUMOS": 3000000,
+        "MAQUINARIAS": 900000,
+        "ARRIENDO": 700000,
+        "FLETES": 500000,
+        "MANO DE OBRA": 1300000,
+        "GENERALES (5%)": 450000,
+        "COSTO FINANCIERO (12%)": 750000,
+        "TOTAL COSTOS": 7500000
+      },
+      "meta": { "sistema": "RIEGO", "region": "Ñuble" }
+    },
+    "PAPA": {
+      "ingresos_ha_clp": 3200000,
+      "costos_totales_ha_clp": 2300000,
+      "desglose": {
+        "INSUMOS": 1200000,
+        "MAQUINARIAS": 400000,
+        "ARRIENDO": 250000,
+        "FLETES": 90000,
+        "MANO DE OBRA": 160000,
+        "GENERALES (5%)": 115000,
+        "COSTO FINANCIERO (12%)": 205000,
+        "TOTAL COSTOS": 2300000
+      },
+      "meta": { "sistema": "RIEGO", "region": "Los Lagos" }
+    },
+    "AVENA": {
+      "ingresos_ha_clp": 1300000,
+      "costos_totales_ha_clp": 1000000,
+      "desglose": {
+        "INSUMOS": 500000,
+        "MAQUINARIAS": 180000,
+        "ARRIENDO": 150000,
+        "FLETES": 40000,
+        "MANO DE OBRA": 30000,
+        "GENERALES (5%)": 50000,
+        "COSTO FINANCIERO (12%)": 100000,
+        "TOTAL COSTOS": 1000000
+      },
+      "meta": { "sistema": "SECANO", "region": "Araucanía" }
     }
   }
 }

@@ -61,9 +61,9 @@ function calcularInversionInicial(ha) {
 
 // Presets de planes (ajústalos a lo de bdata.cl/planes)
 const PLANES = [
-  { id: "BASICO", nombre: "Plan Semilla", monto: 1_200_000 },
-  { id: "PRO",    nombre: "Plan Campo Digital",    monto: 2_500_000 },
-  { id: "FULL",   nombre: "Plan Red de Profesionales",   monto: 4_000_000 },
+  { id: "BASICO", nombre: "Plan Semilla (Inversión Anual)", monto: 1_200_000 },
+  { id: "PRO",    nombre: "Plan Campo Digital (Inversión Anual)",    monto: 2_500_000 },
+  { id: "FULL",   nombre: "Plan Red de Profesionales (Inversión Anual)",   monto: 4_000_000 },
 ];
 
 /* ===================== URL helpers ===================== */
@@ -137,6 +137,41 @@ function decodeQueryToState(search, cultivosDisponibles) {
   };
 }
 
+// === Persona IA en base a inputs (A/B/C/D) ===
+// A: Ordena pero no mide (digitalización MEDIA/ALTA, superficie media, ROI ok)
+// B: Pierde plata en ejecución (digital BAJO y/o payback lento por ineficiencia operativa)
+// C: Curioso/Exploratorio (superficie pequeña/mediana, horizonte 24, ROI moderado, busca “si vale la pena”)
+// D: Grande/Descentralizado (superficie grande o 2+ cultivos a futuro => foco visibilidad/estandarización)
+
+function getPersonaIA({ ha, nivelDigital, beneficioMensual, inversionInicial, paybackMeses, horizonteMeses }) {
+  const haN = Number(ha) || 0;
+  const pay = Number.isFinite(paybackMeses) ? paybackMeses : 999;
+
+  // señales
+  const inversionAltaRelativa = inversionInicial > beneficioMensual * 8; // inversión ~8+ meses de ganancia
+  const chicoMediano = haN <= 120;
+  const mediano = haN > 120 && haN <= 250;
+  const grande = haN > 250;
+
+  // Reglas (en orden de probabilidad según tus porcentajes: A > C > B > D)
+  // A: tiene orden, pero no mide (MEDIO/ALTO) y ROI razonable; quiere "pasar a BI real"
+  if ((nivelDigital === "MEDIO" || nivelDigital === "ALTO") && pay <= 18 && !inversionAltaRelativa) return "A";
+
+  // C: quiere saber si vale la pena (tamaño chico/mediano, horizonte 24, payback < 24 o ROI moderado)
+  if ((chicoMediano || mediano) && horizonteMeses === 24 && pay <= 24) return "C";
+
+  // B: el problema es ejecución (BAJO) o inversión se come los beneficios (ineficiencia)
+  if (nivelDigital === "BAJO" || inversionAltaRelativa || pay > 24) return "B";
+
+  // D: grande/descentralizado: el dolor es visibilidad/estandarización
+  if (grande) return "D";
+
+  // fallback razonable
+  return "C";
+}
+
+
+
 /* ===================== TIPS — glosario embebido ===================== */
 const TIPS = {
   superficie: "Hectáreas productivas consideradas. Siembra útil; excluye barbechos o superficies sin manejo.",
@@ -144,7 +179,7 @@ const TIPS = {
   nivelDigital: "Bajo = mayor potencial de mejora. Alto = operación ya optimizada. Ajusta el potencial de ahorro/productividad.",
   escenario: "Sensibilidad del cálculo: Conservador (−20%), Realista (base) u Optimista (+20%).",
   invMode: "Cómo definimos la inversión inicial: automática por superficie, plan BData o monto manual.",
-  invPlan: "Selecciona un plan predefinido para simular la inversión (editable luego desde JSON).",
+  invPlan: "Selecciona un plan predefinido para simular la inversión",
   invManual: "Monto de inversión que quieres evaluar. Útil para ofertas a medida o pilotos.",
   slidersToggle: "Activa para ajustar manualmente el % de ahorro de costos y el % de productividad.",
   ahorroPct: "Porcentaje de reducción de costos totales. Se aplica sobre costos BData.",
@@ -160,6 +195,167 @@ const TIPS = {
   resumenRoiHorizonte: "ROI acumulado al horizonte: (beneficio acumulado − inversión) / inversión.",
   tortaCostos: "Desglose de costos BData por tipo de labor (CLP/ha) para identificar focos de ahorro.",
 };
+
+/* ===================== "Diagnóstico IA" — motor de reglas ===================== */
+
+// helpers chicos
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+const pct = (x) => `${(x * 100).toFixed(0)}%`;
+
+// perfil por cultivo (puedes tunear)
+const CULTIVO_PERFIL = {
+  RAPS:   { opBias: 0.05 },  // algo más operativo
+  TRIGO:  { opBias: 0.00 },
+  MAIZ:   { opBias: -0.02 }, // algo más insumos
+  AVENA:  { opBias: 0.03 },
+  CEBADA: { opBias: 0.00 },
+};
+
+// genera un dictamen a partir del estado actual
+function generarDiagnosticoIA({
+  superficieHa,
+  nivelDigital,     // "BAJO" | "MEDIO" | "ALTO"
+  cultivo,          // ej. "RAPS"
+  beneficioMensual, // CLP/mes
+  ahorroMensual,    // CLP/mes
+  incrementoMensual,// CLP/mes
+  gastosAnuales,    // CLP/año (costosHa * ha)
+}) {
+  // 1) inferimos “de dónde proviene” el potencial: operaciones vs insumos
+  //    regla suave en [0..1] (1 = 100% operativo)
+  //    base por nivel de digitalización
+  let baseOp =
+    nivelDigital === "BAJO"  ? 0.62 :
+    nivelDigital === "MEDIO" ? 0.50 :
+    0.38;
+
+  // tamaño (80–250 ha tiende a fricción operativa)
+  const sizeAdj =
+    superficieHa < 50  ? -0.05 :
+    superficieHa <= 80 ?  0.00 :
+    superficieHa <= 250?  0.06 :
+    superficieHa <= 600?  0.02 :
+                          -0.03;
+
+  // sesgo por cultivo
+  const bias = CULTIVO_PERFIL[cultivo]?.opBias ?? 0;
+
+  // mezcla final y normaliza
+  let opShare = clamp(baseOp + sizeAdj + bias, 0.2, 0.8);
+  let insShare = 1 - opShare;
+
+  // 2) señal por cómo se compone el beneficio (ahorro vs productividad)
+  //    si productividad (incrementoMensual) es alta, sumamos ligero hacia “operativo”
+  const totalMes = (ahorroMensual + incrementoMensual) || 1;
+  const prodShare = incrementoMensual / totalMes;
+  opShare = clamp(opShare + (prodShare - 0.5) * 0.10, 0.2, 0.85);
+  insShare = 1 - opShare;
+
+  // 3) intensidad de oportunidad (suave por ratio beneficio/gasto)
+  const benAnual = beneficioMensual * 12;
+  const intensidad = clamp(benAnual / (gastosAnuales || 1), 0, 0.35); // máx 35%
+
+  let intensidadTxt =
+    intensidad > 0.20 ? "alto" :
+    intensidad > 0.12 ? "medio" :
+    intensidad > 0.06 ? "moderado" : "bajo";
+
+  // 4) copy personalizado
+  const leadLine = (()=>{
+    if (opShare >= 0.6) {
+      return "tu mayor cuello de botella no está en el costo directo de insumos, sino en la coordinación y ejecución de labores.";
+    }
+    if (opShare <= 0.4) {
+      return "tu mayor palanca de mejora está en compras/insumos (precios, dosis, timing).";
+    }
+    return "tus palancas de mejora se reparten entre eficiencia operativa y compras/insumos.";
+  })();
+
+  // 5) recomendaciones segun perfil
+  const recomendaciones = (()=>{
+    if (opShare >= 0.6) {
+      return [
+        "Digitalizar bitácoras y órdenes de trabajo (riego, aplicaciones, maquinaria).",
+        "Estandarizar ejecución y turnos; visibilidad diaria del avance.",
+        "Conectar registros operativos a costos reales para cerrar el ciclo.",
+      ];
+    }
+    if (opShare <= 0.4) {
+      return [
+        "Consolidar compras y negociar precios/bonos por volumen.",
+        "Ajustar dosis objetivo con datos de rendimiento real por lote.",
+        "Usar alertas de ventanas de aplicación para reducir merma.",
+      ];
+    }
+    return [
+      "Híbrido: orquestar bitácoras y abastecimiento en una sola vista.",
+      "Medir costos por labor y por insumo para priorizar.",
+      "Ciclos quincenales de mejora con métricas simples (CLP/ha).",
+    ];
+  })();
+
+  // 6) numeritos bonitos
+  const opPct = pct(opShare);
+  const insPct = pct(insShare);
+
+  return {
+    titulo: "Diagnóstico IA (personalizado)",
+    intensidad: intensidadTxt,                 // bajo|moderado|medio|alto
+    reparto: { operativo: opPct, insumos: insPct },
+    lead: `Según los datos ingresados, tu campo tiene potencial ${intensidadTxt}. Basado en tu contexto, ${leadLine}`,
+    interpretacion: (opShare >= 0.6)
+      ? "Si no existe registro digital estandarizado del avance diario, el problema no es qué se compra, sino cómo/cuándo se aplica."
+      : (opShare <= 0.4)
+        ? "La mayor mejora viene de comprar mejor y ajustar dosis/timing; luego orquestar ejecución."
+        : "Necesitas atacar en paralelo la ejecución diaria y el gasto en insumos.",
+    recomendacion: recomendaciones,
+    estimacion: (()=>{
+      // muestra un rango simpático a partir de la intensidad
+      const base = intensidad; // 0..0.35
+      const top = clamp(base + 0.05, 0.05, 0.40);
+      return `Si abordas esta capa primero, podrías capturar ~${pct(base)} a ${pct(top)} del gasto anual sin tocar cultivos nuevos.`;
+    })(),
+  };
+}
+
+// Arma un “prompt” simple con tus números y el dictamen por reglas
+function buildPrompt({ diag, cultivo, superficieHa, nivelDigital, escenario, beneficioMensual, paybackMeses, roi12m }) {
+  return `
+Eres un asesor agrícola. En 6-8 líneas, redacta un diagnóstico claro y accionable para un productor.
+Tono: directo, profesional, sin florituras. Incluye foco (operativo vs insumos), 3 recomendaciones, y un cierre con resultado esperado.
+
+Contexto:
+- Cultivo: ${cultivo}. Superficie: ${superficieHa} ha. Nivel digital: ${nivelDigital}. Escenario: ${escenario}.
+- Ganancia extra mensual estimada: ${fmtCLP(beneficioMensual)}. Payback aprox: ${Number.isFinite(paybackMeses) ? paybackMeses.toFixed(1) + " meses" : "N/A"}.
+- ROI 12m: ${roi12m}%.
+- Dictamen por reglas: Intensidad ${diag.intensidad}. Reparto oportunidad: ${diag.reparto.operativo} operativo / ${diag.reparto.insumos} insumos.
+- Lead: ${diag.lead}
+- Recomendaciones sugeridas: ${diag.recomendacion.join("; ")}.
+`;
+}
+
+// Llamada al backend IA (por ahora: mock que devuelve un texto “bonito”)
+// Cuando conectes el backend real, reemplazas el return por un fetch a tu función serverless.
+//async function generarTextoLLM(prompt) {
+  // MOCK local para ver la UI funcionando:
+ // return `Versión redactada por IA (demo):
+//${prompt
+  //.split("\n")
+  //.filter((l) => l.trim())
+  //.slice(0, 10)
+  //.join("\n")}`;
+  // --- PRODUCCIÓN (ejemplo con Netlify) ---
+  // const r = await fetch("/.netlify/functions/gpt", {
+  //   method: "POST",
+  //   headers: { "Content-Type": "application/json" },
+  //   body: JSON.stringify({ prompt }),
+  // });
+  // if (!r.ok) throw new Error("LLM error");
+  // const data = await r.json();
+  // return data.text; // <- tu función debe responder { text: "..." }
+//}
+
+
 export default function CalculadoraROI() {
   /* --- hooks (siempre arriba) --- */
   // datos BData
@@ -193,7 +389,162 @@ export default function CalculadoraROI() {
   // ¿muestra el detalle completo (resumen + gráficos) o pide el lead?
 const [isUnlocked, setIsUnlocked] = useState(false);
 
+// Texto generado por IA (LLM) y toggle
+//const [usarLLM, setUsarLLM] = useState(true);
 
+
+// --- Estado "IA"
+const [iaDiag, setIaDiag] = useState(null);
+const [iaStatus, setIaStatus] = useState("idle"); // idle | loading | done | error
+
+// NUEVO: redacción con modelo (opcional)
+const [usarRedaccionIA, setUsarRedaccionIA] = useState(true);   // toggle UI
+//const [iaTexto, setIaTexto] = useState("");                     // texto final “bonito”
+//const [iaTextoStatus, setIaTextoStatus] = useState("idle");     // idle | loading | done | error
+
+
+
+function buildPromptLLM({ iaDiag, cultivo, superficieHa, nivelDigital, escenario, beneficioMensual, inversionInicial, paybackMeses, horizonteMeses }) {
+  return `
+Eres un consultor agrícola. Redacta un diagnóstico breve, claro y empático para un productor.
+Datos:
+- Cultivo: ${cultivo}
+- Superficie: ${superficieHa} ha
+- Nivel digital: ${nivelDigital}
+- Escenario: ${escenario}
+- Ganancia extra mensual: ${fmtCLP(beneficioMensual)}
+- Inversión inicial: ${fmtCLP(inversionInicial)}
+- Payback aprox.: ${Number.isFinite(paybackMeses) ? paybackMeses.toFixed(1) + " meses" : "N/A"}
+- Horizonte: ${horizonteMeses} meses
+
+Hallazgos (reglas):
+- Intensidad: ${iaDiag.intensidad}
+- Reparto: ${iaDiag.reparto.operativo} operativo / ${iaDiag.reparto.insumos} insumos
+- Lead: ${iaDiag.lead}
+- Interpretación: ${iaDiag.interpretacion}
+- Recomendaciones: ${iaDiag.recomendacion.join("; ")}
+
+Escribe 1–2 párrafos (máx. 120 palabras). Tono profesional y cercano. Termina con una recomendación accionable.
+`;
+}
+
+// Fallback: si no hay backend/LLM, generamos un texto decente con las reglas (para no romper la UI)
+function redactarFallback({ iaDiag, cultivo, superficieHa, nivelDigital, beneficioMensual, inversionInicial, paybackMeses }) {
+  return `Para ${cultivo.toLowerCase()} en ${superficieHa} ha y nivel ${nivelDigital.toLowerCase()}, tu oportunidad es de intensidad ${iaDiag.intensidad}.
+El potencial se reparte ${iaDiag.reparto.operativo} en lo operativo y ${iaDiag.reparto.insumos} en insumos.
+${iaDiag.lead} Hoy podrías capturar del orden de ${iaDiag.estimacion.replace("Si abordas esta capa primero, podrías capturar ", "").replace(".", "")}.
+Recomendado: ${iaDiag.recomendacion[0]}.
+Ganancia extra mensual estimada: ${fmtCLP(beneficioMensual)}. Inversión: ${fmtCLP(inversionInicial)}. Payback: ${Number.isFinite(paybackMeses) ? paybackMeses.toFixed(1) + " meses" : "N/A"}.`;
+}
+
+// Llama a tu backend LLM (ajusta la URL si usas Netlify/Express)
+//async function generarTextoLLM(prompt) {
+  // Opción A: tienes endpoint propio
+  // const r = await fetch("/api/gpt", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ prompt }) });
+  // if (!r.ok) throw new Error("LLM error");
+  // const { text } = await r.json();
+  // return text;
+
+  // Opción B: de momento no hay backend → forzamos error para que use fallback
+ // throw new Error("No LLM backend configurado");
+//}
+
+function handleDiagnosticoIA() {
+  try {
+    setIaStatus("loading");
+    // limpiar estado de redacción IA antes de pensar
+    setIaCopy("");
+    setIaCopyStatus("idle");
+
+    setTimeout(async () => {
+      // 1) Genera diagnóstico por reglas
+      const diag = generarDiagnosticoIA({
+        superficieHa,
+        nivelDigital,
+        cultivo,
+        beneficioMensual,
+        ahorroMensual,
+        incrementoMensual,
+        gastosAnuales: costosHa * haNum,
+      });
+
+      setIaDiag(diag);
+      setIaStatus("done");
+
+      // 2) (A) Auto-generar redacción con IA si el toggle está activo
+      if (usarRedaccionIA) {
+        await handleRedaccionIAReal(diag); // pasamos el diag recién generado
+      }
+
+      // 3) Evento opcional
+      if (typeof window !== "undefined" && window.dataLayer) {
+        window.dataLayer.push({
+          event: "ai_diag_generated",
+          cultivo,
+          superficieHa,
+          nivelDigital,
+          intensidad: diag.intensidad,
+          op_share: diag.reparto.operativo,
+          ins_share: diag.reparto.insumos,
+          redactado: usarRedaccionIA ? "on" : "off",
+        });
+      }
+    }, 300);
+  } catch (e) {
+    setIaStatus("error");
+    setIaCopyStatus("error");
+  }
+}
+
+
+
+async function fetchRedaccionIA({ iaDiag, contexto }) {
+  try {
+    const r = await fetch("/.netlify/functions/ai-diagnostico", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ diag: iaDiag, context: contexto }),
+    });
+    const j = await r.json();
+    if (j?.ok && j?.texto) return j.texto;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+
+
+async function handleRedaccionIAReal() {
+  try {
+    setIaCopyStatus("loading");
+    const res = await fetch("/.netlify/functions/ai-diagnostico", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        cultivo,
+        superficieHa,
+        nivelDigital,
+        escenario,
+        beneficioMensual,
+        ahorroMensual,
+        incrementoMensual,
+        inversionInicial,
+        paybackMeses,
+        horizonteMeses,
+        diagnosticoReglas: diagOverride ?? iaDiag, // usa el diag que pasemos o el del estado
+      }),
+    });
+
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const json = await res.json();
+    setIaCopy(json.text || "");
+    setIaCopyStatus("done");
+  } catch (e) {
+    console.error(e);
+    setIaCopyStatus("error");
+  }
+}
 
 
   // cargar JSON una sola vez
@@ -289,6 +640,79 @@ const [isUnlocked, setIsUnlocked] = useState(false);
     { name: "Sin digitalización", value: baselineParaGrafico },
     { name: "Con digitalización", value: conDigitalParaGrafico },
   ];
+
+const [iaCopy, setIaCopy] = useState("");
+const [iaCopyStatus, setIaCopyStatus] = useState("idle"); // idle|loading|done|error
+
+
+const persona = getPersonaIA({
+  ha: superficieHa,
+  nivelDigital,
+  beneficioMensual,
+  inversionInicial,
+  paybackMeses,
+  horizonteMeses,
+});
+
+const DIAG_TXT = {
+  A: ({ superficieHa, horizonteMeses }) => ({
+    titulo: "Tu mayor oportunidad está en medir mejor (no en comprar más barato).",
+    reporte: "60–70% eficiencia operativa • 30–40% compras/insumos.",
+    interpretacion:
+      "Tienes orden, pero no trazabilidad fina. Sin indicadores por lote/labor se toman decisiones reactivas y se pierde valor en la coordinación.",
+    recomendacion: [
+      "Conectar costos reales a bitácoras (riego, aplicaciones, maquinaria).",
+      "Tablero semanal por lote: avance vs. plan, rendimientos y desvíos.",
+      "Alertas simples (WhatsApp) cuando una labor se atrasa >24h."
+    ],
+    estimacion:
+      `Solo ordenando ejecución + costos, puedes capturar +8% a +12% en ${superficieHa} ha sin tocar insumos.`,
+    nota: `Sugerido: horizonte ${horizonteMeses}m para ver el payback completo.`,
+  }),
+  B: ({ superficieHa }) => ({
+    titulo: "El cuello de botella no es qué compras, sino cómo/cuándo ejecutas.",
+    reporte: "70% eficiencia operativa • 30% insumos.",
+    interpretacion:
+      "Pérdidas invisibles: tiempos muertos, re-procesos y doble digitación. La señal típica es inversión que tarda en pagarse.",
+    recomendacion: [
+      "Estandarizar órdenes de trabajo y registro en terreno (bitácoras móviles).",
+      "Asignar responsables y horas planificadas por labor.",
+      "Cierre diario: avance vs. plan + costo acumulado por lote."
+    ],
+    estimacion:
+      `Capturable +10% a +14% solo con disciplina operativa en ${superficieHa} ha.`,
+    nota: "Luego optimiza compras (contratos/volúmenes) para el extra 2–4%.",
+  }),
+  C: ({ horizonteMeses }) => ({
+    titulo: "¿Vale la pena digitalizar? Sí, si atacas primero lo operativo.",
+    reporte: "Beneficio típico: +6% a +10% el primer año.",
+    interpretacion:
+      "El primer salto no requiere sensores premium: orden, trazabilidad y costos por lote ya mueven la aguja.",
+    recomendacion: [
+      "KPI mínimos: costo/ha, margen/ha y avance semanal por labor.",
+      "Checklist digital: aplicaciones, riego, maquinaria.",
+      "Revisión quincenal: tareas atrasadas y focos de pérdida."
+    ],
+    estimacion:
+      `Con adopción básica, payback suele caer dentro de ${horizonteMeses} meses.`,
+    nota: "Luego puedes sumar modelos predictivos y contratos de insumos.",
+  }),
+  D: ({ superficieHa }) => ({
+    titulo: "El dolor es visibilidad y estándar, no Excel gigantes.",
+    reporte: "Impacto mayor al homogenizar datos/criterios entre equipos.",
+    interpretacion:
+      "Predios grandes pierden por desalineación: cada equipo reporta distinto y no se comparan manzanas con manzanas.",
+    recomendacion: [
+      "Modelo de datos único (costos, bitácoras, lotes, maquinaria).",
+      "KPIs comparables por campo/lote con metas semanales.",
+      "Alertas cross-sitio para desvíos (costos, atrasos, rendimientos)."
+    ],
+    estimacion:
+      `Estandarizar puede recuperar +6% a +9% en ${superficieHa} ha solo por coordinación.`,
+    nota: "Luego sí tiene sentido sumar analítica avanzada.",
+  }),
+};
+
 
 // ccccccccccccccccDatos apilados: base (resultado actual) + mejora (incremento por digitalizar)
 const dataChartStack = [
@@ -500,10 +924,10 @@ window.dataLayer.push({
         {!isLoading && !isError && (
           <section className="bg-white rounded-2xl border p-6 md:p-8 shadow-sm">
             <h2 className="text-xl font-semibold text-emerald-800 mb-2">Simula tu escenario digital</h2>
-            <p className="text-sm text-emerald-900/80 mb-5">
+            <p className="text-sm text-emerald-900/80 mbS-5">
               {modoSimple
                 ? "Ingresa tus datos básicos y obtén una estimación rápida del ROI."
-                : "Mejoras estimadas con % de ahorro y productividad por cultivo, ajustadas por nivel de digitalización y superficie (escala continua)."}
+                : "En la siguiente sección ingresa los datos de tu campo a evaluar y verás los resultados (Mejoras estimadas con % de ahorro y productividad por cultivo, ajustadas por nivel de digitalización y superficie, en botón **Ayuda/Glosario** resuelve dudas)."}
             </p>
 
             {/* Controles */}
@@ -602,7 +1026,7 @@ window.dataLayer.push({
           options={PLANES.map((p) => [p.id, `${p.nombre} — ${fmtCLP(p.monto)}`])}
         />
         <div className="self-end text-sm text-zinc-600">
-          Inversión seleccionada:{" "}
+          Inversión anual seleccionada aproximada:{" "}
           <span className="font-semibold text-emerald-700">
             {fmtCLP(PLANES.find((p) => p.id === planId)?.monto ?? 0)}
           </span>
@@ -675,14 +1099,14 @@ window.dataLayer.push({
    {/* Sustento 10% (linkea al modal de ayuda) */}
 <div className="text-xs text-zinc-600 mt-3 italic">
   Referencia efecto digitalización: Por defecto se considera un <strong>10&nbsp;%</strong> (ahorro/productividad), que es un
-  benchmark empírico y conservador observado en adopción tecnológica agrícola en función de diversos artículos y experiencia en terreno de BData. {" "}
+  benchmark empírico y conservador observado en adopción tecnológica agrícola en función de diversos artículos y experiencia en terreno de BData. Usa la selección de arriba de ajuste manual en caso de preferir simular tu mismo rangos distintos de optimización y/o productividad. {" "}
   <button
     type="button"
     onClick={() => setShowHelp(true)}
     className="underline text-emerald-700 hover:text-emerald-800"
     title="Abrir Ayuda / Glosario con sustento técnico"
   >
-     Ver sustentos en Ayuda/Glosario
+     Ver sustentos metodologicos del <strong>10&nbsp;%</strong> que se usa por defecto en Ayuda/Glosario
   </button>.
 </div>
  
@@ -706,16 +1130,16 @@ window.dataLayer.push({
 
             {/* KPIs */}
             <div className="bg-white rounded-xl border border-zinc-200 p-5 mt-6">
-              <h3 className="text-emerald-800 font-semibold mb-2">Resultados del cálculo</h3>
+              <h3 className="text-emerald-800 font-semibold mb-2">Resultados de tu simulación</h3>
               <p className="text-sm text-zinc-600 mb-4">
                 {modoSimple
                   ? "Tu inversión estimada es de " + fmtCLP(inversionInicial) + " según tu configuración."
-                  : "Estimaciones según tu escenario. Inversión: " + fmtCLP(inversionInicial) + "."}
+                  : "Estimaciones según parámetros que ingresaste con una Inversión anual en digitalización de: " + fmtCLP(inversionInicial) + "."}
               </p>
               <div className="grid md:grid-cols-3 gap-4">
-                <KPI label={<span title={TIPS.kpiGananciaMensual}>Ganancia extra mensual</span>} value={fmtCLP(beneficioMensual)} />
-                <KPI label={<span title={TIPS.kpiRoi12}>ROI neto (12 meses)</span>} value={`${roiRed} %`} />
-                <KPI label={<span title={TIPS.kpiPayback}>Recuperas inversión en</span>} value={Number.isFinite(paybackMeses) ? `${paybackMeses.toFixed(1)} meses` : "N/A"} />
+                <KPI label={<span title={TIPS.kpiGananciaMensual}>Ganancia extra mensual por digitalización</span>} value={fmtCLP(beneficioMensual)} />
+                <KPI label={<span title={TIPS.kpiRoi12}>ROI por digitalización (12 meses)</span>} value={`${roiRed} %`} />
+                <KPI label={<span title={TIPS.kpiPayback}>Recuperas tu inversión por digitalización en</span>} value={Number.isFinite(paybackMeses) ? `${paybackMeses.toFixed(1)} meses` : "N/A"} />
               </div>
               {usarSliders && (
                 <div className="text-xs text-emerald-700 mt-2">
@@ -723,6 +1147,159 @@ window.dataLayer.push({
                 </div>
               )}
             </div>
+
+            {/* === Botón para “IA” === */}
+<div className="mt-4 flex items-center gap-3 flex-wrap">
+<button
+  type="button"
+  onClick={handleDiagnosticoIA}
+  className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+  disabled={iaStatus === "loading"}
+>
+  {iaStatus === "loading" ? "Pensando…" : "🧠 Obtener diagnóstico IA"}
+</button>
+
+
+  {iaStatus === "done" && <span className="text-sm text-emerald-800">Listo ✔</span>}
+
+  {/* NUEVO: toggle */}
+  <label className="inline-flex items-center gap-2 text-sm">
+    <input
+      type="checkbox"
+      checked={usarRedaccionIA}
+      onChange={(e) => setUsarRedaccionIA(e.target.checked)}
+    />
+    <span>Ver recomendación con IA Generativa</span>
+  </label>
+</div>
+
+
+
+{/* === Tarjeta del diagnóstico === */}
+{iaDiag && (
+  <div className="mt-4 border rounded-xl bg-white p-5">
+    <div className="flex items-center justify-between">
+      <h3 className="text-emerald-800 font-semibold">{iaDiag.titulo}</h3>
+      <span className="text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full">
+        Intensidad: {iaDiag.intensidad}
+      </span>
+    </div>
+
+    <p className="mt-2 text-sm text-zinc-800">{iaDiag.lead}</p>
+
+    <div className="mt-3 text-sm text-zinc-700">
+      <div>
+        <strong>Reparto de oportunidad:</strong>{" "}
+        <span className="text-emerald-700">
+          {iaDiag.reparto.operativo} operativo
+        </span>{" "}
+        · <span className="text-emerald-700">{iaDiag.reparto.insumos} insumos</span>
+      </div>
+      <div className="mt-2">
+        <strong>Interpretación:</strong> {iaDiag.interpretacion}
+      </div>
+      <div className="mt-2">
+        <strong>Recomendación práctica:</strong>
+        <ul className="list-disc pl-5 mt-1 space-y-1">
+          {iaDiag.recomendacion.map((r, i) => <li key={i}>{r}</li>)}
+        </ul>
+      </div>
+      <div className="mt-2 italic text-emerald-800">
+        {iaDiag.estimacion}
+      </div>
+    </div>
+
+    <div className="mt-3 flex gap-2">
+      <button
+        type="button"
+        onClick={() => {
+          const txt = [
+            iaDiag.titulo,
+            `Intensidad: ${iaDiag.intensidad}`,
+            `Reparto: ${iaDiag.reparto.operativo} operativo / ${iaDiag.reparto.insumos} insumos`,
+            `• ${iaDiag.lead}`,
+            `Interpretación: ${iaDiag.interpretacion}`,
+            `Recomendaciones:`,
+            ...iaDiag.recomendacion.map(x => `- ${x}`),
+            iaDiag.estimacion,
+          ].join("\n");
+          navigator.clipboard.writeText(txt).then(()=>alert("📋 Diagnóstico copiado"));
+        }}
+        className="px-3 py-1.5 rounded-md border text-sm hover:bg-zinc-50"
+      >
+
+{/* --- Versión redactada por IA (única) --- */}
+<div className="mt-4 border rounded-lg bg-emerald-50/40 p-3">
+  <div className="flex items-center justify-between">
+    <div className="text-sm font-medium text-emerald-900">
+      🤖
+    </div>
+
+    <div className="flex items-center gap-2">
+      <label className="inline-flex items-center gap-2 text-sm">
+        <input
+          type="checkbox"
+          checked={usarRedaccionIA}
+          onChange={(e) => {
+            setUsarRedaccionIA(e.target.checked);
+            // Si activan el toggle y ya hay diagnóstico, generamos al tiro
+            if (e.target.checked && iaDiag && iaCopyStatus !== "loading") {
+              handleRedaccionIAReal();
+            }
+          }}
+        />
+        <span>Recomendar solución con IA Generativa</span>
+      </label>
+
+      <button
+        type="button"
+        onClick={() => handleRedaccionIAReal()}
+        disabled={!iaDiag || iaCopyStatus === "loading"}
+        className="px-3 py-1.5 rounded-md bg-emerald-600 text-white text-sm hover:bg-emerald-700 disabled:opacity-60"
+        title={!iaDiag ? "Primero genera el diagnóstico" : "Regenerar con IA"}
+      >
+        {iaCopyStatus === "loading" ? "Generando…" : "Regenerar con IA"}
+      </button>
+
+      {iaCopy && (
+        <button
+          type="button"
+          onClick={() =>
+            navigator.clipboard
+              .writeText(iaCopy)
+              .then(() => alert("📋 Copiado"))
+          }
+          className="px-3 py-1.5 rounded-md border text-sm hover:bg-zinc-50"
+        >
+          Copiar
+        </button>
+      )}
+    </div>
+  </div>
+
+  <div className="mt-2 text-sm text-zinc-800 whitespace-pre-line">
+    {iaCopyStatus === "idle"    && <span className="text-zinc-500">Genera el diagnóstico para ver la redacción.</span>}
+    {iaCopyStatus === "loading" && <span className="text-emerald-800">Conectando con IA…</span>}
+    {iaCopyStatus === "error"   && <span className="text-red-700">No se pudo generar el texto.</span>}
+    {iaCopyStatus === "done"    && (iaCopy || <span className="text-zinc-500">La IA no devolvió texto.</span>)}
+  </div>
+</div>
+
+
+  
+        Copiar diagnóstico
+      </button>
+      <button
+        type="button"
+        onClick={() => setIaDiag(null)}
+        className="px-3 py-1.5 rounded-md border text-sm hover:bg-zinc-50"
+      >
+        Limpiar
+      </button>
+    </div>
+  </div>
+)}
+
 
 {/* ===== BLOQUEO PARA CAPTURAR DATOS (se ve solo si NO está desbloqueado) ===== */}
 {!isUnlocked && (
@@ -1466,14 +2043,8 @@ function LeadGate({ onUnlock, simQuery, kpis }) {
   return (
     <div className="mt-6 rounded-2xl border p-6 bg-emerald-50/40">
       <h3 className="text-emerald-800 font-semibold text-lg">
-        ¿Quieres ver el resultado completo?
+        Resultados de tu simulación
       </h3>
-      <p className="text-sm text-emerald-900/80 mt-1">
-        Desbloquea el <strong>Resumen ejecutivo</strong>, la{" "}
-        <strong>curva de payback</strong>, el <strong>ROI acumulado</strong> y el{" "}
-        <strong>desglose de costos</strong> de tu simulación 🌾.
-      </p>
-
       {/* Mini KPIs como “muestra” */}
       <div className="mt-4 grid sm:grid-cols-3 gap-3">
         <div className="rounded-lg border bg-white p-3 text-center">
@@ -1489,6 +2060,18 @@ function LeadGate({ onUnlock, simQuery, kpis }) {
           <div className="text-base font-bold text-emerald-800">{kpis.payback}</div>
         </div>
       </div>
+<br></br>
+
+      <h3 className="text-emerald-800 font-semibold text-lg">
+        ¿Quieres ver el resultado completo de tu simulación?
+      </h3>
+      <p className="text-sm text-emerald-900/80 mt-1">
+        Sólo ingresa los datos de abajo y obtén tu <strong>Diagnóstico IA 🤖</strong>, el <strong>Resumen ejecutivo 📝</strong>, la{" "}
+        <strong>curva de payback</strong>💸, el <strong>ROI acumulado</strong>💰 y el{" "}
+        <strong>desglose de costos</strong>🕵🏽‍♂️ de tu simulación.
+      </p>
+
+
 
       {/* Form de captura: nombre EXACTO = lead-roi */}
       <form
