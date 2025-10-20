@@ -774,6 +774,19 @@ const COLOR_MEJORA = "#34d399"; // emerald-400
   const isLoading = bdStatus === "loading";
   const isError   = bdStatus === "error" || !bdData?.cultivos;
 
+// Mostrar IA solo cuando el form y la simulación están listos
+const formReady =
+  Number(superficieHa) > 0 &&
+  !!cultivo &&
+  !!nivelDigital &&
+  !!escenario;
+
+const simReady = beneficioMensual != null && !Number.isNaN(beneficioMensual);
+
+const showIA = formReady && simReady;
+
+
+
   /* --- extras para Resumen Ejecutivo --- */
   const beneficioAnual = beneficioMensual * 12;
   const margenBaseAnual = baselineBase;
@@ -977,7 +990,7 @@ window.dataLayer.push({
   {/* ── Inversión inicial: modos y valor ── */}
   <div className="mt-4 bg-white rounded-lg border p-4">
     <div className="text-sm font-medium text-emerald-900 mb-2">
-      <FieldLabel tip={TIPS.invMode}>Inversión inicial</FieldLabel>
+      <FieldLabel tip={TIPS.invMode}>Inversión inicial (anual)</FieldLabel>
     </div>
 
     <div className="flex flex-wrap items-center gap-4 text-sm">
@@ -1012,7 +1025,7 @@ window.dataLayer.push({
           checked={modoInversion === "MANUAL"}
           onChange={() => setModoInversion("MANUAL")}
         />
-        Monto manual
+        Ingresar Monto manual
       </label>
     </div>
 
@@ -1128,177 +1141,28 @@ window.dataLayer.push({
 </div>
 
 
-            {/* KPIs */}
-            <div className="bg-white rounded-xl border border-zinc-200 p-5 mt-6">
-              <h3 className="text-emerald-800 font-semibold mb-2">Resultados de tu simulación</h3>
-              <p className="text-sm text-zinc-600 mb-4">
-                {modoSimple
-                  ? "Tu inversión estimada es de " + fmtCLP(inversionInicial) + " según tu configuración."
-                  : "Estimaciones según parámetros que ingresaste con una Inversión anual en digitalización de: " + fmtCLP(inversionInicial) + "."}
-              </p>
-              <div className="grid md:grid-cols-3 gap-4">
-                <KPI label={<span title={TIPS.kpiGananciaMensual}>Ganancia extra mensual por digitalización</span>} value={fmtCLP(beneficioMensual)} />
-                <KPI label={<span title={TIPS.kpiRoi12}>ROI por digitalización (12 meses)</span>} value={`${roiRed} %`} />
-                <KPI label={<span title={TIPS.kpiPayback}>Recuperas tu inversión por digitalización en</span>} value={Number.isFinite(paybackMeses) ? `${paybackMeses.toFixed(1)} meses` : "N/A"} />
-              </div>
-              {usarSliders && (
-                <div className="text-xs text-emerald-700 mt-2">
-                  Modelo ajustado por usuario: ahorro {ahorroUserPct}% · productividad {prodUserPct}%.
-                </div>
-              )}
-            </div>
-
-            {/* === Botón para “IA” === */}
-<div className="mt-4 flex items-center gap-3 flex-wrap">
-<button
-  type="button"
-  onClick={handleDiagnosticoIA}
-  className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
-  disabled={iaStatus === "loading"}
->
-  {iaStatus === "loading" ? "Pensando…" : "🧠 Obtener diagnóstico IA"}
-</button>
-
-
-  {iaStatus === "done" && <span className="text-sm text-emerald-800">Listo ✔</span>}
-
-  {/* NUEVO: toggle */}
-  <label className="inline-flex items-center gap-2 text-sm">
-    <input
-      type="checkbox"
-      checked={usarRedaccionIA}
-      onChange={(e) => setUsarRedaccionIA(e.target.checked)}
-    />
-    <span>Ver recomendación con IA Generativa</span>
-  </label>
-</div>
-
-
-
-{/* === Tarjeta del diagnóstico === */}
-{iaDiag && (
-  <div className="mt-4 border rounded-xl bg-white p-5">
-    <div className="flex items-center justify-between">
-      <h3 className="text-emerald-800 font-semibold">{iaDiag.titulo}</h3>
-      <span className="text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full">
-        Intensidad: {iaDiag.intensidad}
-      </span>
+{/* KPIs (solo cuando YA está desbloqueado) */}
+{isUnlocked && (
+  <div className="bg-white rounded-xl border border-zinc-200 p-5 mt-6">
+    <h3 className="text-emerald-800 font-semibold mb-2">Resultados de tu simulación</h3>
+    <p className="text-sm text-zinc-600 mb-4">
+      {modoSimple
+        ? "Tu inversión estimada es de " + fmtCLP(inversionInicial) + " según tu configuración."
+        : "Estimaciones según parámetros que ingresaste con una Inversión anual en digitalización de: " + fmtCLP(inversionInicial) + "."}
+    </p>
+    <div className="grid md:grid-cols-3 gap-4">
+      <KPI label={<span title={TIPS.kpiGananciaMensual}>Ganancia extra mensual por digitalización</span>} value={fmtCLP(beneficioMensual)} />
+      <KPI label={<span title={TIPS.kpiRoi12}>ROI por digitalización (12 meses)</span>} value={`${roiRed} %`} />
+      <KPI label={<span title={TIPS.kpiPayback}>Recuperas tu inversión por digitalización en</span>} value={Number.isFinite(paybackMeses) ? `${paybackMeses.toFixed(1)} meses` : "N/A"} />
     </div>
-
-    <p className="mt-2 text-sm text-zinc-800">{iaDiag.lead}</p>
-
-    <div className="mt-3 text-sm text-zinc-700">
-      <div>
-        <strong>Reparto de oportunidad:</strong>{" "}
-        <span className="text-emerald-700">
-          {iaDiag.reparto.operativo} operativo
-        </span>{" "}
-        · <span className="text-emerald-700">{iaDiag.reparto.insumos} insumos</span>
+    {usarSliders && (
+      <div className="text-xs text-emerald-700 mt-2">
+        Modelo ajustado por usuario: ahorro {ahorroUserPct}% · productividad {prodUserPct}%.
       </div>
-      <div className="mt-2">
-        <strong>Interpretación:</strong> {iaDiag.interpretacion}
-      </div>
-      <div className="mt-2">
-        <strong>Recomendación práctica:</strong>
-        <ul className="list-disc pl-5 mt-1 space-y-1">
-          {iaDiag.recomendacion.map((r, i) => <li key={i}>{r}</li>)}
-        </ul>
-      </div>
-      <div className="mt-2 italic text-emerald-800">
-        {iaDiag.estimacion}
-      </div>
-    </div>
-
-    <div className="mt-3 flex gap-2">
-      <button
-        type="button"
-        onClick={() => {
-          const txt = [
-            iaDiag.titulo,
-            `Intensidad: ${iaDiag.intensidad}`,
-            `Reparto: ${iaDiag.reparto.operativo} operativo / ${iaDiag.reparto.insumos} insumos`,
-            `• ${iaDiag.lead}`,
-            `Interpretación: ${iaDiag.interpretacion}`,
-            `Recomendaciones:`,
-            ...iaDiag.recomendacion.map(x => `- ${x}`),
-            iaDiag.estimacion,
-          ].join("\n");
-          navigator.clipboard.writeText(txt).then(()=>alert("📋 Diagnóstico copiado"));
-        }}
-        className="px-3 py-1.5 rounded-md border text-sm hover:bg-zinc-50"
-      >
-
-{/* --- Versión redactada por IA (única) --- */}
-<div className="mt-4 border rounded-lg bg-emerald-50/40 p-3">
-  <div className="flex items-center justify-between">
-    <div className="text-sm font-medium text-emerald-900">
-      🤖
-    </div>
-
-    <div className="flex items-center gap-2">
-      <label className="inline-flex items-center gap-2 text-sm">
-        <input
-          type="checkbox"
-          checked={usarRedaccionIA}
-          onChange={(e) => {
-            setUsarRedaccionIA(e.target.checked);
-            // Si activan el toggle y ya hay diagnóstico, generamos al tiro
-            if (e.target.checked && iaDiag && iaCopyStatus !== "loading") {
-              handleRedaccionIAReal();
-            }
-          }}
-        />
-        <span>Recomendar solución con IA Generativa</span>
-      </label>
-
-      <button
-        type="button"
-        onClick={() => handleRedaccionIAReal()}
-        disabled={!iaDiag || iaCopyStatus === "loading"}
-        className="px-3 py-1.5 rounded-md bg-emerald-600 text-white text-sm hover:bg-emerald-700 disabled:opacity-60"
-        title={!iaDiag ? "Primero genera el diagnóstico" : "Regenerar con IA"}
-      >
-        {iaCopyStatus === "loading" ? "Generando…" : "Regenerar con IA"}
-      </button>
-
-      {iaCopy && (
-        <button
-          type="button"
-          onClick={() =>
-            navigator.clipboard
-              .writeText(iaCopy)
-              .then(() => alert("📋 Copiado"))
-          }
-          className="px-3 py-1.5 rounded-md border text-sm hover:bg-zinc-50"
-        >
-          Copiar
-        </button>
-      )}
-    </div>
-  </div>
-
-  <div className="mt-2 text-sm text-zinc-800 whitespace-pre-line">
-    {iaCopyStatus === "idle"    && <span className="text-zinc-500">Genera el diagnóstico para ver la redacción.</span>}
-    {iaCopyStatus === "loading" && <span className="text-emerald-800">Conectando con IA…</span>}
-    {iaCopyStatus === "error"   && <span className="text-red-700">No se pudo generar el texto.</span>}
-    {iaCopyStatus === "done"    && (iaCopy || <span className="text-zinc-500">La IA no devolvió texto.</span>)}
-  </div>
-</div>
-
-
-  
-        Copiar diagnóstico
-      </button>
-      <button
-        type="button"
-        onClick={() => setIaDiag(null)}
-        className="px-3 py-1.5 rounded-md border text-sm hover:bg-zinc-50"
-      >
-        Limpiar
-      </button>
-    </div>
+    )}
   </div>
 )}
+
 
 
 {/* ===== BLOQUEO PARA CAPTURAR DATOS (se ve solo si NO está desbloqueado) ===== */}
@@ -1433,6 +1297,161 @@ window.dataLayer.push({
                 </p>
               </div>
             </div>
+
+            {/* === Botón para “IA” === */}
+<div className="mt-4 flex items-center gap-3 flex-wrap">
+<button
+  type="button"
+  onClick={handleDiagnosticoIA}
+  className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+  disabled={iaStatus === "loading"}
+>
+  {iaStatus === "loading" ? "Pensando…" : "🧠 Obtener diagnóstico IA"}
+</button>
+
+
+  {iaStatus === "done" && <span className="text-sm text-emerald-800">Listo ✔</span>}
+
+  {/* NUEVO: toggle */}
+  <label className="inline-flex items-center gap-2 text-sm">
+    <input
+      type="checkbox"
+      checked={usarRedaccionIA}
+      onChange={(e) => setUsarRedaccionIA(e.target.checked)}
+    />
+    <span>Ver recomendación con IA Generativa</span>
+  </label>
+</div>
+
+
+
+{/* === Tarjeta del diagnóstico === */}
+{iaDiag && (
+  <div className="mt-4 border rounded-xl bg-white p-5">
+    <div className="flex items-center justify-between">
+      <h3 className="text-emerald-800 font-semibold">{iaDiag.titulo}</h3>
+      <span className="text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full">
+        Intensidad: {iaDiag.intensidad}
+      </span>
+    </div>
+
+    <p className="mt-2 text-sm text-zinc-800">{iaDiag.lead}</p>
+
+    <div className="mt-3 text-sm text-zinc-700">
+      <div>
+        <strong>Reparto de oportunidad:</strong>{" "}
+        <span className="text-emerald-700">
+          {iaDiag.reparto.operativo} operativo
+        </span>{" "}
+        · <span className="text-emerald-700">{iaDiag.reparto.insumos} insumos</span>
+      </div>
+      <div className="mt-2">
+        <strong>Interpretación:</strong> {iaDiag.interpretacion}
+      </div>
+      <div className="mt-2">
+        <strong>Recomendación práctica:</strong>
+        <ul className="list-disc pl-5 mt-1 space-y-1">
+          {iaDiag.recomendacion.map((r, i) => <li key={i}>{r}</li>)}
+        </ul>
+      </div>
+      <div className="mt-2 italic text-emerald-800">
+        {iaDiag.estimacion}
+      </div>
+    </div>
+
+    <div className="mt-3 flex gap-2">
+      <button
+        type="button"
+        onClick={() => {
+          const txt = [
+            iaDiag.titulo,
+            `Intensidad: ${iaDiag.intensidad}`,
+            `Reparto: ${iaDiag.reparto.operativo} operativo / ${iaDiag.reparto.insumos} insumos`,
+            `• ${iaDiag.lead}`,
+            `Interpretación: ${iaDiag.interpretacion}`,
+            `Recomendaciones:`,
+            ...iaDiag.recomendacion.map(x => `- ${x}`),
+            iaDiag.estimacion,
+          ].join("\n");
+          navigator.clipboard.writeText(txt).then(()=>alert("📋 Diagnóstico copiado"));
+        }}
+        className="px-3 py-1.5 rounded-md border text-sm hover:bg-zinc-50"
+      >
+
+{/* --- Versión redactada por IA (única) --- */}
+<div className="mt-4 border rounded-lg bg-emerald-50/40 p-3">
+  <div className="flex items-center justify-between">
+    <div className="text-sm font-medium text-emerald-900">
+      🤖
+    </div>
+
+    <div className="flex items-center gap-2">
+      <label className="inline-flex items-center gap-2 text-sm">
+        <input
+          type="checkbox"
+          checked={usarRedaccionIA}
+          onChange={(e) => {
+            setUsarRedaccionIA(e.target.checked);
+            // Si activan el toggle y ya hay diagnóstico, generamos al tiro
+            if (e.target.checked && iaDiag && iaCopyStatus !== "loading") {
+              handleRedaccionIAReal();
+            }
+          }}
+        />
+        <span>Recomendar solución con IA Generativa</span>
+      </label>
+
+      <button
+        type="button"
+        onClick={() => handleRedaccionIAReal()}
+        disabled={!iaDiag || iaCopyStatus === "loading"}
+        className="px-3 py-1.5 rounded-md bg-emerald-600 text-white text-sm hover:bg-emerald-700 disabled:opacity-60"
+        title={!iaDiag ? "Primero genera el diagnóstico" : "Regenerar con IA"}
+      >
+        {iaCopyStatus === "loading" ? "Generando…" : "Regenerar con IA"}
+      </button>
+
+      {iaCopy && (
+        <button
+          type="button"
+          onClick={() =>
+            navigator.clipboard
+              .writeText(iaCopy)
+              .then(() => alert("📋 Copiado"))
+          }
+          className="px-3 py-1.5 rounded-md border text-sm hover:bg-zinc-50"
+        >
+          Copiar
+        </button>
+      )}
+    </div>
+  </div>
+
+  <div className="mt-2 text-sm text-zinc-800 whitespace-pre-line">
+    {iaCopyStatus === "idle"    && <span className="text-zinc-500">Genera el diagnóstico para ver la redacción.</span>}
+    {iaCopyStatus === "loading" && <span className="text-emerald-800">Conectando con IA…</span>}
+    {iaCopyStatus === "error"   && <span className="text-red-700">Contáctanos para profundizar sobre tu ROI</span>}
+    {iaCopyStatus === "done"    && (iaCopy || <span className="text-zinc-500">La IA no devolvió texto.</span>)}
+  </div>
+</div>
+
+
+  
+        Copiar diagnóstico
+      </button>
+      <button
+        type="button"
+        onClick={() => setIaDiag(null)}
+        className="px-3 py-1.5 rounded-md border text-sm hover:bg-zinc-50"
+      >
+        Limpiar
+      </button>
+    </div>
+  </div>
+)}
+
+
+
 
             {/* Barras y Curva */}
             {!modoSimple && (
