@@ -1,128 +1,180 @@
 // netlify/functions/ai-diagnostico.js
-import OpenAI from "openai";
+// Modo sencillo: usa fetch directo a la API de OpenAI (sin dependencias).
+// Responde:
+//  - GET  -> ping (para probar que la función está viva)
+//  - POST -> genera redacción con IA en "chileno", con fallback de reglas si falla
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+export async function handler(event) {
+  // --- Healthcheck / prueba rápida en el navegador ---
+  if (event.httpMethod === "GET") {
+    return json({ ok: true, ping: "ai-diagnostico vivo 🟢" });
+  }
 
-/** Tabla fija de factores por nivel digital x cultivo */
-const FACTOR_INTENSIDAD = {
-  BAJO:  { default: 1.30, TRIGO: 1.40, MAIZ: 1.35, PAPA: 1.32, CEREZOS: 1.20, ARANDANOS: 1.22, AVENA: 1.35, RAPS: 1.28 },
-  MEDIO: { default: 1.15, TRIGO: 1.20, MAIZ: 1.18, PAPA: 1.15, CEREZOS: 1.10, ARANDANOS: 1.12, AVENA: 1.18, RAPS: 1.15 },
-  ALTO:  { default: 1.05, TRIGO: 1.05, MAIZ: 1.06, PAPA: 1.05, CEREZOS: 1.03, ARANDANOS: 1.03, AVENA: 1.05, RAPS: 1.05 }
-};
+  if (event.httpMethod !== "POST") {
+    return json({ ok: false, error: "Método no permitido" }, 405);
+  }
 
-function getFactor(nivel = "MEDIO", cultivo = "") {
-  const lvl = String(nivel || "").toUpperCase();
-  const crop = String(cultivo || "").toUpperCase();
-  const table = FACTOR_INTENSIDAD[lvl] || FACTOR_INTENSIDAD.MEDIO;
-  return Number(table[crop] ?? table.default ?? 1.0);
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    // No reventamos la UI: devolvemos un mensaje claro
+    return json({
+      ok: false,
+      error: "Falta OPENAI_API_KEY en .env",
+    }, 200);
+  }
+
+  let payload;
+  try {
+    payload = JSON.parse(event.body || "{}");
+  } catch {
+    return json({ ok: false, error: "JSON inválido" }, 400);
+  }
+
+  // Datos que vienen del front (adecuados a lo que ya envías)
+  const {
+    cultivo = "RAPS",
+    superficieHa = 0,
+    nivelDigital = "BAJO",
+    escenario = "REALISTA",
+    beneficioMensual = 0,
+    inversionInicial = 0,
+    paybackMeses = null,
+    horizonteMeses = 24,
+    diagnosticoReglas = null, // { intensidad, reparto, lead, interpretacion, recomendacion[] , estimacion? }
+  } = payload;
+
+  // Armamos un prompt breve, “en chileno”, con tope de 120 palabras
+  const leadReglas = diagnosticoReglas?.lead || "";
+  const interpReglas = diagnosticoReglas?.interpretacion || "";
+  const repartoOp = diagnosticoReglas?.reparto?.operativo || "";
+  const repartoIns = diagnosticoReglas?.reparto?.insumos || "";
+  const recos = (diagnosticoReglas?.recomendacion || []).join("; ");
+
+  const prompt = `
+Eres un asesor agrícola chileno especializado en Transformación digital. Redacta un diagnóstico corto (máx 120 palabras), claro y aterrizado, en español de Chile.
+Tono: profesional y directo. Incluye foco principal, 3 recomendaciones concretas y cierre con resultado esperado, orientado a digitalización.
+
+Contexto del campo:
+- Cultivo: ${cultivo}. Superficie: ${superficieHa} ha. Nivel digital: ${nivelDigital}. Escenario: ${escenario}.
+- Ganancia extra mensual estimada: ${formatCLP(beneficioMensual)}. Inversión: ${formatCLP(inversionInicial)}.
+- Payback aprox: ${Number.isFinite(paybackMeses) ? `${paybackMeses.toFixed(1)} meses` : "N/A"}. Horizonte: ${horizonteMeses} meses.
+
+Señales de reglas (guía, no repitas textualmente):
+- Reparto oportunidad: ${repartoOp} operativo / ${repartoIns} insumos.
+- Lead: ${leadReglas}
+- Interpretación: ${interpReglas}
+- Recomendaciones sugeridas: ${recos}
+
+Formato de salida:
+- 1–2 párrafos, 80–120 palabras.
+- “En chileno”, sin florituras, sin tecnicismos innecesarios.
+- Debe terminar con una recomendación accionable de siguiente paso.
+`;
+
+  try {
+    // Llamado simple a Chat Completions
+    const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",        // liviano y barato; cámbialo si prefieres otro
+        temperature: 0.7,
+        max_tokens: 260,
+        messages: [
+          { role: "system", content: "Eres un asesor agrícola chileno, claro y práctico." },
+          { role: "user", content: prompt },
+        ],
+      }),
+    });
+
+    if (!resp.ok) {
+      const errTxt = await resp.text().catch(() => "");
+      // devolvemos fallback si OpenAI no respondió bien
+      return json({
+        ok: false,
+        error: `OpenAI no respondió (${resp.status}).`,
+        detail: errTxt?.slice(0, 400),
+        // fallback corto con reglas para no romper la UX:
+        text: redactarFallback({
+          cultivo,
+          superficieHa,
+          nivelDigital,
+          beneficioMensual,
+          inversionInicial,
+          paybackMeses,
+          diagnosticoReglas,
+        }),
+      }, 200);
+    }
+
+    const data = await resp.json();
+    const text =
+      data?.choices?.[0]?.message?.content?.trim() ||
+      redactarFallback({
+        cultivo,
+        superficieHa,
+        nivelDigital,
+        beneficioMensual,
+        inversionInicial,
+        paybackMeses,
+        diagnosticoReglas,
+      });
+
+    return json({ ok: true, text }, 200);
+  } catch (e) {
+    // Timeout / conexión / etc. → devolvemos fallback
+    return json({
+      ok: false,
+      error: "TypeError: fetch failed",
+      text: redactarFallback({
+        cultivo,
+        superficieHa,
+        nivelDigital,
+        beneficioMensual,
+        inversionInicial,
+        paybackMeses,
+        diagnosticoReglas,
+      }),
+    }, 200);
+  }
 }
 
-function fmtCLP(n) {
+/* ----------------- Helpers ----------------- */
+function json(body, status = 200) {
+  return {
+    statusCode: status,
+    headers: { "Content-Type": "application/json; charset=utf-8" },
+    body: JSON.stringify(body),
+  };
+}
+
+function formatCLP(n) {
   try {
     return new Intl.NumberFormat("es-CL", {
       style: "currency",
       currency: "CLP",
-      minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(Number(n) || 0);
   } catch {
-    return `$${Number(n || 0).toLocaleString("es-CL")}`;
+    return `$${Number(n) || 0}`;
   }
 }
 
-/** Redondeo amigable para CLP mensuales */
-const round0 = (n) => Math.round(Number(n || 0));
+// Fallback con reglas (por si falla OpenAI). Mantiene la UX andando.
+function redactarFallback({ cultivo, superficieHa, nivelDigital, beneficioMensual, inversionInicial, paybackMeses, diagnosticoReglas }) {
+  const repOp = diagnosticoReglas?.reparto?.operativo || "—";
+  const repIns = diagnosticoReglas?.reparto?.insumos || "—";
+  const lead = diagnosticoReglas?.lead || "";
+  const recos = diagnosticoReglas?.recomendacion || [];
+  const rec1 = recos[0] || "Estandarizar bitácoras y órdenes de trabajo";
+  const rec2 = recos[1] || "Visibilidad diaria del avance vs. plan";
+  const rec3 = recos[2] || "Conectar registros a costos reales";
 
-export async function handler(event) {
-  if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: JSON.stringify({ ok: false, error: "Method not allowed" }) };
-  }
+  const payTxt = Number.isFinite(paybackMeses) ? `${paybackMeses.toFixed(1)} meses` : "N/A";
 
-  try {
-    const body = JSON.parse(event.body || "{}");
-
-    const {
-      cultivo,                // ej: "TRIGO"
-      superficieHa,          // ej: 120
-      nivelDigital,          // ej: "BAJO" | "MEDIO" | "ALTO"
-      escenario,             // ej: "REALISTA"
-      beneficioMensual,      // CLP/mes (puede venir calculado por tu lógica)
-      ahorroMensual,         // opcional
-      incrementoMensual,     // opcional
-      inversionInicial,      // CLP (one-off)
-      paybackMeses,          // puede venir calculado por tu flujo
-      horizonteMeses,        // ej: 24
-      diagnosticoReglas: diag
-    } = body;
-
-    if (!diag || !cultivo || superficieHa == null) {
-      return { statusCode: 400, body: JSON.stringify({ ok: false, error: "Faltan campos requeridos" }) };
-    }
-
-    // 1) Factor por intensidad digital (fijo, previo al prompt)
-    const factor = getFactor(nivelDigital, cultivo);
-
-    // 2) Ajustar beneficios (mantener null/undefined si no venían)
-    const beneficioMensualAdj  = beneficioMensual != null ? round0(beneficioMensual * factor) : null;
-    const ahorroMensualAdj     = ahorroMensual    != null ? round0(ahorroMensual    * factor) : null;
-    const incrementoMensualAdj = incrementoMensual!= null ? round0(incrementoMensual* factor) : null;
-
-    // 3) Recalcular payback si tenemos inversión y beneficio ajustado
-    let paybackMesesAdj = paybackMeses;
-    if (inversionInicial != null && beneficioMensualAdj && beneficioMensualAdj > 0) {
-      paybackMesesAdj = +(inversionInicial / beneficioMensualAdj).toFixed(1);
-    }
-
-    // 4) Construir prompt con cifras ya ajustadas (IA solo redacta)
-    const paybackTxt = Number.isFinite(paybackMesesAdj) ? `${paybackMesesAdj.toFixed(1)} meses` : "N/A";
-    const beneficioTxt = beneficioMensualAdj != null ? fmtCLP(beneficioMensualAdj) : "s/i";
-    const ahorroTxt    = ahorroMensualAdj    != null ? fmtCLP(ahorroMensualAdj)    : "s/i";
-    const incrTxt      = incrementoMensualAdj!= null ? fmtCLP(incrementoMensualAdj): "s/i";
-
-    const prompt = `
-Eres consultor agrícola. Redacta un diagnóstico breve (1–2 párrafos, máx. 120 palabras).
-Estilo: TÁCTICO (viñetas cortas, verbos de acción, sin relleno).
-
-Contexto:
-- Cultivo: ${cultivo}. Superficie: ${superficieHa} ha. Nivel digital: ${nivelDigital || "desconocido"}. Escenario: ${escenario || "N/A"}.
-- Beneficio mensual ajustado (mapa intensidad): ${beneficioTxt}. Ahorro: ${ahorroTxt}. Incremento: ${incrTxt}.
-- Inversión: ${fmtCLP(inversionInicial)}. Payback aprox.: ${paybackTxt}. Horizonte: ${horizonteMeses ?? "N/A"} meses.
-- Diagnóstico por reglas: Intensidad ${diag.intensidad}. Reparto: ${diag.reparto?.operativo} operativo / ${diag.reparto?.insumos} insumos.
-- Lead: ${diag.lead}
-- Recomendaciones sugeridas: ${Array.isArray(diag.recomendacion) ? diag.recomendacion.join("; ") : ""}
-
-Redacta con foco en: foco principal (operativo/insumos), 3 acciones concretas y cierre con resultado esperado.
-No repitas números innecesarios. No uses títulos. Sin emojis. Español neutro.
-`.trim();
-
-    // 5) Llamada a OpenAI (Responses API) sin temperature/top_p
-    const resp = await client.responses.create({
-      model: "gpt-4.1-mini",
-      input: prompt,
-    });
-
-    const text = resp.output_text ?? (resp.output?.[0]?.content?.[0]?.text || "");
-    if (!text) {
-      return { statusCode: 502, body: JSON.stringify({ ok: false, error: "La IA no devolvió texto" }) };
-    }
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        ok: true,
-        text,
-        // útil si quieres ver el ajuste (puedes quitarlo si no quieres exponerlo)
-        meta: {
-          factor_intensidad: factor,
-          beneficioMensual_ajustado: beneficioMensualAdj,
-          ahorroMensual_ajustado: ahorroMensualAdj,
-          incrementoMensual_ajustado: incrementoMensualAdj,
-          paybackMeses_ajustado: paybackMesesAdj
-        }
-      }),
-    };
-  } catch (err) {
-    console.error("ai-diagnostico error:", err);
-    return { statusCode: 500, body: JSON.stringify({ ok: false, error: String(err.message || err) }) };
-  }
+  return `Para ${cultivo.toLowerCase()} en ${superficieHa} ha y nivel ${nivelDigital.toLowerCase()}, la oportunidad se reparte ${repOp} en lo operativo y ${repIns} en insumos. ${lead}
+Sugerencias: ${rec1}; ${rec2}; ${rec3}. Ganancia mensual estimada: ${formatCLP(beneficioMensual)} con inversión ${formatCLP(inversionInicial)}. Payback aprox: ${payTxt}. Siguiente paso: define KPIs simples (costo/ha, avance semanal) y parte con bitácoras digitales en terreno.`;
 }

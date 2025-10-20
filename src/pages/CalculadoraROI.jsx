@@ -473,7 +473,7 @@ function handleDiagnosticoIA() {
 
       // 2) (A) Auto-generar redacción con IA si el toggle está activo
       if (usarRedaccionIA) {
-        await handleRedaccionIAReal(diag); // pasamos el diag recién generado
+        await handleRedaccionIAReal(); // pasamos el diag recién generado
       }
 
       // 3) Evento opcional
@@ -514,7 +514,6 @@ async function fetchRedaccionIA({ iaDiag, contexto }) {
 }
 
 
-
 async function handleRedaccionIAReal() {
   try {
     setIaCopyStatus("loading");
@@ -527,24 +526,33 @@ async function handleRedaccionIAReal() {
         nivelDigital,
         escenario,
         beneficioMensual,
-        ahorroMensual,
-        incrementoMensual,
         inversionInicial,
         paybackMeses,
         horizonteMeses,
-        diagnosticoReglas: diagOverride ?? iaDiag, // usa el diag que pasemos o el del estado
+        diagnosticoReglas: iaDiag, // el de reglas que ya calculaste
       }),
     });
 
-    if (!res.ok) throw new Error("HTTP " + res.status);
     const json = await res.json();
-    setIaCopy(json.text || "");
-    setIaCopyStatus("done");
+    console.log("[ai-diagnostico]", res.status, json);
+
+    // 👇 Muestra el texto aunque ok sea false
+    if (json?.text) {
+      setIaCopy(json.text);
+      setIaCopyStatus("done");
+    } else {
+      setIaCopy("No llegó texto desde el backend.");
+      setIaCopyStatus("error");
+    }
   } catch (e) {
     console.error(e);
+    setIaCopy("No pudimos conectar con la IA. Te dejamos el diagnóstico por reglas arriba.");
     setIaCopyStatus("error");
   }
 }
+
+
+
 
 
   // cargar JSON una sola vez
@@ -1324,14 +1332,13 @@ window.dataLayer.push({
 </div>
 
 
-
 {/* === Tarjeta del diagnóstico === */}
 {iaDiag && (
   <div className="mt-4 border rounded-xl bg-white p-5">
     <div className="flex items-center justify-between">
       <h3 className="text-emerald-800 font-semibold">{iaDiag.titulo}</h3>
       <span className="text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full">
-        Intensidad: {iaDiag.intensidad}
+        Intensidad digitalización: {iaDiag.intensidad}
       </span>
     </div>
 
@@ -1340,9 +1347,7 @@ window.dataLayer.push({
     <div className="mt-3 text-sm text-zinc-700">
       <div>
         <strong>Reparto de oportunidad:</strong>{" "}
-        <span className="text-emerald-700">
-          {iaDiag.reparto.operativo} operativo
-        </span>{" "}
+        <span className="text-emerald-700">{iaDiag.reparto.operativo} operativo</span>{" "}
         · <span className="text-emerald-700">{iaDiag.reparto.insumos} insumos</span>
       </div>
       <div className="mt-2">
@@ -1359,6 +1364,7 @@ window.dataLayer.push({
       </div>
     </div>
 
+    {/* Botonera principal */}
     <div className="mt-3 flex gap-2">
       <button
         type="button"
@@ -1373,72 +1379,13 @@ window.dataLayer.push({
             ...iaDiag.recomendacion.map(x => `- ${x}`),
             iaDiag.estimacion,
           ].join("\n");
-          navigator.clipboard.writeText(txt).then(()=>alert("📋 Diagnóstico copiado"));
+          navigator.clipboard.writeText(txt).then(() => alert("📋 Diagnóstico copiado"));
         }}
         className="px-3 py-1.5 rounded-md border text-sm hover:bg-zinc-50"
       >
-
-{/* --- Versión redactada por IA (única) --- */}
-<div className="mt-4 border rounded-lg bg-emerald-50/40 p-3">
-  <div className="flex items-center justify-between">
-    <div className="text-sm font-medium text-emerald-900">
-      🤖
-    </div>
-
-    <div className="flex items-center gap-2">
-      <label className="inline-flex items-center gap-2 text-sm">
-        <input
-          type="checkbox"
-          checked={usarRedaccionIA}
-          onChange={(e) => {
-            setUsarRedaccionIA(e.target.checked);
-            // Si activan el toggle y ya hay diagnóstico, generamos al tiro
-            if (e.target.checked && iaDiag && iaCopyStatus !== "loading") {
-              handleRedaccionIAReal();
-            }
-          }}
-        />
-        <span>Recomendar solución con IA Generativa</span>
-      </label>
-
-      <button
-        type="button"
-        onClick={() => handleRedaccionIAReal()}
-        disabled={!iaDiag || iaCopyStatus === "loading"}
-        className="px-3 py-1.5 rounded-md bg-emerald-600 text-white text-sm hover:bg-emerald-700 disabled:opacity-60"
-        title={!iaDiag ? "Primero genera el diagnóstico" : "Regenerar con IA"}
-      >
-        {iaCopyStatus === "loading" ? "Generando…" : "Regenerar con IA"}
-      </button>
-
-      {iaCopy && (
-        <button
-          type="button"
-          onClick={() =>
-            navigator.clipboard
-              .writeText(iaCopy)
-              .then(() => alert("📋 Copiado"))
-          }
-          className="px-3 py-1.5 rounded-md border text-sm hover:bg-zinc-50"
-        >
-          Copiar
-        </button>
-      )}
-    </div>
-  </div>
-
-  <div className="mt-2 text-sm text-zinc-800 whitespace-pre-line">
-    {iaCopyStatus === "idle"    && <span className="text-zinc-500">Genera el diagnóstico para ver la redacción.</span>}
-    {iaCopyStatus === "loading" && <span className="text-emerald-800">Conectando con IA…</span>}
-    {iaCopyStatus === "error"   && <span className="text-red-700">Contáctanos para profundizar sobre tu ROI</span>}
-    {iaCopyStatus === "done"    && (iaCopy || <span className="text-zinc-500">La IA no devolvió texto.</span>)}
-  </div>
-</div>
-
-
-  
         Copiar diagnóstico
       </button>
+
       <button
         type="button"
         onClick={() => setIaDiag(null)}
@@ -1447,8 +1394,60 @@ window.dataLayer.push({
         Limpiar
       </button>
     </div>
+
+    {/* Bloque IA generativa (separado de la botonera) */}
+    <div className="mt-4 border rounded-lg bg-emerald-50/40 p-3">
+      <div className="flex items-center justify-between">
+        <div className="text-sm font-medium text-emerald-900">🤖</div>
+
+        <div className="flex items-center gap-2">
+          <label className="inline-flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={usarRedaccionIA}
+              onChange={(e) => {
+                setUsarRedaccionIA(e.target.checked);
+                if (e.target.checked && iaDiag && iaCopyStatus !== "loading") {
+                  handleRedaccionIAReal();
+                }
+              }}
+            />
+            <span>Recomendar solución con IA Generativa</span>
+          </label>
+
+          <button
+            type="button"
+            onClick={handleRedaccionIAReal}
+            disabled={!iaDiag || iaCopyStatus === "loading"}
+            className="px-3 py-1.5 rounded-md bg-emerald-600 text-white text-sm hover:bg-emerald-700 disabled:opacity-60"
+            title={!iaDiag ? "Primero genera el diagnóstico" : "Regenerar con IA"}
+          >
+            {iaCopyStatus === "loading" ? "Generando…" : "Regenerar con IA"}
+          </button>
+
+          {iaCopy && (
+            <button
+              type="button"
+              onClick={() => navigator.clipboard.writeText(iaCopy).then(() => alert("📋 Copiado"))}
+              className="px-3 py-1.5 rounded-md border text-sm hover:bg-zinc-50"
+            >
+              Copiar
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-2 text-sm text-zinc-800 whitespace-pre-line">
+        {iaCopyStatus === "idle"    && <span className="text-zinc-500">Genera el diagnóstico para ver la redacción.</span>}
+        {iaCopyStatus === "loading" && <span className="text-emerald-800">Conectando con IA…</span>}
+        {iaCopyStatus === "error"   && <span className="text-red-700">Contáctanos para profundizar sobre tu ROI</span>}
+        {iaCopyStatus === "done"    && (iaCopy || <span className="text-zinc-500">La IA no devolvió texto.</span>)}
+      </div>
+    </div>
   </div>
 )}
+
+
 
 
 
@@ -2025,39 +2024,45 @@ function HelpModal({ open, onClose, tips }) {
 
 function LeadGate({ onUnlock, simQuery, kpis }) {
   // ENVÍO url-encodeado a Netlify con el form-name correcto: lead-roi
-  async function handleSubmit(e) {
-    e.preventDefault();
-    const form = e.currentTarget;
+async function handleSubmit(e) {
+  e.preventDefault();
+  const form = e.currentTarget;
 
-    // Armamos los datos tal cual Netlify Forms los espera
-    const fd = new FormData(form);
-    // Asegurar el form-name correcto (debe calzar con el "fantasma" de index.html)
-    fd.set("form-name", "lead-roi");
+  const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
 
-    // Convertimos a x-www-form-urlencoded
-    const body = new URLSearchParams(fd).toString();
+  // Si es local, no intentamos enviar a Netlify Forms; desbloqueamos y listo
+  if (isLocal) {
+    onUnlock();
+    console.warn("Dev local: se omitió el POST a Netlify Forms.");
+    return;
+  }
 
-    try {
-      const resp = await fetch(window.location.pathname, {
+  // --- producción / preview: envío real a Netlify Forms ---
+  const fd = new FormData(form);
+  fd.set("form-name", "lead-roi");
+  const body = new URLSearchParams(fd).toString();
+
+  try {
+    const resp = await fetch(window.location.pathname, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body,
-      });
+    });
 
-      if (!resp.ok) {
-        const txt = await resp.text().catch(() => "");
-        console.error("Netlify form error", resp.status, txt);
-        alert("No se pudo enviar. Intenta de nuevo.");
-        return;
-      }
-    } catch (_) {
-      // si falla el POST (por ejemplo en dev), no bloqueamos la UX
-      console.warn("Fallo el POST a Netlify, desbloqueo igual.");
+    if (!resp.ok) {
+      console.error("Netlify form error", resp.status, await resp.text().catch(() => ""));
+      // sigue igual: desbloquea para no romper UX
+      onUnlock();
+      return;
     }
 
     onUnlock();
-    alert("✅ Gracias. Ya puedes ver el resultado completo.");
+  } catch (err) {
+    console.warn("POST falló en dev; desbloqueo igual.", err);
+    onUnlock();
   }
+}
+
 
   return (
     <div className="mt-6 rounded-2xl border p-6 bg-emerald-50/40">
