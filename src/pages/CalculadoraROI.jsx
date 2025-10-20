@@ -412,7 +412,7 @@ Datos:
 - Superficie: ${superficieHa} ha
 - Nivel digital: ${nivelDigital}
 - Escenario: ${escenario}
-- Ganancia extra mensual: ${fmtCLP(beneficioMensual)}
+- Ganancia extra mensual por digitalización: ${fmtCLP(beneficioMensual)}
 - Inversión inicial: ${fmtCLP(inversionInicial)}
 - Payback aprox.: ${Number.isFinite(paybackMeses) ? paybackMeses.toFixed(1) + " meses" : "N/A"}
 - Horizonte: ${horizonteMeses} meses
@@ -2067,7 +2067,7 @@ function LeadGate({ onUnlock, simQuery, kpis }) {
       {/* Mini KPIs como “muestra” */}
       <div className="mt-4 grid sm:grid-cols-3 gap-3">
         <div className="rounded-lg border bg-white p-3 text-center">
-          <div className="text-xs text-emerald-800/70">Ganancia extra mensual</div>
+          <div className="text-xs text-emerald-800/70">Ganancia extra mensual por digitalización</div>
           <div className="text-base font-bold text-emerald-800">{fmtCLP(kpis.beneficioMensual)}</div>
         </div>
         <div className="rounded-lg border bg-white p-3 text-center">
@@ -2150,7 +2150,7 @@ function LeadGate({ onUnlock, simQuery, kpis }) {
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white rounded-lg px-4 py-2 text-sm"
         >
-          💬 Prefiero coordinar por WhatsApp
+          💬 Prefiero hablar por WhatsApp
         </a>
       </div>
     </div>

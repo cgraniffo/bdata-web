@@ -8,7 +8,7 @@ export default function EnfoqueEstrategico() {
       </h2>
 
       <p className="text-xl md:text-2xl font-semibold text-emerald-900 leading-snug mb-6">
-        Primero entendemos 🧠… Luego optimizamos 🛠️,<br />
+        Primero entendemos tu forma de trabajo y nos adaptamos🧠… Luego optimizamos 🛠️,<br />
         Después (sólo si corresponde) automatizamos y aplicamos IA 🤖.
       </p>
 

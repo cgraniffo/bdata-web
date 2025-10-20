@@ -19,31 +19,31 @@
       "meta": { "sistema": "SECANO", "region": "Araucanía" }
     },
     "TRIGO": {
-      "ingresos_ha_clp": 1500000,
-      "costos_totales_ha_clp": 1200000,
+      "ingresos_ha_clp": 2560000,
+      "costos_totales_ha_clp": 2093760,
       "desglose": {
-        "INSUMOS": 700000,
-        "MAQUINARIAS": 200000,
-        "ARRIENDO": 150000,
-        "FLETES": 50000,
-        "MANO DE OBRA": 35000,
-        "GENERALES (5%)": 60000,
-        "COSTO FINANCIERO (12%)": 120000,
-        "TOTAL COSTOS": 1200000
+        "INSUMOS": 935270,
+        "MAQUINARIAS": 638000,
+        "ARRIENDO": 250000,
+        "FLETES": 178000,
+        "MANO DE OBRA": 135000,
+        "GENERALES (5%)": 94314,
+        "COSTO FINANCIERO (12%)": 113176,
+        "TOTAL COSTOS": 2343760
       },
       "meta": { "sistema": "SECANO", "region": "Araucanía" }
     },
     "MAIZ": {
-      "ingresos_ha_clp": 2500000,
-      "costos_totales_ha_clp": 1800000,
+      "ingresos_ha_clp": 3400000,
+      "costos_totales_ha_clp": 2666720,
       "desglose": {
-        "INSUMOS": 1000000,
-        "MAQUINARIAS": 300000,
-        "ARRIENDO": 200000,
-        "FLETES": 80000,
-        "MANO DE OBRA": 70000,
-        "GENERALES (5%)": 90000,
-        "COSTO FINANCIERO (12%)": 200000,
+        "INSUMOS": 1078950,
+        "MAQUINARIAS": 1059500,
+        "ARRIENDO": 250000,
+        "FLETES": 210000,
+        "MANO DE OBRA": 54000,
+        "GENERALES (5%)": 120123,
+        "COSTO FINANCIERO (12%)": 144147,
         "TOTAL COSTOS": 1800000
       },
       "meta": { "sistema": "RIEGO", "region": "Biobío" }
