@@ -6,6 +6,28 @@ import {
   LineChart, Line, CartesianGrid, ReferenceLine,
 } from "recharts";
 
+
+/* ===================== COPY (tono productor chileno) ===================== */
+const COPY = {
+  hintIA:
+    "Puedes mejorar este diagnóstico con IA generativa para obtener una versión más clara y personalizada según tu campo.",
+  btnImprove: "Mejorar diagnóstico con IA",
+  blockTitle: "Recomendación personalizada con IA 🤖",
+  blockIntro:
+    "Según los datos que ingresaste, acá tienes una recomendación directa para tu realidad en campo:",
+  btnRegenerate: "Regenerar IA",
+  transparency:
+    "La IA ajusta el mensaje para que sea más útil y aplicable en tu campo. Los números se mantienen tal cual en base a tu simulación.",
+  loading: "Conectando con IA…",
+  fallbackError:
+    "No pudimos generar la recomendación con IA ahora. Te dejamos el diagnóstico por reglas arriba.",
+  copied: "Copiado",
+};
+
+
+
+
+
 /* ===================== Util formateo ===================== */
 function fmtCLP(n) {
   return new Intl.NumberFormat("es-CL", {
@@ -299,7 +321,7 @@ function generarDiagnosticoIA({
   const insPct = pct(insShare);
 
   return {
-    titulo: "Diagnóstico IA (personalizado)",
+    titulo: "Diagnóstico IA primario",
     intensidad: intensidadTxt,                 // bajo|moderado|medio|alto
     reparto: { operativo: opPct, insumos: insPct },
     lead: `Según los datos ingresados, tu campo tiene potencial ${intensidadTxt}. Basado en tu contexto, ${leadLine}`,
@@ -394,11 +416,11 @@ const [isUnlocked, setIsUnlocked] = useState(false);
 
 
 // --- Estado "IA"
-const [iaDiag, setIaDiag] = useState(null);
+const [iaDiag, setIaDiag] = useState(null);        // resultado por reglas
 const [iaStatus, setIaStatus] = useState("idle"); // idle | loading | done | error
 
 // NUEVO: redacción con modelo (opcional)
-const [usarRedaccionIA, setUsarRedaccionIA] = useState(true);   // toggle UI
+//const [usarRedaccionIA, setUsarRedaccionIA] = useState(true);   // toggle UI
 //const [iaTexto, setIaTexto] = useState("");                     // texto final “bonito”
 //const [iaTextoStatus, setIaTextoStatus] = useState("idle");     // idle | loading | done | error
 
@@ -452,12 +474,11 @@ Ganancia extra mensual estimada: ${fmtCLP(beneficioMensual)}. Inversión: ${fmtC
 function handleDiagnosticoIA() {
   try {
     setIaStatus("loading");
-    // limpiar estado de redacción IA antes de pensar
+    // limpiamos redacción IA (se gatilla aparte con el botón)
     setIaCopy("");
     setIaCopyStatus("idle");
 
-    setTimeout(async () => {
-      // 1) Genera diagnóstico por reglas
+    setTimeout(() => {
       const diag = generarDiagnosticoIA({
         superficieHa,
         nivelDigital,
@@ -471,12 +492,7 @@ function handleDiagnosticoIA() {
       setIaDiag(diag);
       setIaStatus("done");
 
-      // 2) (A) Auto-generar redacción con IA si el toggle está activo
-      if (usarRedaccionIA) {
-        await handleRedaccionIAReal(); // pasamos el diag recién generado
-      }
-
-      // 3) Evento opcional
+      // Analytics opcional
       if (typeof window !== "undefined" && window.dataLayer) {
         window.dataLayer.push({
           event: "ai_diag_generated",
@@ -486,7 +502,7 @@ function handleDiagnosticoIA() {
           intensidad: diag.intensidad,
           op_share: diag.reparto.operativo,
           ins_share: diag.reparto.insumos,
-          redactado: usarRedaccionIA ? "on" : "off",
+          redactado: "off", // ahora ya no auto-genera IA
         });
       }
     }, 300);
@@ -495,6 +511,7 @@ function handleDiagnosticoIA() {
     setIaCopyStatus("error");
   }
 }
+
 
 
 
@@ -551,6 +568,10 @@ async function handleRedaccionIAReal() {
   }
 }
 
+async function onImproveIA() {
+  if (!iaDiag || iaCopyStatus === "loading") return;
+  await handleRedaccionIAReal();
+}
 
 
 
@@ -649,7 +670,7 @@ async function handleRedaccionIAReal() {
     { name: "Con digitalización", value: conDigitalParaGrafico },
   ];
 
-const [iaCopy, setIaCopy] = useState("");
+const [iaCopy, setIaCopy] = useState("");       // redacción IA
 const [iaCopyStatus, setIaCopyStatus] = useState("idle"); // idle|loading|done|error
 
 
@@ -875,8 +896,8 @@ window.dataLayer.push({
 
     <p className="mt-3 text-sm text-emerald-200">
       {bdData?.periodo
-        ? `Fuente: Datos reales temporada ${bdData.periodo} — clientes BData`
-        : "Fuente: Datos reales — clientes BData"}
+        ? `Fuente: Datos reales temporada ${bdData.periodo} — clientes BData y referencias oficiales`
+        : "Fuente: Datos reales — clientes BData y referencias oficiales"}
     </p>
 
     <div className="mt-4 flex flex-wrap items-center gap-2 justify-center">
@@ -945,7 +966,7 @@ window.dataLayer.push({
         {!isLoading && !isError && (
           <section className="bg-white rounded-2xl border p-6 md:p-8 shadow-sm">
             <h2 className="text-xl font-semibold text-emerald-800 mb-2">Simula tu escenario digital</h2>
-            <p className="text-sm text-emerald-900/80 mbS-5">
+            <p className="text-sm text-emerald-900/80 mb-5">
               {modoSimple
                 ? "Ingresa tus datos básicos y obtén una estimación rápida del ROI."
                 : "En la siguiente sección ingresa los datos de tu campo a evaluar y verás los resultados (Mejoras estimadas con % de ahorro y productividad por cultivo, ajustadas por nivel de digitalización y superficie, en botón **Ayuda/Glosario** resuelve dudas)."}
@@ -1069,16 +1090,7 @@ window.dataLayer.push({
 
   {/* ── Sliders paramétricos ── */}
   <div className="mt-4 bg-white rounded-lg border p-4">
-    <label className="inline-flex items-center gap-2 text-sm text-emerald-900">
-      <input
-        type="checkbox"
-        className="size-4"
-        checked={usarSliders}
-        onChange={(e) => setUsarSliders(e.target.checked)}
-      />
-      <span title={TIPS.slidersToggle}>Ajustar manualmente % de ahorro/productividad</span>
-    </label>
-
+    
     {usarSliders && (
       <div className="grid md:grid-cols-2 gap-6 mt-4">
         <div>
@@ -1132,19 +1144,7 @@ window.dataLayer.push({
 </div>
  
 
-    {!modoSimple && (
-      <div className="flex items-center gap-3 mt-4">
-        <label className="inline-flex items-center gap-2 text-sm text-emerald-900">
-          <input
-            type="checkbox"
-            className="size-4"
-            checked={evitarNegativosGrafico}
-            onChange={(e) => setEvitarNegativosGrafico(e.target.checked)}
-          />
-          <span title={TIPS.evitarNegativos}>Evitar negativos en gráfico</span>
-        </label>
-      </div>
-    )}
+
   </div>
 </div>
 
@@ -1306,30 +1306,19 @@ window.dataLayer.push({
               </div>
             </div>
 
-            {/* === Botón para “IA” === */}
 <div className="mt-4 flex items-center gap-3 flex-wrap">
-<button
-  type="button"
-  onClick={handleDiagnosticoIA}
-  className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
-  disabled={iaStatus === "loading"}
->
-  {iaStatus === "loading" ? "Pensando…" : "🧠 Obtener diagnóstico IA"}
-</button>
-
+  <button
+    type="button"
+    onClick={handleDiagnosticoIA}
+    className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+    disabled={iaStatus === "loading"}
+  >
+    {iaStatus === "loading" ? "Pensando…" : "Generar diagnóstico inicial"}
+  </button>
 
   {iaStatus === "done" && <span className="text-sm text-emerald-800">Listo ✔</span>}
-
-  {/* NUEVO: toggle */}
-  <label className="inline-flex items-center gap-2 text-sm">
-    <input
-      type="checkbox"
-      checked={usarRedaccionIA}
-      onChange={(e) => setUsarRedaccionIA(e.target.checked)}
-    />
-    <span>Ver recomendación con IA Generativa</span>
-  </label>
 </div>
+
 
 
 {/* === Tarjeta del diagnóstico === */}
@@ -1364,6 +1353,67 @@ window.dataLayer.push({
       </div>
     </div>
 
+{/* Texto pasivo + acción IA (visible solo si aún NO hay IA generada) */}
+{!iaCopy && (
+  <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4">
+    <p className="text-slate-700">{COPY.hintIA}</p>
+    <div className="mt-3">
+      <button
+        type="button"
+        onClick={onImproveIA}
+        disabled={iaCopyStatus === "loading"}
+        className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-white shadow-sm hover:bg-emerald-700 disabled:opacity-60"
+      >
+        {iaCopyStatus === "loading" ? COPY.loading : COPY.btnImprove}
+      </button>
+    </div>
+    {iaCopyStatus === "error" && (
+      <p className="mt-3 text-sm text-amber-700">
+        {COPY.fallbackError}
+      </p>
+    )}
+  </div>
+)}
+
+{/* Bloque IA premium (cuando YA existe IA) */}
+{iaCopy && (
+  <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50">
+    <div className="flex items-center justify-between rounded-t-xl border-b border-emerald-200 bg-emerald-100/60 px-4 py-2">
+      <h4 className="font-semibold text-emerald-800">{COPY.blockTitle}</h4>
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={onImproveIA}
+          disabled={iaCopyStatus === "loading"}
+          className="rounded-lg border border-emerald-300 bg-white px-3 py-1 text-sm text-emerald-800 hover:bg-emerald-50 disabled:opacity-60"
+          title="Regenerar recomendación con IA"
+        >
+          {iaCopyStatus === "loading" ? COPY.loading : COPY.btnRegenerate}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => navigator.clipboard.writeText(iaCopy)}
+          className="rounded-lg border border-slate-300 bg-white px-3 py-1 text-sm text-slate-700 hover:bg-slate-50"
+        >
+          Copiar IA
+        </button>
+      </div>
+    </div>
+
+    <div className="px-4 py-3">
+      <p className="mb-2 text-slate-700">{COPY.blockIntro}</p>
+      <div className="prose max-w-none rounded-lg border border-emerald-100 bg-white/70 p-3 text-slate-800 whitespace-pre-line">
+        {iaCopy}
+      </div>
+      <p className="mt-3 text-xs text-emerald-800/80">{COPY.transparency}</p>
+    </div>
+  </div>
+)}
+
+
+
+
     {/* Botonera principal */}
     <div className="mt-3 flex gap-2">
       <button
@@ -1395,61 +1445,9 @@ window.dataLayer.push({
       </button>
     </div>
 
-    {/* Bloque IA generativa (separado de la botonera) */}
-    <div className="mt-4 border rounded-lg bg-emerald-50/40 p-3">
-      <div className="flex items-center justify-between">
-        <div className="text-sm font-medium text-emerald-900">🤖</div>
 
-        <div className="flex items-center gap-2">
-          <label className="inline-flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              checked={usarRedaccionIA}
-              onChange={(e) => {
-                setUsarRedaccionIA(e.target.checked);
-                if (e.target.checked && iaDiag && iaCopyStatus !== "loading") {
-                  handleRedaccionIAReal();
-                }
-              }}
-            />
-            <span>Recomendar solución con IA Generativa</span>
-          </label>
-
-          <button
-            type="button"
-            onClick={handleRedaccionIAReal}
-            disabled={!iaDiag || iaCopyStatus === "loading"}
-            className="px-3 py-1.5 rounded-md bg-emerald-600 text-white text-sm hover:bg-emerald-700 disabled:opacity-60"
-            title={!iaDiag ? "Primero genera el diagnóstico" : "Regenerar con IA"}
-          >
-            {iaCopyStatus === "loading" ? "Generando…" : "Regenerar con IA"}
-          </button>
-
-          {iaCopy && (
-            <button
-              type="button"
-              onClick={() => navigator.clipboard.writeText(iaCopy).then(() => alert("📋 Copiado"))}
-              className="px-3 py-1.5 rounded-md border text-sm hover:bg-zinc-50"
-            >
-              Copiar
-            </button>
-          )}
-        </div>
-      </div>
-
-      <div className="mt-2 text-sm text-zinc-800 whitespace-pre-line">
-        {iaCopyStatus === "idle"    && <span className="text-zinc-500">Genera el diagnóstico para ver la redacción.</span>}
-        {iaCopyStatus === "loading" && <span className="text-emerald-800">Conectando con IA…</span>}
-        {iaCopyStatus === "error"   && <span className="text-red-700">Contáctanos para profundizar sobre tu ROI</span>}
-        {iaCopyStatus === "done"    && (iaCopy || <span className="text-zinc-500">La IA no devolvió texto.</span>)}
-      </div>
-    </div>
   </div>
 )}
-
-
-
-
 
 
             {/* Barras y Curva */}
@@ -1566,7 +1564,7 @@ window.dataLayer.push({
                   <div className="mt-4 text-sm bg-white border rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-2">
                       <div className="font-medium text-emerald-800">
-                        Fuente: Datos reales temporada {bdData.periodo} — clientes BData
+                        Fuente: Datos reales temporada {bdData.periodo} — clientes BData y referencias oficiales
                       </div>
                       <span className="text-xs bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full font-medium">
                         v{bdData.version} • act. {bdData.updated_at}
@@ -1874,7 +1872,7 @@ function HelpModal({ open, onClose, tips }) {
                 "Sliders ahorro/productividad": tips.slidersToggle,
                 "% Ahorro (costos)": tips.ahorroPct,
                 "% Productividad (valor)": tips.prodPct,
-                "Evitar negativos en gráfico": tips.evitarNegativos,
+                //"Evitar negativos en gráfico": tips.evitarNegativos,
               }).map(([k, v]) => (
                 <div key={k} className="bg-emerald-50/50 border border-emerald-100 rounded-lg p-3">
                   <div className="font-medium text-emerald-900">{k}</div>
@@ -2008,7 +2006,7 @@ function HelpModal({ open, onClose, tips }) {
 
         <div className="p-4 border-t flex items-center justify-between">
           <div className="text-[12px] text-zinc-500">
-            Fuente: Datos reales temporada 2024–2025 — clientes BData. La realidad puede variar por manejo, clima y mercado.
+            Fuente: Datos reales temporada 2024–2025 — clientes BData y referencias oficiales. La realidad puede variar por manejo, clima y mercado.
           </div>
           <button
             onClick={onClose}
