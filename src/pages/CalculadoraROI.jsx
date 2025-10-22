@@ -547,6 +547,7 @@ async function handleRedaccionIAReal() {
         paybackMeses,
         horizonteMeses,
         diagnosticoReglas: iaDiag, // el de reglas que ya calculaste
+        persona,
       }),
     });
 
@@ -1088,64 +1089,105 @@ window.dataLayer.push({
     )}
   </div>
 
-  {/* ── Sliders paramétricos ── */}
-  <div className="mt-4 bg-white rounded-lg border p-4">
-    
-    {usarSliders && (
-      <div className="grid md:grid-cols-2 gap-6 mt-4">
-        <div>
-          <FieldLabel tip={TIPS.ahorroPct}>% Ahorro (costos)</FieldLabel>
-          <input
-            type="range"
-            min="0"
-            max="40"
-            step="1"
-            value={ahorroUserPct}
-            onChange={(e) => setAhorroUserPct(+e.target.value)}
-            className="w-full"
-          />
-          <div className="text-sm text-emerald-800 mt-1">
-            {ahorroUserPct}% • Ahorro mensual:{" "}
-            {fmtCLP((costosHa * superficieHa * (ahorroUserPct / 100)) / 12)}
-          </div>
-        </div>
+ {/* ── Sliders paramétricos ── */}
+<div className="mt-4 bg-white rounded-lg border p-4">
+  <div className="text-sm font-medium text-emerald-900 mb-2">
+    <FieldLabel tip={TIPS.slidersToggle}>Ajuste de mejoras (%)</FieldLabel>
+  </div>
 
-        <div>
-          <FieldLabel tip={TIPS.prodPct}>% Productividad (valor)</FieldLabel>
-          <input
-            type="range"
-            min="0"
-            max="40"
-            step="1"
-            value={prodUserPct}
-            onChange={(e) => setProdUserPct(+e.target.value)}
-            className="w-full"
-          />
-          <div className="text-sm text-emerald-800 mt-1">
-            {prodUserPct}% • Ingreso mensual extra:{" "}
-            {fmtCLP((costosHa * superficieHa * (prodUserPct / 100)) / 12)}
-          </div>
+  {/* Toggle: usar 10% por defecto vs ajustar manualmente */}
+  <div className="flex flex-wrap items-center gap-4 text-sm">
+    <label className="inline-flex items-center gap-2">
+      <input
+        type="radio"
+        name="slidersMode"
+        checked={!usarSliders}
+        onChange={() => setUsarSliders(false)}
+        className="accent-emerald-600"
+      />
+      Usar 10% por defecto
+    </label>
+
+    <label className="inline-flex items-center gap-2">
+      <input
+        type="radio"
+        name="slidersMode"
+        checked={usarSliders}
+        onChange={() => setUsarSliders(true)}
+        className="accent-emerald-600"
+      />
+      Ajustar manualmente
+    </label>
+  </div>
+
+  {/* Si NO está manual, muestro el 10% (o el % base del cultivo) como referencia */}
+  {!usarSliders && (
+    <p className="mt-2 text-xs text-zinc-600">
+      Se usarán los valores base del cultivo: <strong>{base.ahorroPct}%</strong> en ahorro y{" "}
+      <strong>{base.prodPct}%</strong> en productividad.
+    </p>
+  )}
+
+  {/* Sliders (solo si es manual) */}
+  {usarSliders && (
+    <div className="grid md:grid-cols-2 gap-6 mt-4">
+      <div>
+        <FieldLabel tip={TIPS.ahorroPct}>% Ahorro (costos)</FieldLabel>
+        <input
+          type="range"
+          min="0"
+          max="40"
+          step="1"
+          value={ahorroUserPct}
+          onChange={(e) => setAhorroUserPct(+e.target.value)}
+          className="w-full accent-emerald-600"
+        />
+        <div className="text-sm text-emerald-800 mt-1">
+          {ahorroUserPct}% • Ahorro mensual:{" "}
+          {fmtCLP((costosHa * superficieHa * (ahorroUserPct / 100)) / 12)}
         </div>
       </div>
-    )}
 
-   {/* Sustento 10% (linkea al modal de ayuda) */}
-<div className="text-xs text-zinc-600 mt-3 italic">
-  Referencia efecto digitalización: Por defecto se considera un <strong>10&nbsp;%</strong> (ahorro/productividad), que es un
-  benchmark empírico y conservador observado en adopción tecnológica agrícola en función de diversos artículos y experiencia en terreno de BData. Usa la selección de arriba de ajuste manual en caso de preferir simular tu mismo rangos distintos de optimización y/o productividad. {" "}
-  <button
-    type="button"
-    onClick={() => setShowHelp(true)}
-    className="underline text-emerald-700 hover:text-emerald-800"
-    title="Abrir Ayuda / Glosario con sustento técnico"
-  >
-     Ver sustentos metodologicos del <strong>10&nbsp;%</strong> que se usa por defecto en Ayuda/Glosario
-  </button>.
+      <div>
+        <FieldLabel tip={TIPS.prodPct}>% Productividad (valor)</FieldLabel>
+        <input
+          type="range"
+          min="0"
+          max="40"
+          step="1"
+          value={prodUserPct}
+          onChange={(e) => setProdUserPct(+e.target.value)}
+          className="w-full accent-emerald-600"
+        />
+        <div className="text-sm text-emerald-800 mt-1">
+          {prodUserPct}% • Ingreso mensual extra:{" "}
+          {fmtCLP((costosHa * superficieHa * (prodUserPct / 100)) / 12)}
+        </div>
+      </div>
+    </div>
+  )}
+
+  {/* Sustento del 10 % (con enlace a la ayuda) */}
+  <div className="text-xs text-zinc-600 mt-3 italic">
+    Referencia efecto digitalización: por defecto se considera un <strong>10 %</strong> (ahorro/productividad)
+    como benchmark conservador observado en terreno. Puedes activar el ajuste manual para simular otros rangos.{" "}
+    <button
+      type="button"
+      onClick={() => setShowHelp(true)}
+      className="underline text-emerald-700 hover:text-emerald-800"
+      title="Abrir Ayuda / Glosario con sustento técnico"
+    >
+      Ver sustentos metodológicos del 10 % en Ayuda/Glosario
+    </button>.
+  </div>
 </div>
  
 
 
-  </div>
+ 
+
+
+
 </div>
 
 

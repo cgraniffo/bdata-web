@@ -17,7 +17,7 @@ const extraItems = [
 
 // Menú "Camino Digital" (reemplaza “Herramientas IA”)
 const caminoItems = [
-  { to: "/camino-digital",        label: "Tu punto de partida", type: "route" },
+  { to: "/camino-digital",        label: "¿Cómo lo hacemos?", type: "route" },
   { to: "/calculadora-roi",       label: "Calculadora ROI",     type: "route" },
   { to: "/diagnostico-digital",   label: "Diagnóstico Digital", type: "route" },
   { href: "https://optimizador.bdata.cl", label: "Optimizar fertilización (Beta)", type: "external" },
@@ -30,10 +30,26 @@ export default function NavBar() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const baseLink =
-    "text-zinc-800 hover:text-emerald-700 font-medium transition-colors";
-  const activeLink =
-    "text-emerald-700 font-semibold underline underline-offset-4";
+
+  // rutas que pertenecen al “Camino Digital”
+const caminoRoutes = caminoItems
+  .filter(i => i.type === "route")
+  .map(i => i.to);
+
+// ¿estoy en alguna de esas rutas?
+const isCaminoActive = caminoRoutes.some(r => pathname.startsWith(r));
+
+
+// base: link normal
+const baseLink =
+  "text-zinc-800 hover:text-emerald-700 font-medium transition-colors";
+
+const activeLink =
+  "font-semibold text-white bg-emerald-600 px-3 py-1 rounded-lg " +   // móvil (pastilla)
+  "md:text-emerald-700 md:bg-transparent md:px-0 md:py-0 " +          // override en desktop
+  "md:underline md:underline-offset-4 md:decoration-2";               // desktop (subrayado)
+
+
 
   const scrollToId = (id) => {
     const el = document.getElementById(id);
@@ -90,41 +106,46 @@ export default function NavBar() {
 
           {/* Dropdown Camino Digital */}
           <li className="relative group">
-            <button className={baseLink + " text-sm md:text-base"}>
-              Tu Camino Digital
-            </button>
-            <div className="absolute left-0 top-full z-10 pt-2">
-              <div className="hidden group-hover:block group-focus-within:block bg-white border rounded-md shadow-lg min-w-[14rem]">
-                <ul className="py-2">
-                  {caminoItems.map((item) => (
-                    <li key={item.label}>
-                      {item.type === "route" ? (
-                        <NavLink
-                          to={item.to}
-                          className={({ isActive }) =>
-                            (isActive ? activeLink : baseLink) + " block px-4 py-2 text-sm"
-                          }
-                          onClick={() => setOpen(false)}
-                        >
-                          {item.label}
-                        </NavLink>
-                      ) : (
-                        <a
-                          href={item.href}
-                          className={baseLink + " block px-4 py-2 text-sm"}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => setOpen(false)}
-                        >
-                          {item.label}
-                        </a>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+  <button
+    className={activeLink + " text-sm md:text-base"}
+  >
+    Tu Camino Digital
+  </button>
+
+  
+  <div className="absolute left-0 top-full z-10 pt-2">
+    <div className="hidden group-hover:block group-focus-within:block bg-white border rounded-md shadow-lg min-w-[14rem]">
+      <ul className="py-2">
+        {caminoItems.map((item) => (
+          <li key={item.label}>
+            {item.type === "route" ? (
+              <NavLink
+                to={item.to}
+                className={({ isActive }) =>
+                  (isActive ? activeLink : baseLink) + " block px-4 py-2 text-sm"
+                }
+                onClick={() => setOpen(false)}
+              >
+                {item.label}
+              </NavLink>
+            ) : (
+              <a
+                href={item.href}
+                className={baseLink + " block px-4 py-2 text-sm"}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setOpen(false)}
+              >
+                {item.label}
+              </a>
+            )}
           </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</li>
+
 
           {extraItems.map(({ to, label }) => (
             <li key={to}>
@@ -158,7 +179,10 @@ export default function NavBar() {
 
           {/* Camino Digital (móvil) */}
           <li className="pt-2">
-            <div className="text-zinc-500 text-xs uppercase px-1">Camino Digital</div>
+            <div className="text-xs uppercase px-1 text-white bg-emerald-600 inline-block px-2 py-1 rounded">
+  Camino Digital
+</div>
+
           </li>
           {caminoItems.map((item) => (
             <li key={item.label}>

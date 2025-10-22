@@ -44,7 +44,7 @@ const SECCIONES = [
   {
     id: "gestion",
     icon: "plan",
-    titulo: "Gestión y planificación",
+    titulo: "1.-Gestión y planificación",
     preguntas: [
       "Planifica la temporada antes de iniciarla.",
       "Cuenta con un presupuesto definido para la temporada.",
@@ -56,7 +56,7 @@ const SECCIONES = [
   {
     id: "herramientas",
     icon: "tool",
-    titulo: "Tecnologías y herramientas",
+    titulo: "2.-Tecnologías y herramientas",
     preguntas: [
       "Utiliza software agrícola o de gestión del campo.",
       "Registra las labores del campo en un sistema o app (no solo papel).",
@@ -68,7 +68,7 @@ const SECCIONES = [
   {
     id: "conectividad",
     icon: "net",
-    titulo: "Conectividad e infraestructura",
+    titulo: "3.-Conectividad e infraestructura",
     preguntas: [
       "Cuenta con señal de internet en la mayoría de los sectores del campo.",
       "La señal permite usar aplicaciones o enviar datos desde terreno.",
@@ -80,7 +80,7 @@ const SECCIONES = [
   {
     id: "datos",
     icon: "data",
-    titulo: "Uso de datos y automatización",
+    titulo: "4.-Uso de datos y automatización",
     preguntas: [
       "Registra datos productivos (rendimientos, costos, aplicaciones, riego, etc.).",
       "Analiza los datos antes de tomar decisiones.",
@@ -93,7 +93,7 @@ const SECCIONES = [
   {
     id: "adopcion",
     icon: "heart",
-    titulo: "Disposición y adopción",
+    titulo: "5.-Disposición y adopción",
     preguntas: [
       "Existe interés real en incorporar más herramientas digitales.",
       "Se sienten preparados para avanzar en digitalización.",
@@ -273,11 +273,11 @@ export default function AutoDiagnostico() {
               <img src={BRAND.logoSrc} alt={`${BRAND.name} logo`} className="w-16 h-16 object-contain" />
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-                  Auto-diagnóstico de Digitalización Agrícola
+                  Paso 1: Auto-diagnóstico de Digitalización Agrícola
                 </h1>
                 <p className="text-slate-600 mt-1">
                   Queremos conocer cómo estás trabajando hoy en tu campo para poder acompañarte mejor.
-                  Esta encuesta es corta y nos ayudan a crear tu mejor ruta hacia la digitalización de tu campo.
+                  Esta encuesta es corta y nos ayuda a crear la mejor ruta hacia la digitalización de tu campo.
                 </p>
               </div>
             </div>

@@ -1,6 +1,7 @@
 // src/pages/CaminoDigital.jsx
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
+import TimelineCamino from "../components/TimelineCamino.jsx";
 
 export default function CaminoDigital() {
   useEffect(() => {
@@ -26,16 +27,16 @@ export default function CaminoDigital() {
 
           <div className="mt-5 flex flex-wrap gap-3">
             <Link
-              to="/diagnostico-digital"
-              className="inline-flex items-center gap-2 bg-white text-emerald-800 hover:bg-emerald-50 px-5 py-2.5 rounded-lg font-semibold shadow-sm"
+            //  to="/diagnostico-digital"
+            //  className="inline-flex items-center gap-2 bg-white text-emerald-800 hover:bg-emerald-50 px-5 py-2.5 rounded-lg font-semibold shadow-sm"
+            //</div>>
+            //</div>  🚜 Realizar encuesta de digitalización
+            //</header></Link>
+            //<Link
+            //  to="/calculadora-roi"
+            //  className="inline-flex items-center gap-2 bg-emerald-50/20 hover:bg-emerald-50/30 border border-white/40 px-5 py-2.5 rounded-lg"
             >
-              🚜 Realizar encuesta de digitalización
-            </Link>
-            <Link
-              to="/calculadora-roi"
-              className="inline-flex items-center gap-2 bg-emerald-50/20 hover:bg-emerald-50/30 border border-white/40 px-5 py-2.5 rounded-lg"
-            >
-              💰 Ver Calculadora ROI
+            
             </Link>
             <a
               href={`https://wa.me/56944645774?text=${encodeURIComponent(
@@ -45,46 +46,20 @@ export default function CaminoDigital() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-emerald-50/10 hover:bg-emerald-50/20 border border-white/40 px-5 py-2.5 rounded-lg"
             >
-              💬 Hablar por WhatsApp
+              💬 ¿Quieres saber más?, Hablemos por WhatsApp
             </a>
           </div>
         </div>
       </header>
 
       {/* CONTENIDO */}
-      <main className="container-bd py-10">
+      <main className="container-bd py-1">
         {/* PASO A PASO */}
         <section>
-          <h2 className="text-xl font-semibold text-emerald-800 mb-4">
-            ¿Cómo avanzamos? Paso a paso
-          </h2>
-          <div className="grid md:grid-cols-3 gap-4">
-            <Card
-              n="1"
-              title="Mide tu punto de partida"
-              badge="Encuesta (5–7 min)"
-              text="Evaluamos prácticas reales (operación, insumos, registros, coordinación). Nada de palabreo: señal de madurez y brechas accionables."
-              ctaLabel="Hacer encuesta"
-              to="/encuesta-digitalizacion"
-            />
-            <Card
-              n="2"
-              title="Estima el impacto"
-              badge="Calculadora ROI"
-              text="Simula ahorros y mejoras en CLP: payback y ROI acumulado con datos BData y supuestos transparentes."
-              ctaLabel="Abrir calculadora"
-              to="/calculadora-roi"
-            />
-            <Card
-              n="3"
-              title="Baja a acciones"
-              badge="Diagnóstico IA"
-              text="Con tus resultados, generamos un plan práctico: bitácoras, KPIs semanales y compras. Cero humo, foco en captura."
-              ctaLabel="Ver luego del ROI"
-              to="/calculadora-roi"
-              disabled
-            />
-          </div>
+             <section className="mt-2">
+              <TimelineCamino />
+            </section>
+ 
         </section>
 
         {/* QUÉ OBTIENES */}
@@ -109,7 +84,7 @@ export default function CaminoDigital() {
 
           <div className="mt-4 flex flex-wrap gap-3">
             <Link
-              to="/encuesta-digitalizacion"
+              to="/diagnostico-digital"
               className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium"
             >
               Empezar por la encuesta
@@ -127,11 +102,12 @@ export default function CaminoDigital() {
         <section className="mt-8">
           <h2 className="text-xl font-semibold text-emerald-800">¿Para quién es?</h2>
           <div className="mt-3 flex flex-wrap gap-2 text-sm">
-            <Chip>Productores 30–500 ha</Chip>
+            <Chip>Productores con real interés de digitalizarse y adaptarse a la realidad actual</Chip>
             <Chip>Equipos con fricción operativa</Chip>
             <Chip>Compra de insumos descentralizada</Chip>
-            <Chip>Bitácoras dispersas / Excel</Chip>
-            <Chip>Necesidad de visibilidad semanal</Chip>
+            <Chip>Datos dispersos que no generan valor</Chip>
+            <Chip>Falta de planificación en la temporada</Chip>
+            <Chip>Necesidad de visibilidad de información en tiempo y forma</Chip>
           </div>
         </section>
 
