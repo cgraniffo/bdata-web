@@ -5,25 +5,23 @@ import logoUrl from "../assets/Logo_Final_Transparente.png";
 
 const homeSections = [
   { hash: "#metodologia", label: "Nuestra metodología" },
-  { hash: "#porque",      label: "¿Por qué BData?" },
-  { hash: "#casos",       label: "Casos de éxito" },
-  { hash: "#planes",      label: "Nuestros planes" },
-
+  { hash: "#planes",       label: "Nuestros planes" },
+  { hash: "#casos",        label: "Casos de éxito" },
+  { hash: "#porque",       label: "¿Por qué BData?" },
 ];
 
 const extraItems = [
   { to: "/contacto", label: "Contacto", type: "route" },
 ];
 
-// Menú "Camino Digital" (reemplaza “Herramientas IA”)
+// Ítems del menú "Camino Digital"
 const caminoItems = [
-  { to: "/camino-digital",        label: "Tu punto de partida", type: "route" },
-  { to: "/calculadora-roi",       label: "Calculadora ROI",     type: "route" },
-  { to: "/diagnostico-digital",   label: "Diagnóstico Digital", type: "route" },
+  { to: "/camino-digital",            label: "Resumen Camino Digital", type: "route" }, // overview
+  { to: "/calculadora-roi",           label: "Calculadora ROI",        type: "route" },
   { href: "https://optimizador.bdata.cl", label: "Optimizar fertilización (Beta)", type: "external" },
+  // cuando tengas la encuesta:
+  // { to: "/encuesta-digitalizacion",   label: "Encuesta de digitalización", type: "route" },
 ];
-
-
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
@@ -88,10 +86,10 @@ export default function NavBar() {
             </li>
           ))}
 
-          {/* Dropdown Camino Digital */}
+          {/* Dropdown Camino Digital (reemplaza a “Herramientas IA”) */}
           <li className="relative group">
             <button className={baseLink + " text-sm md:text-base"}>
-              Tu Camino Digital
+              Camino Digital
             </button>
             <div className="absolute left-0 top-full z-10 pt-2">
               <div className="hidden group-hover:block group-focus-within:block bg-white border rounded-md shadow-lg min-w-[14rem]">
@@ -156,7 +154,7 @@ export default function NavBar() {
             </li>
           ))}
 
-          {/* Camino Digital (móvil) */}
+          {/* Sección Camino Digital (móvil) */}
           <li className="pt-2">
             <div className="text-zinc-500 text-xs uppercase px-1">Camino Digital</div>
           </li>

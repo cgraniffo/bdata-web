@@ -1,0 +1,65 @@
+Proyecto: bdata-web
+
+bdata-web/
+├─ index.html
+├─ README.md
+├─ package.json
+├─ package-lock.json
+├─ vite.config.js
+├─ tailwind.config.cjs
+├─ postcss.config.cjs
+├─ eslint.config.js
+├─ TEMP_out.txt
+├─ netlify/
+│  └─ functions/
+│     ├─ ai-diagnostico.js
+│     └─ redactar-ia.js
+├─ public/
+│  ├─ _redirects
+│  ├─ data/
+│  │  └─ costos-bdata.json
+│  ├─ images/ … (varias imágenes de soporte)
+│  ├─ bdata-*.svg / *.png / *.jpg …
+│  ├─ hero-agro.jpg
+│  └─ favicon*.*
+├─ src/
+│  ├─ App.jsx
+│  ├─ main.jsx
+│  ├─ index.css
+│  ├─ theme.js
+│  ├─ tailwind.config.js
+│  ├─ EnfoqueEstrategico.jsx
+│  ├─ utils/
+│  │  └─ format.js
+│  ├─ data/
+│  │  └─ cases.js
+│  ├─ assets/
+│  │  ├─ hero-contacto.jpg
+│  │  ├─ logo-bdata.jpg
+│  │  └─ react.svg
+│  ├─ components/
+│  │  ├─ NavBar.jsx
+│  │  ├─ Section.jsx
+│  │  ├─ SectionDivider.jsx
+│  │  ├─ SmoothHashScroll.jsx
+│  │  ├─ ScrollToTop.jsx
+│  │  ├─ ImageBanner.jsx
+│  │  ├─ ContactoForm.jsx
+│  │  ├─ CaseCard.jsx
+│  │  ├─ CTA.jsx
+│  │  └─ WhatsAppButton.jsx
+│  └─ pages/
+│     ├─ Home.jsx
+│     ├─ CalculadoraROI.jsx
+│     ├─ Contacto.jsx
+│     ├─ Planes.jsx
+│     ├─ PlanAgroDigital.jsx
+│     ├─ PlanSemilla.jsx
+│     └─ RedProfesionales.jsx
+├─ dist/ … (build generado por Vite)
+└─ .netlify/ … (estado local y bundle de funciones para serve)
+
+Notas:
+- Se omiten node_modules/ y archivos generados ruidosos.
+- El JSON de costos usado por la Calculadora ROI está en public/data/costos-bdata.json.
+- Funciones serverless (Netlify) en netlify/functions/.

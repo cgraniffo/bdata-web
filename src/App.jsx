@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter,Routes, Route, useLocation } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 import { useMemo } from "react";
 import { getThemeForPath } from "./theme.js";
@@ -12,6 +12,9 @@ import WhatsAppButton from "./components/WhatsAppButton.jsx";
 import CalculadoraROI from "./pages/CalculadoraROI.jsx";
 import Planes from "./pages/Planes.jsx";
 import SmoothHashScroll from "./components/SmoothHashScroll.jsx";
+import CaminoDigital from "./pages/CaminoDigital.jsx";
+import AutoDiagnostico from "./pages/AutoDiagnostico.jsx";
+import DiagnosticoAdmin from "./pages/DiagnosticoAdmin.jsx";
 
 export default function App() {
   const { pathname } = useLocation();
@@ -31,10 +34,13 @@ export default function App() {
           <Route path="/plan-semilla" element={<PlanSemilla />} />
           {/* OJO: corrige el path para que coincida con tus links */}
           <Route path="/red-de-profesionales" element={<RedProfesionales />} />
+          <Route path="/camino-digital" element={<CaminoDigital />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/calculadora-roi" element={<CalculadoraROI />} />
           <Route path="/planes" element={<Planes />} />
           <Route path="*" element={<Home />} />
+          <Route path="/diagnostico-digital" element={<AutoDiagnostico />} />
+          <Route path="/diagnostico-admin" element={<DiagnosticoAdmin />} />
         </Routes>
       </main>
 
