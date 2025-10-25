@@ -4,6 +4,7 @@ import CaseCard from "../components/CaseCard.jsx";
 import { cases } from "../data/cases.js";
 import { Link } from "react-router-dom";
 import SectionDivider from "../components/SectionDivider.jsx";
+import { Users, Sprout, Network, BarChart3, Workflow, CheckCircle2 } from "lucide-react";
 
 export default function Home() {
   const PLAN_ORDER = [
@@ -166,71 +167,140 @@ export default function Home() {
 
       <SectionDivider variant="mint-to-white" className="h-4 md:h-6" />
 
-      {/* PLANES */}
-      <section id="planes" className="bg-white scroll-mt-28 md:scroll-mt-32">
-        <Section
-          compact
-          title="Planes BData: soluciones a tu medida"
-          subtitle={
-            <>Cada agricultor tiene un punto de partida distinto. Nuestros planes se adaptan a tu nivel de digitalización,
-            el tamaño de tu campo y tus metas productivas. Todos comparten algo en común:
-            <strong> acompañamiento, métricas y retorno real.</strong></>
-          }
-        >
-          <div className="grid md:grid-cols-3 gap-8 text-left">
-            <div className="bg-white rounded-xl shadow-sm border border-emerald-100 p-6 hover:shadow-md transition-all">
-              <h3 className="text-xl font-semibold text-emerald-800 mb-2">🌱 Plan Semilla</h3>
-              <p className="text-zinc-700 text-sm mb-3">
-                Para productores que recién comienzan la transformación digital. Implementaciones simples, acompañadas
-                y medibles desde el primer mes.
-              </p>
-              <ul className="text-sm text-zinc-600 list-disc list-inside mb-4">
-                <li><strong>Recomendado para:</strong> pequeños agricultores o cooperativas en etapa inicial.</li>
-              </ul>
-              <div className="text-right">
-                <Link to="/plan-semilla" className="text-emerald-700 font-semibold text-sm hover:underline">Ver más →</Link>
-              </div>
-            </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-emerald-100 p-6 hover:shadow-md transition-all">
-              <h3 className="text-xl font-semibold text-emerald-800 mb-2">🚜 Plan Agro Digital</h3>
-              <p className="text-zinc-700 text-sm mb-3">
-                Para campos en crecimiento que buscan optimizar la gestión diaria. Automatizaciones, reportería y control
-                de costos en tiempo real, sin desarrollo complejo.
-              </p>
-              <ul className="text-sm text-zinc-600 list-disc list-inside mb-4">
-                <li><strong>Recomendado para:</strong> medianos productores con equipos de trabajo en terreno.</li>
-              </ul>
-              <div className="text-right">
-                <Link to="/plan-agro-digital" className="text-emerald-700 font-semibold text-sm hover:underline">Ver más →</Link>
-              </div>
-            </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-emerald-100 p-6 hover:shadow-md transition-all">
-              <h3 className="text-xl font-semibold text-emerald-800 mb-2">🤝 Red de Profesionales</h3>
-              <p className="text-zinc-700 text-sm mb-3">
-                Acceso a un equipo multidisciplinario de expertos en agro, datos y gestión. Ideal para proyectos que
-                requieren soporte técnico continuo o análisis avanzado.
-              </p>
-              <ul className="text-sm text-zinc-600 list-disc list-inside mb-4">
-                <li><strong>Recomendado para:</strong> empresas agrícolas o cooperativas que buscan asesoría continua y ROI sostenible.</li>
-              </ul>
-              <div className="text-right">
-                <Link to="/red-de-profesionales" className="text-emerald-700 font-semibold text-sm hover:underline">Ver más →</Link>
-              </div>
-            </div>
-          </div>
+<section id="planes-home" className="container-bd my-16">
+  <div className="mb-6">
+    <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900">
+      Planes BData: soluciones a tu medida
+    </h2>
+    <p className="mt-2 text-slate-600 max-w-4xl">
+      Dos caminos complementarios para impulsar la transformación digital: 
+      <span className="font-semibold"> Red de Productores digitales🤝🏼</span> y <span className="font-semibold">Plan Cosecha🌾</span>.
+    </p>
+  </div>
 
-          <div className="mt-6">
-            <Link
-              to="/planes"
-              className="inline-block bg-emerald-700 text-white px-6 py-3 rounded-lg font-semibold text-sm hover:bg-emerald-800 transition-all shadow-sm"
-            >
-              Ver todos los planes BData
-            </Link>
-          </div>
-        </Section>
-      </section>
+  {/* === Card 1: Doble Raíz Digital === */}
+  <article className="group relative overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-white shadow-sm ring-1 ring-emerald-100/40 transition hover:shadow-lg">
+    <div className="grid md:grid-cols-2">
+      {/* Texto */}
+      <div className="p-6 md:p-8">
+        <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100/80 px-3 py-1 text-emerald-800 ring-1 ring-emerald-200 text-xs font-semibold">
+          <Network className="w-4 h-4" /> Ecosistema productor-consultor senior
+        </div>
+        <h3 className="mt-3 text-2xl font-bold text-slate-900">Plan Doble Raíz Digital🤝🏼</h3>
+        <p className="mt-1 text-slate-700">
+          <strong>Agricultores + consultores senior</strong> → Adopción real en redes de apoyo.
+          Dos raíces sostienten el futuro, la experiencia del consultor y del agricultor se potencian y se digitalizan juntos...BData aporta método y herramientas para convertir esa relación en adopción digital.
+        </p>
+
+        {/* Bullets con íconos */}
+        <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm text-slate-700">
+          <li className="flex items-start gap-2"><CheckCircle2 className="mt-0.5 w-4 h-4 text-emerald-600" /> Red de Productores Digitales por territorio</li>
+          <li className="flex items-start gap-2"><Users className="mt-0.5 w-4 h-4 text-emerald-600" /> Mentores senior + aprendizaje mutuo</li>
+          <li className="flex items-start gap-2"><Workflow className="mt-0.5 w-4 h-4 text-emerald-600" /> Adopción real, no solo capacitación</li>
+          <li className="flex items-start gap-2"><Sprout className="mt-0.5 w-4 h-4 text-emerald-600" /> Patrocinadores territoriales</li>
+        </ul>
+
+        <div className="mt-6 flex flex-wrap gap-3">
+          <a
+            href="https://wa.me/56944645774?text=Hola%20BData%2C%20quiero%20sumarme%20a%20la%20Red%20de%20Productores%20Digitales."
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-white shadow-sm hover:bg-emerald-700"
+          >
+            Quiero sumarme a la red <span aria-hidden>→</span>
+          </a>
+          <a
+            href="/planes#raiz"
+            className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-slate-700 hover:bg-slate-50"
+          >
+            Ver más
+          </a>
+        </div>
+      </div>
+
+      {/* Imagen */}
+      <div className="relative overflow-hidden">
+        <img
+          src="/images/siembra-appsheet.png"
+          alt="Plan Doble Raíz Digital"
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+          loading="lazy"
+        />
+        {/* Decor */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-l from-white/0 via-white/0 to-white/40" />
+      </div>
+    </div>
+  </article>
+
+  {/* Separador suave */}
+  <div className="h-6" />
+
+  {/* === Card 2: Cosecha === */}
+  <article className="group relative overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-br from-white to-emerald-50 shadow-sm ring-1 ring-emerald-100/40 transition hover:shadow-lg">
+    <div className="grid md:grid-cols-2 md:grid-flow-col-dense">
+      {/* Imagen a la izquierda en desktop */}
+      <div className="relative order-last md:order-first overflow-hidden">
+        <img
+          src="/images/dashboard.png"
+          alt="Plan Cosecha"
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+          loading="lazy"
+        />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white/0 via-white/0 to-white/40" />
+      </div>
+
+      {/* Texto */}
+      <div className="p-6 md:p-8">
+        <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100/80 px-3 py-1 text-emerald-800 ring-1 ring-emerald-200 text-xs font-semibold">
+          <BarChart3 className="w-4 h-4" /> Aceleración digital 1:1
+        </div>
+        <h3 className="mt-3 text-2xl font-bold text-slate-900">Plan Cosecha🌾</h3>
+        <p className="mt-1 text-slate-700">
+          Acompañamiento <strong>personalizado</strong> para productores que ya pasaron por la red o que ya tienen un grado de avance digital (encuesta de digitalización).
+          Herramientas BData en versión avanzada, metodología y consultoría para decisiones basadas en datos.
+        </p>
+
+        <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm text-slate-700">
+          <li className="flex items-start gap-2"><CheckCircle2 className="mt-0.5 w-4 h-4 text-emerald-600" /> Implementación 1:1 según tu realidad</li>
+          <li className="flex items-start gap-2"><BarChart3 className="mt-0.5 w-4 h-4 text-emerald-600" /> KPIs y tableros de control</li>
+          <li className="flex items-start gap-2"><Workflow className="mt-0.5 w-4 h-4 text-emerald-600" /> Automatizaciones y orquestación</li>
+          <li className="flex items-start gap-2"><Users className="mt-0.5 w-4 h-4 text-emerald-600" /> Equipo técnico BData a tu lado</li>
+        </ul>
+
+        <div className="mt-6 flex flex-wrap gap-3">
+          <a
+            href="https://calendly.com/tu-espacio/30min"  // cambia por tu link real; si no, usa /contacto
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-white shadow-sm hover:bg-emerald-700"
+          >
+            Quiero avanzar 1:1 <span aria-hidden>→</span>
+          </a>
+          <a
+            href="/planes#cosecha"
+            className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-slate-700 hover:bg-slate-50"
+          >
+            Ver más
+          </a>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  {/* Link a la página de planes */}
+  <div className="mt-6">
+    <a
+      href="/planes"
+      className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-slate-700 hover:bg-slate-50"
+    >
+      Ver todos los detalles →
+    </a>
+  </div>
+</section>
+
+
 
       <SectionDivider variant="white-to-mint" className="h-4 md:h-6" />
     </div>

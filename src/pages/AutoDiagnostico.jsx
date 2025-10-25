@@ -1,5 +1,6 @@
 // src/pages/AutoDiagnostico.jsx
 import { useMemo, useRef, useState } from "react";
+import { PlanRecommendation } from "../components/Plans.jsx";
 
 /** ====== BRAND / ESTILOS ====== **/
 const BRAND = {
@@ -376,6 +377,9 @@ if (!telValido) {
                   </div>
                 ))}
               </div>
+{/* ✅ Recomendación automática */}
+    <PlanRecommendation nivelId={resultado.nivel.id} />
+
 
               <div className="mt-5 p-4 rounded-xl ring-1 ring-slate-200 bg-slate-50">
                 <p className="text-slate-700">¿Quiere recibir recomendaciones para su campo? Escríbanos:</p>
@@ -387,6 +391,10 @@ if (!telValido) {
               </div>
             </div>
           )}
+
+          
+
+
 
           {!resultado && (
             <p className="text-center text-slate-500 mt-6">

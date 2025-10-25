@@ -18,8 +18,9 @@ const extraItems = [
 // Menú "Camino Digital" (reemplaza “Herramientas IA”)
 const caminoItems = [
   { to: "/camino-digital",        label: "¿Cómo lo hacemos?", type: "route" },
-  { to: "/calculadora-roi",       label: "Calculadora ROI",     type: "route" },
   { to: "/diagnostico-digital",   label: "Diagnóstico Digital", type: "route" },
+  { to: "/calculadora-roi",       label: "Calculadora ROI",     type: "route" },
+  
   //{ href: "https://optimizador.bdata.cl", label: "Optimizar fertilización (Beta)", type: "external" },
 ];
 

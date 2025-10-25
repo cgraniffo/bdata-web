@@ -1,65 +1,117 @@
-Proyecto: bdata-web
-
 bdata-web/
-├─ index.html
-├─ README.md
-├─ package.json
-├─ package-lock.json
-├─ vite.config.js
-├─ tailwind.config.cjs
-├─ postcss.config.cjs
+├─ .env
+├─ .gitignore
+├─ Actualizaci�nROI-17-10-2025.txt
 ├─ eslint.config.js
+├─ index.html
+├─ iniciar_localhost.txt
+├─ package-lock.json
+├─ package.json
+├─ postcss.config.cjs
+├─ README.md
+├─ tailwind.config.cjs
 ├─ TEMP_out.txt
+├─ TREE.txt
+├─ vite.config.js
+├─ costos/
+│  ├─ Copia de COSTOS MAIZ GRANOHUMEDO (2024-2025).xls
+│  ├─ Copia de COSTOS RAPS IMI (2024-2025).xls
+│  ├─ Copia de COSTOS TRIGO  PATRAS-MONARKA-GEDSER  (2024-2025).xls
+│  ├─ Copia de COSTOS TRIGO CANDEAL (2024-2025).xls
+│  ├─ Copia de COSTOS TRIGO FRITZ-PANTERA (2024-2025).xls
+│  ├─ raps.xlsx
+│  ├─ Raps_BD.xlsx
+│  └─ ~$Raps_BD.xlsx
 ├─ netlify/
 │  └─ functions/
 │     ├─ ai-diagnostico.js
+│     ├─ diagnostico-list.js
+│     ├─ diagnostico-save.js
 │     └─ redactar-ia.js
 ├─ public/
 │  ├─ _redirects
+│  ├─ apple-touch-icon.png
+│  ├─ bdata-icon.svg
+│  ├─ bdata-logo-full.svg
+│  ├─ bdata-logo-mono.svg
+│  ├─ bdata-logo-white.svg
+│  ├─ favicon-128.png
+│  ├─ favicon-16.png
+│  ├─ favicon-180.png
+│  ├─ favicon-192.png
+│  ├─ favicon-256.png
+│  ├─ favicon-32.png
+│  ├─ favicon-32.svg
+│  ├─ favicon-48.png
+│  ├─ favicon-512.png
+│  ├─ favicon-64.png
+│  ├─ favicon-96.png
+│  ├─ favicon.svg
+│  ├─ hero-agro.jpg
+│  ├─ logo-bdata.jpg
+│  ├─ logo-bdata.png
+│  ├─ Logo_Final_Transparente.png
+│  ├─ og-image.png
+│  ├─ vite.svg
 │  ├─ data/
 │  │  └─ costos-bdata.json
-│  ├─ images/ … (varias imágenes de soporte)
-│  ├─ bdata-*.svg / *.png / *.jpg …
-│  ├─ hero-agro.jpg
-│  └─ favicon*.*
-├─ src/
-│  ├─ App.jsx
-│  ├─ main.jsx
-│  ├─ index.css
-│  ├─ theme.js
-│  ├─ tailwind.config.js
-│  ├─ EnfoqueEstrategico.jsx
-│  ├─ utils/
-│  │  └─ format.js
-│  ├─ data/
-│  │  └─ cases.js
-│  ├─ assets/
-│  │  ├─ hero-contacto.jpg
-│  │  ├─ logo-bdata.jpg
-│  │  └─ react.svg
-│  ├─ components/
-│  │  ├─ NavBar.jsx
-│  │  ├─ Section.jsx
-│  │  ├─ SectionDivider.jsx
-│  │  ├─ SmoothHashScroll.jsx
-│  │  ├─ ScrollToTop.jsx
-│  │  ├─ ImageBanner.jsx
-│  │  ├─ ContactoForm.jsx
-│  │  ├─ CaseCard.jsx
-│  │  ├─ CTA.jsx
-│  │  └─ WhatsAppButton.jsx
-│  └─ pages/
-│     ├─ Home.jsx
-│     ├─ CalculadoraROI.jsx
-│     ├─ Contacto.jsx
-│     ├─ Planes.jsx
-│     ├─ PlanAgroDigital.jsx
-│     ├─ PlanSemilla.jsx
-│     └─ RedProfesionales.jsx
-├─ dist/ … (build generado por Vite)
-└─ .netlify/ … (estado local y bundle de funciones para serve)
-
-Notas:
-- Se omiten node_modules/ y archivos generados ruidosos.
-- El JSON de costos usado por la Calculadora ROI está en public/data/costos-bdata.json.
-- Funciones serverless (Netlify) en netlify/functions/.
+│  └─ images/
+│     ├─ B0DXjHQe0UclBsvqAUKDX.png
+│     ├─ bodega-make.png
+│     ├─ dashboard.png
+│     ├─ Generated Image September 14, 2025 - 8_05PM.png
+│     ├─ Generated Image September 14, 2025 - 9_42AM (1).png
+│     ├─ GYyGCh01DgRylNDQPGwGV.png
+│     ├─ hero-agro.jpg
+│     ├─ hero-agro.png
+│     ├─ hLSwu7RmWnp60-3-5zyXx.png
+│     ├─ Logo_Final_BDATA.png
+│     ├─ Logo_Final_Transparente.png
+│     ├─ siembra-appsheet.png
+│     ├─ Whisk_111df54ecbc5171828148dd28c217680eg.jpeg
+│     ├─ Whisk_12cf7c21394cea0980748d2f19696faceg.jpeg
+│     ├─ Whisk_55be2b0248b5bd8afc84fe938927b961eg.jpeg
+│     ├─ Whisk_5829b13a5d38fb28ab240e8646b44de6eg.jpeg
+│     ├─ Whisk_607a9cd87c7f2f2b1564b5907b1509fceg.jpeg
+│     └─ Whisk_8077ae17360c055bfe249d154992a6bbeg.png
+└─ src/
+   ├─ App.jsx
+   ├─ EnfoqueEstrategico.jsx
+   ├─ index.css
+   ├─ main.jsx
+   ├─ tailwind.config.js
+   ├─ theme.js
+   ├─ assets/
+   │  ├─ hero-contacto.jpg
+   │  ├─ logo-bdata.jpg
+   │  ├─ Logo_Final_Transparente.png
+   │  └─ react.svg
+   ├─ components/
+   │  ├─ CaseCard.jsx
+   │  ├─ ContactoForm.jsx
+   │  ├─ CTA.jsx
+   │  ├─ ImageBanner.jsx
+   │  ├─ NavBar copy.jsx
+   │  ├─ NavBar.jsx
+   │  ├─ Plans.jsx
+   │  ├─ ScrollToTop.jsx
+   │  ├─ Section.jsx
+   │  ├─ SectionDivider.jsx
+   │  ├─ SmoothHashScroll.jsx
+   │  ├─ TimelineCamino.jsx
+   │  └─ WhatsAppButton.jsx
+   ├─ data/
+   │  └─ cases.js
+   ├─ pages/
+   │  ├─ AutoDiagnostico.jsx
+   │  ├─ CalculadoraROI.jsx
+   │  ├─ CaminoDigital.jsx
+   │  ├─ Contacto.jsx
+   │  ├─ DiagnosticoAdmin.jsx
+   │  ├─ Home.jsx
+   │  ├─ PlanAgroDigital.jsx
+   │  ├─ Planes.jsx
+   │  ├─ PlanSemilla.jsx
+   │  └─ RedProfesionales.jsx
+   └─ utils/
+      └─ format.js

@@ -4,17 +4,17 @@ import { Link } from "react-router-dom";
 // Paleta por plan (colores suaves de hover y chapita)
 const PLAN_STYLES = {
   agro: {
-    badge: { text: "Plan Agro Digital", bg: "bg-emerald-600", ring: "ring-emerald-200" },
+    badge: { text: "Plan Cosecha🌾", bg: "bg-emerald-600", ring: "ring-emerald-200" },
     hover: "hover:bg-emerald-50",
     ringHover: "hover:ring-emerald-100",
   },
   semilla: {
-    badge: { text: "Plan Semilla", bg: "bg-sky-600", ring: "ring-sky-200" },
-    hover: "hover:bg-sky-50",
-    ringHover: "hover:ring-sky-100",
+    badge: { text: "Plan Doble Raíz Digital🤝🏼", bg: "bg-amber-600", ring: "ring-amber-200" },
+    hover: "hover:bg-amber-50",
+    ringHover: "hover:ring-amber-100",
   },
   red: {
-    badge: { text: "Red de Profesionales", bg: "bg-amber-600", ring: "ring-amber-200" },
+    badge: { text: "Plan Doble Raíz Digital🤝🏼", bg: "bg-amber-600", ring: "ring-amber-200" },
     hover: "hover:bg-amber-50",
     ringHover: "hover:ring-amber-100",
   },
