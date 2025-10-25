@@ -10,9 +10,39 @@ export default function ContactoForm() {
     honeypot: "bot-field",
   };
 
+  // helper para convertir FormData a x-www-form-urlencoded
+  const encode = (formData) =>
+    new URLSearchParams(formData).toString();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    // Netlify necesita form-name en el payload
+    if (!data.get("form-name")) data.set("form-name", form.getAttribute("name"));
+
+    // Honeypot (spam): si está relleno, abortamos en silencio
+    if (data.get(ids.honeypot)) return;
+
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: encode(data),
+    })
+      .then(() => {
+        // Redirección controlada (prod y localhost)
+        window.location.assign("/camino-digital/?ok=1");
+      })
+      .catch(() => {
+        // Si algo falla, quédate en contacto con un flag
+        window.location.assign("/contacto?error=1");
+      });
+  };
+
   return (
     <div className="rounded-2xl border border-zinc-200 bg-white shadow-lg">
-      {/* Header de la tarjeta */}
+      {/* Header */}
       <div className="container-bd mt-6 md:mt-8 lg:mt-10 xl:mt-10 pb-16">
         <div className="rounded-2xl border border-zinc-200 bg-white shadow-lg">
           <div>
@@ -31,23 +61,25 @@ export default function ContactoForm() {
         </div>
       </div>
 
-      {/* === Form (Netlify) === */}
-<form
-  name="contact"                // usa el mismo nombre que en Netlify
-  method="POST"
-  data-netlify="true"
-  netlify-honeypot="bot-field"
-  action="/camino-digital/"     // 👈 redirección final
-  className="p-6 md:p-7"
->
-  <input type="hidden" name="form-name" value="contact" />
-  {/* NO pongas el hidden "redirect" si usas action */}
-  <p className="hidden">
-    <label>
-      No completar:
-      <input name="bot-field" id={ids.honeypot} />
-    </label>
-  </p>
+      {/* === Form (Netlify + JS) === */}
+      <form
+        name="contact"
+        method="POST"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        onSubmit={handleSubmit}      // 👈 manejamos el submit, SIN action
+        className="p-6 md:p-7"
+      >
+        {/* Requisito de Netlify */}
+        <input type="hidden" name="form-name" value="contact" />
+
+        {/* Honeypot (spam) */}
+        <p className="hidden">
+          <label>
+            No completar:
+            <input name={ids.honeypot} id={ids.honeypot} />
+          </label>
+        </p>
 
         {/* Campos */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

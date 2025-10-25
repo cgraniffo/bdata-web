@@ -73,23 +73,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
 
-<!-- Formulario Netlify existente (contact) - DEFINICIÓN PARA BUILD -->
-<form hidden method="POST" name="contact" data-netlify="true" action="https://bdata.cl/camino-digital/"
-  <input type="hidden" name="form-name" value="contact" />
-  <p style="display:none">
-    <label>No completar: <input name="bot-field" /></label>
-  </p>
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <input type="text" name="telefono" />
-  <input type="tel" name="phone" />
-  <select name="plan">
-    <option>Plan Semilla</option>
-    <option>Plan Agro Digital</option>
-    <option>Red de Profesionales</option>
-  </select>
-  <textarea name="message"></textarea>
-</form>
+    <!-- Form fantasma lead-roi (igual que ya tenías) -->
+    <form name="lead-roi" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="lead-roi" />
+      <p style="display:none">
+        <label>No completar: <input name="bot-field" /></label>
+      </p>
+      <input type="text" name="nombre" />
+      <input type="email" name="email" />
+      <input type="text" name="telefono" />
+      <input type="text" name="sim_query" />
+      <input type="text" name="kpis" />
+    </form>
 
 
     <!-- 🔥 único formulario fantasma para lead-roi (correcto y válido) -->
