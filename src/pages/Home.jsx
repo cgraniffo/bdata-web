@@ -169,7 +169,8 @@ export default function Home() {
 
 
 
-<section id="planes-home" className="container-bd my-16">
+<section id="planes" className="container-bd my-16 scroll-mt-28 md:scroll-mt-32">
+
   <div className="mb-6">
     <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900">
       Planes BData: soluciones a tu medida
