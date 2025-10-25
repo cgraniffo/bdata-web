@@ -37,11 +37,11 @@ export default function ContactoForm() {
         method="POST"
         data-netlify="true"
         netlify-honeypot="bot-field"
-        action="/contacto?enviado=1"
         className="p-6 md:p-7"
       >
         {/* Requisito de Netlify */}
         <input type="hidden" name="form-name" value="contact" />
+        <input type="hidden" name="redirect" value="/camino-digital" />   // 🔥 Esta línea
 
         {/* Honeypot (spam) */}
         <p className="hidden">
