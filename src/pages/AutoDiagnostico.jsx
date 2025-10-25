@@ -124,7 +124,11 @@ export default function AutoDiagnostico() {
     () => SECCIONES.reduce((acc, s) => acc + s.preguntas.length, 0),
     []
   );
-  const telValido   = useMemo(() => /^(\+?56)?\s?9\s?\d{4}\s?\d{4}$/.test(telefono.trim()), [telefono]);
+  const telValido = useMemo(() => {
+  if (!telefono.trim()) return true; // ✅ opcional
+  return /^\+?56\s?9\s?\d{7,8}$/.test(telefono.replace(/\s+/g,"")); // formato liviano
+}, [telefono]);
+
   const allAnswered = useMemo(() => Object.keys(respuestas).length === totalPreguntas, [respuestas, totalPreguntas]);
 
   const pctPorSeccion = useMemo(() => {
@@ -154,10 +158,15 @@ export default function AutoDiagnostico() {
 
   /** ====== Calcular + Envío a Netlify Forms (email) ====== **/
   async function calcular() {
-    if (!nombre.trim() || !telValido) {
-      alert("Para ver el resultado ingrese Nombre y un teléfono válido (+56 9 XXXX XXXX).");
-      return;
-    }
+    if (!nombre.trim()) {
+  alert("Ingrese su Nombre para continuar.");
+  return;
+}
+if (!telValido) {
+  alert("El teléfono ingresado no es válido. Si no quiere ingresarlo, puede dejarlo en blanco.");
+  return;
+}
+
     if (!allAnswered) {
       alert("Te faltan preguntas por responder.");
       return;
