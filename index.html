@@ -73,24 +73,24 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
 
-    <!-- Formulario Netlify existente (contact) - lo dejamos intacto -->
-    <form hidden method="POST" name="contact" data-netlify="true" netlify-honeypot="bot-field">
-      <input type="hidden" name="form-name" value="contact" />
-      <p style="display:none">
-        <label>No completar: <input name="bot-field" /></label>
-      </p>
+<!-- Formulario Netlify existente (contact) - DEFINICIÓN PARA BUILD -->
+<form hidden method="POST" name="contact" data-netlify="true" action="/camino-digital/">
+  <input type="hidden" name="form-name" value="contact" />
+  <p style="display:none">
+    <label>No completar: <input name="bot-field" /></label>
+  </p>
+  <input type="text" name="name" />
+  <input type="email" name="email" />
+  <input type="text" name="telefono" />
+  <input type="tel" name="phone" />
+  <select name="plan">
+    <option>Plan Semilla</option>
+    <option>Plan Agro Digital</option>
+    <option>Red de Profesionales</option>
+  </select>
+  <textarea name="message"></textarea>
+</form>
 
-      <input type="text" name="name" />
-      <input type="email" name="email" />
-      <input type="text" name="telefono" />
-      <input type="tel" name="phone" />
-      <select name="plan">
-        <option>Plan Semilla</option>
-        <option>Plan Agro Digital</option>
-        <option>Red de Profesionales</option>
-      </select>
-      <textarea name="message"></textarea>
-    </form>
 
     <!-- 🔥 único formulario fantasma para lead-roi (correcto y válido) -->
     <form name="lead-roi" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
