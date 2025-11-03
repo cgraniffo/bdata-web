@@ -189,7 +189,7 @@ export default function Home() {
         <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100/80 px-3 py-1 text-emerald-800 ring-1 ring-emerald-200 text-xs font-semibold">
           <Network className="w-4 h-4" /> Ecosistema productor-consultor senior
         </div>
-        <h3 className="mt-3 text-2xl font-bold text-slate-900">Plan Doble Raíz Digital🤝🏼</h3>
+        <h3 className="mt-3 text-2xl font-bold text-slate-900">Plan Agropuentes🤝🏼</h3>
         <p className="mt-1 text-slate-700">
           <strong>Agricultores + consultores senior</strong> → Adopción real en redes de apoyo.
           Dos raíces sostienten el futuro, la experiencia del consultor y del agricultor se potencian y se digitalizan juntos...BData aporta método y herramientas para convertir esa relación en adopción digital.
