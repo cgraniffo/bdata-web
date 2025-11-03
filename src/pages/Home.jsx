@@ -1,4 +1,4 @@
-ransformación digitalimport EnfoqueEstrategico from "../EnfoqueEstrategico.jsx";
+Transformación digitalimport EnfoqueEstrategico from "../EnfoqueEstrategico.jsx";
 import Section from "../components/Section.jsx";
 import CaseCard from "../components/CaseCard.jsx";
 import { cases } from "../data/cases.js";
@@ -289,7 +289,7 @@ export default function Home() {
       <SectionDivider variant="white-to-mint" className="h-4 md:h-6" />
     </div>
   );
-}
+
 
 
       {/* CASOS */}
@@ -309,5 +309,4 @@ export default function Home() {
       </section>
 
       <SectionDivider variant="mint-to-white" className="h-4 md:h-6" />
-
-     
+}  
