@@ -1,4 +1,4 @@
-import EnfoqueEstrategico from "../EnfoqueEstrategico.jsx";
+ransformación digitalimport EnfoqueEstrategico from "../EnfoqueEstrategico.jsx";
 import Section from "../components/Section.jsx";
 import CaseCard from "../components/CaseCard.jsx";
 import { cases } from "../data/cases.js";
@@ -95,7 +95,7 @@ export default function Home() {
             </div>
 
             <p className="text-white/90 text-sm max-w-lg leading-relaxed text-center">
-              Tu campo tiene su propio ritmo y realidad. Nosotros te ayudamos a dar el próximo paso correcto —sin enredos, y con foco en lo que realmente importa: que funcione en terreno.
+              Tu campo tiene su propio ritmo y realidad. Nosotros te ayudamos a dar el próximo paso correcto, sin enredos, y con foco en lo que realmente importa: que funcione en terreno y que siembre la digitalización de tu campo.
             </p>
 
             <div className="mt-6 flex justify-center">
@@ -129,10 +129,7 @@ export default function Home() {
               <h3 className="font-semibold text-lg mb-2">🤝 Trabajamos contigo, no te dejamos solo</h3>
               <p className="text-zinc-600 text-sm">Nos metemos en el campo, entendemos tu forma de trabajar y definimos juntos dónde la tecnología realmente aporta. No vendemos “la herramienta de moda”, somos parte de tu equipo.</p>
             </div>
-            <div className="card">
-              <h3 className="font-semibold text-lg mb-2">🧠 IA sólo cuando tiene sentido</h3>
-              <p className="text-zinc-600 text-sm">No todo se soluciona con IA. Muchas veces basta eliminar, delegar o automatizar bien; o mejorar cómo usas los datos.</p>
-            </div>
+
             <div className="card">
               <h3 className="font-semibold text-lg mb-2">🌾 Conocemos el agro</h3>
               <p className="text-zinc-600 text-sm">Hablamos tu idioma porque venimos del campo. Sabemos lo que es una helada, una cosecha apurada o una temporada mala.</p>
@@ -142,6 +139,10 @@ export default function Home() {
               <p className="text-zinc-600 text-sm">Usamos herramientas simples y de rápida adopción —AppSheet, Make y otras— sólo cuando son necesarias (y evitamos las palabras raras 😁).</p>
             </div>
             <div className="card">
+              <h3 className="font-semibold text-lg mb-2">🧠 IA sólo cuando tiene sentido</h3>
+              <p className="text-zinc-600 text-sm">No todo se soluciona con IA. Muchas veces basta eliminar, delegar o automatizar bien; o mejorar cómo usas los datos.</p>
+            </div>
+            <div className="card">
               <h3 className="font-semibold text-lg mb-2">📊 Medimos todo</h3>
               <p className="text-zinc-600 text-sm">Cada proyecto parte con métricas claras y termina con resultados comprobables. Si no genera valor, no se implementa. El ROI guía nuestras decisiones.</p>
             </div>
@@ -149,25 +150,7 @@ export default function Home() {
         </Section>
       </section>
 
-      {/* CASOS */}
-      <section id="casos" className="bg-emerald-50 scroll-mt-28 md:scroll-mt-32">
-        <Section compact title="Casos de éxito destacados" subtitle="Resultados medibles, trazabilidad real y ahorro en CLP comprobado.">
-          <div className="grid md:grid-cols-3 gap-6">
-            {destacados.map(item => <CaseCard key={item.id} item={item} />)}
-          </div>
-
-          <div className="text-center mt-6 space-y-1">
-            <Link to="/planes" className="text-green-700 font-semibold underline hover:text-green-800 block">
-              Ver todos los planes BData →
-            </Link>
-            <p className="text-xs text-zinc-500">Descubre cuál se adapta mejor al tamaño y madurez digital de tu campo.</p>
-          </div>
-        </Section>
-      </section>
-
-      <SectionDivider variant="mint-to-white" className="h-4 md:h-6" />
-
-
+ {/*PLANES BDATA */}
 
 <section id="planes" className="container-bd my-16 scroll-mt-28 md:scroll-mt-32">
 
@@ -192,13 +175,13 @@ export default function Home() {
         <h3 className="mt-3 text-2xl font-bold text-slate-900">Plan Agropuentes🤝🏼</h3>
         <p className="mt-1 text-slate-700">
           <strong>Agricultores + consultores senior</strong> → Adopción real en redes de apoyo.
-          Dos raíces sostienten el futuro, la experiencia del consultor y del agricultor se potencian y se digitalizan juntos...BData aporta método y herramientas para convertir esa relación en adopción digital.
+          Dos raíces sostienten el futuro, la experiencia del consultor de transformación digital y del agricultor se potencian y se digitalizan juntos...BData aporta método y herramientas para convertir esa relación en adopción digital real y cuantificable.
         </p>
 
         {/* Bullets con íconos */}
         <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm text-slate-700">
           <li className="flex items-start gap-2"><CheckCircle2 className="mt-0.5 w-4 h-4 text-emerald-600" /> Red de Productores Digitales por territorio</li>
-          <li className="flex items-start gap-2"><Users className="mt-0.5 w-4 h-4 text-emerald-600" /> Mentores senior + aprendizaje mutuo</li>
+          <li className="flex items-start gap-2"><Users className="mt-0.5 w-4 h-4 text-emerald-600" /> Mentores de transformación digital senior + aprendizaje mutuo</li>
           <li className="flex items-start gap-2"><Workflow className="mt-0.5 w-4 h-4 text-emerald-600" /> Adopción real, no solo capacitación</li>
           <li className="flex items-start gap-2"><Sprout className="mt-0.5 w-4 h-4 text-emerald-600" /> Patrocinadores territoriales</li>
         </ul>
@@ -307,3 +290,24 @@ export default function Home() {
     </div>
   );
 }
+
+
+      {/* CASOS */}
+      <section id="casos" className="bg-emerald-50 scroll-mt-28 md:scroll-mt-32">
+        <Section compact title="Casos de éxito destacados" subtitle="Resultados medibles, trazabilidad real y ahorro en CLP comprobado.">
+          <div className="grid md:grid-cols-3 gap-6">
+            {destacados.map(item => <CaseCard key={item.id} item={item} />)}
+          </div>
+
+          <div className="text-center mt-6 space-y-1">
+            <Link to="/planes" className="text-green-700 font-semibold underline hover:text-green-800 block">
+              Ver todos los planes BData →
+            </Link>
+            <p className="text-xs text-zinc-500">Descubre cuál se adapta mejor al tamaño y madurez digital de tu campo.</p>
+          </div>
+        </Section>
+      </section>
+
+      <SectionDivider variant="mint-to-white" className="h-4 md:h-6" />
+
+     
