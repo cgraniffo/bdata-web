@@ -133,9 +133,9 @@ export default function ContactoForm() {
             </label>
             <select id={ids.plan} name="plan" className="input mt-1">
               <option value="">— Selecciona —</option>
-              <option>Plan Semilla</option>
-              <option>Plan Agro Digital</option>
-              <option>Red de Profesionales</option>
+              <option>Plan Agropuentes</option>
+              <option>Plan Cosecha</option>
+              <option>Otro</option>
             </select>
           </div>
 
