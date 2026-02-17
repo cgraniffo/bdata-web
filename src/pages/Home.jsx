@@ -4,7 +4,7 @@ import CaseCard from "../components/CaseCard.jsx";
 import { cases } from "../data/cases.js";
 import { Link } from "react-router-dom";
 import SectionDivider from "../components/SectionDivider.jsx";
-import { Users, Sprout, Network, BarChart3, Workflow, CheckCircle2 } from "lucide-react";
+import { Users, Sprout, Network, BarChart3, Workflow, CheckCircle2, TrendingUp, ShieldCheck, Key, GraduationCap, FileSpreadsheet, Smartphone, LayoutDashboard, Settings2, Handshake } from "lucide-react";
 
 export default function Home() {
   const PLAN_ORDER = [
@@ -189,149 +189,198 @@ export default function Home() {
         </Section>
       </section>
 
-      {/* PLANES BDATA */}
+ {/* PLANES BDATA */}
       <section id="planes" className="container-bd my-16 scroll-mt-28 md:scroll-mt-32">
-        <div className="mb-6">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900">
-            Planes BData: soluciones a tu medida
+        <div className="mb-8 text-center md:text-left">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900">
+            Planes BData... Elige el control que necesitas
           </h2>
-          <p className="mt-2 text-slate-600 max-w-4xl">
-            Dos caminos complementarios para impulsar la transformación digital:{" "}
-            <span className="font-semibold">Red de Productores digitales🤝🏼</span> y{" "}
-            <span className="font-semibold">Plan Cosecha🌾</span>.
+          <p className="mt-3 text-lg text-slate-600 max-w-3xl">
+            Desde la autonomía de una herramienta potente hasta la tranquilidad de un socio estratégico.
           </p>
         </div>
 
-        {/* Card 1 */}
-        <article className="group relative overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-white shadow-sm ring-1 ring-emerald-100/40 transition hover:shadow-lg">
-          <div className="grid md:grid-cols-2">
-            <div className="p-6 md:p-8">
-              <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100/80 px-3 py-1 text-emerald-800 ring-1 ring-emerald-200 text-xs font-semibold">
-                <Network className="w-4 h-4" /> Ecosistema productor-consultor senior
-              </div>
-              <h3 className="mt-3 text-2xl font-bold text-slate-900">Plan Agropuentes🤝🏼</h3>
-              <p className="mt-1 text-slate-700">
-                <strong>Agricultores + consultores senior</strong> → Adopción real en redes de apoyo.
-                Dos raíces sostienen el futuro: la experiencia del consultor de transformación digital
-                y del agricultor se potencian y se digitalizan juntos. BData aporta método y herramientas
-                para convertir esa relación en adopción digital real y cuantificable.
-              </p>
-
-              <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm text-slate-700">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="mt-0.5 w-4 h-4 text-emerald-600" /> Red de Productores Digitales por territorio
-                </li>
-                <li className="flex items-start gap-2">
-                  <Users className="mt-0.5 w-4 h-4 text-emerald-600" /> Mentores de transformación digital senior + aprendizaje mutuo
-                </li>
-                <li className="flex items-start gap-2">
-                  <Workflow className="mt-0.5 w-4 h-4 text-emerald-600" /> Adopción real, no solo capacitación
-                </li>
-                <li className="flex items-start gap-2">
-                  <Sprout className="mt-0.5 w-4 h-4 text-emerald-600" /> Patrocinadores territoriales
-                </li>
-              </ul>
-
-              <div className="mt-6 flex flex-wrap gap-3">
-                <a
-                  href="https://wa.me/56944645774?text=Hola%20BData%2C%20quiero%20sumarme%20a%20la%20Red%20de%20Productores%20Digitales."
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-white shadow-sm hover:bg-emerald-700"
-                >
-                  Quiero sumarme a la red <span aria-hidden>→</span>
-                </a>
-                <a
-                  href="/planes#raiz"
-                  className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-slate-700 hover:bg-slate-50"
-                >
-                  Ver más
-                </a>
-              </div>
+        <div className="flex flex-col gap-8">
+          
+          {/* PLAN PARTNER (Pag 6 PDF) - DESTACADO */}
+          <article className="group relative overflow-hidden rounded-3xl border-2 border-emerald-500 bg-white shadow-xl transform md:scale-[1.02] z-10 transition-all hover:shadow-2xl">
+            
+            {/* Badge Recomendado */}
+            <div className="absolute top-0 right-0 z-20 bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl uppercase tracking-wider shadow-sm">
+              Recomendado
             </div>
 
-            <div className="relative overflow-hidden">
-              <img
-                src="/images/siembra-appsheet.png"
-                alt="Plan Doble Raíz Digital"
-                className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-                loading="lazy"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-l from-white/0 via-white/0 to-white/40" />
-            </div>
-          </div>
-        </article>
+            <div className="grid md:grid-cols-2">
+              {/* Lado Izquierdo: Texto */}
+              <div className="p-8 order-2 md:order-1 flex flex-col justify-center">
+                <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-emerald-800 text-xs font-bold uppercase tracking-wide w-fit">
+                  <Handshake className="w-3.5 h-3.5" /> ¡NUEVO! Gestión Garantizada
+                </div>
+                
+                <h3 className="mt-4 text-3xl font-bold text-slate-900">Gerencia de Control de Gestión Externa</h3>
+                <p className="mt-2 text-emerald-700 font-medium">
+                  Nosotros nos aseguramos de que tu administración funcione.
+                </p>
+                <p className="mt-3 text-sm text-slate-500 leading-relaxed">
+                  Sustituimos el costo fijo de una gerencia interna por un servicio experto que se paga solo. Digitalizamos la operación y auditamos para detectar fugas de dinero (caja, inventarios, cobros duplicados).
+                </p>
 
-        <div className="h-6" />
+                {/* Precios Partner */}
+                <div className="mt-6 flex flex-wrap gap-4 items-end border-t border-slate-100 pt-6">
+                  <div className="relative">
+                     <span className="absolute -top-3 left-0 text-[10px] bg-red-100 text-red-600 px-1.5 rounded-md font-bold border border-red-200">SUBSIDIADO</span>
+                    <span className="text-xs text-slate-500 font-bold uppercase block">Habilitación</span>
+                    <span className="text-2xl font-bold text-emerald-600">5 UF</span>
+                  </div>
+                  <div className="h-8 w-px bg-slate-200"></div>
+                  <div>
+                    <span className="text-xs text-slate-500 font-bold uppercase block">Mensualidad</span>
+                    <span className="text-xl md:text-2xl font-bold text-slate-900">1 Sueldo Mínimo</span>
+                    <span className="text-xs text-slate-400 ml-1">/ mes</span>
+                  </div>
+                </div>
 
-        {/* Card 2 */}
-        <article className="group relative overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-br from-white to-emerald-50 shadow-sm ring-1 ring-emerald-100/40 transition hover:shadow-lg">
-          <div className="grid md:grid-cols-2 md:grid-flow-col-dense">
-            <div className="relative order-last md:order-first overflow-hidden">
-              <img
-                src="/images/dashboard.png"
-                alt="Plan Cosecha"
-                className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-                loading="lazy"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white/0 via-white/0 to-white/40" />
-            </div>
+                <ul className="mt-6 space-y-3">
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                    <span className="text-sm text-slate-700"><strong>Todo lo del Plan Autonomía +</strong></span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <TrendingUp className="w-5 h-5 text-emerald-600 shrink-0" />
+                    <span className="text-sm text-slate-700"><strong>Ahorra 90%</strong> vs. Gerencia Interna.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Users className="w-5 h-5 text-emerald-600 shrink-0" />
+                    <span className="text-sm text-slate-700"><strong>Reunión Mensual de Control:</strong> Análisis de resultados contigo.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Settings2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                    <span className="text-sm text-slate-700"><strong>Personalización:</strong> Centros de costos a medida.</span>
+                  </li>
+                </ul>
 
-            <div className="p-6 md:p-8">
-              <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100/80 px-3 py-1 text-emerald-800 ring-1 ring-emerald-200 text-xs font-semibold">
-                <BarChart3 className="w-4 h-4" /> Aceleración digital 1:1
+                <div className="mt-8">
+                  <a href="https://wa.me/56944645774?text=Hola%20BData,%20quiero%20el%20Plan%20Partner." 
+                     className="block w-full rounded-xl bg-emerald-600 py-3 text-center font-bold text-white shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition transform hover:-translate-y-0.5">
+                    Quiero ser Partner
+                  </a>
+                </div>
               </div>
-              <h3 className="mt-3 text-2xl font-bold text-slate-900">Plan Cosecha🌾</h3>
-              <p className="mt-1 text-slate-700">
-                Acompañamiento <strong>personalizado</strong> para productores que ya pasaron por la red o que ya tienen un
-                grado de avance digital (encuesta de digitalización). Herramientas BData en versión avanzada,
-                metodología y consultoría para decisiones basadas en datos.
-              </p>
 
-              <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm text-slate-700">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="mt-0.5 w-4 h-4 text-emerald-600" /> Implementación 1:1 según tu realidad
-                </li>
-                <li className="flex items-start gap-2">
-                  <BarChart3 className="mt-0.5 w-4 h-4 text-emerald-600" /> KPIs y tableros de control
-                </li>
-                <li className="flex items-start gap-2">
-                  <Workflow className="mt-0.5 w-4 h-4 text-emerald-600" /> Automatizaciones y orquestación
-                </li>
-                <li className="flex items-start gap-2">
-                  <Users className="mt-0.5 w-4 h-4 text-emerald-600" /> Equipo técnico BData a tu lado
-                </li>
-              </ul>
+              {/* Lado Derecho: IMAGEN PARTNER */}
+              <div className="relative order-1 md:order-2 min-h-[300px] md:min-h-full">
+                {/* 1. La Imagen de Fondo */}
+                <img 
+                  src="/images/siembra-appsheet.png" /* ⚠️ CAMBIA ESTO POR TU FOTO DE CAMPO/REUNION */
+                  alt="Reunión en terreno BData" 
+                  className="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105"
+                />
+                
+                {/* 2. Capa oscura para que resalte el texto (Overlay) */}
+                <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/80 via-emerald-900/20 to-transparent"></div>
 
-              <div className="mt-6 flex flex-wrap gap-3">
-                <a
-                  href="https://calendly.com/tu-espacio/30min"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-white shadow-sm hover:bg-emerald-700"
-                >
-                  Quiero avanzar 1:1 <span aria-hidden>→</span>
-                </a>
-                <a
-                  href="/planes#cosecha"
-                  className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-slate-700 hover:bg-slate-50"
-                >
-                  Ver más
-                </a>
+                {/* 3. Tarjeta Flotante (Glassmorphism) */}
+                <div className="absolute bottom-6 left-6 right-6">
+                    <div className="bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/20 flex items-center gap-4">
+                        <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center shrink-0">
+                             <TrendingUp className="w-6 h-6 text-emerald-600" />
+                        </div>
+                        <div>
+                            <p className="font-bold text-emerald-900 leading-tight">Control Total</p>
+                            <p className="text-xs text-emerald-700 mt-0.5">Tu Socio Estratégico en Terreno</p>
+                        </div>
+                    </div>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <div className="mt-6">
-          <a
-            href="/planes"
-            className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-slate-700 hover:bg-slate-50"
-          >
-            Ver todos los detalles →
-          </a>
+
+          {/* PLAN AUTONOMÍA (Pag 5 PDF) */}
+          <article className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:shadow-xl">
+            <div className="grid md:grid-cols-2">
+              
+              {/* Lado Izquierdo: Texto */}
+              <div className="p-8 order-2 md:order-1 flex flex-col justify-center">
+                <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-slate-700 text-xs font-bold uppercase tracking-wide w-fit">
+                  <Smartphone className="w-3.5 h-3.5" /> Para Equipos Consolidados
+                </div>
+                
+                <h3 className="mt-4 text-3xl font-bold text-slate-900">Plan Autonomía</h3>
+                <p className="mt-2 text-slate-600 font-medium">
+                  Tu equipo opera, nosotros ponemos la tecnología.
+                </p>
+                <p className="mt-2 text-sm text-slate-500 leading-relaxed">
+                  Ideal si ya tienes un administrador proactivo. Te entregamos la herramienta completa para carga de XML ilimitada, conciliación y control.
+                </p>
+
+                {/* Precios Autonomía */}
+                <div className="mt-6 flex flex-wrap gap-4 items-end border-t border-slate-100 pt-6">
+                  <div>
+                    <span className="text-xs text-slate-500 font-bold uppercase block">Habilitación</span>
+                    <span className="text-2xl font-bold text-slate-900">15 UF</span>
+                    <span className="text-xs text-slate-400 ml-1">(Pago Único)</span>
+                  </div>
+                  <div className="h-8 w-px bg-slate-200"></div>
+                  <div>
+                    <span className="text-xs text-slate-500 font-bold uppercase block">Mensualidad</span>
+                    <span className="text-2xl font-bold text-slate-900">2 UF</span>
+                    <span className="text-xs text-slate-400 ml-1">/ mes</span>
+                  </div>
+                </div>
+
+                <ul className="mt-6 space-y-3">
+                  <li className="flex items-start gap-3">
+                    <FileSpreadsheet className="w-5 h-5 text-emerald-600 shrink-0" />
+                    <span className="text-sm text-slate-700"><strong>Carga XML Ilimitada:</strong> Automatiza tus compras.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <LayoutDashboard className="w-5 h-5 text-emerald-600 shrink-0" />
+                    <span className="text-sm text-slate-700"><strong>Dashboards Estándar:</strong> Control visual inmediato.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                    <span className="text-sm text-slate-700">Acceso App Web y Móvil completo.</span>
+                  </li>
+                </ul>
+
+                <div className="mt-8">
+                  <a href="https://wa.me/56944645774?text=Hola%20BData,%20me%20interesa%20el%20Plan%20Autonom%C3%ADa." 
+                     className="block w-full rounded-xl border-2 border-slate-900 py-3 text-center font-bold text-slate-900 hover:bg-slate-50 transition">
+                    Elegir Autonomía
+                  </a>
+                </div>
+              </div>
+
+              {/* Lado Derecho: IMAGEN AUTONOMIA */}
+              <div className="relative order-1 md:order-2 min-h-[300px] md:min-h-full">
+                 {/* 1. La Imagen de Fondo */}
+                 <img 
+                  src="/images/Whisk_8077ae17360c055bfe249d154992a6bbeg.png" /* ⚠️ CAMBIA ESTO POR UN PANTALLAZO DE LA APP */
+                  alt="App BData en celular" 
+                  className="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105"
+                />
+
+                {/* 2. Capa oscura (Overlay) */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/10 to-transparent"></div>
+
+                {/* 3. Tarjeta Flotante */}
+                <div className="absolute bottom-6 left-6 right-6">
+                    <div className="bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/20 flex items-center gap-4">
+                        <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center shrink-0">
+                             <Settings2 className="w-6 h-6 text-slate-600" />
+                        </div>
+                        <div>
+                            <p className="font-bold text-slate-900 leading-tight">Herramienta Pura</p>
+                            <p className="text-xs text-slate-600 mt-0.5">Gestión por tu cuenta</p>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </article>
         </div>
-      </section>
+      </section>   
 
       {/* CASOS */}
       <section id="casos" className="bg-emerald-50 scroll-mt-28 md:scroll-mt-32">
