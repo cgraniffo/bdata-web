@@ -395,17 +395,7 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="text-center mt-6 space-y-1">
-            <Link
-              to="/planes"
-              className="text-green-700 font-semibold underline hover:text-green-800 block"
-            >
-              Ver todos los planes BData →
-            </Link>
-            <p className="text-xs text-zinc-500">
-              Descubre cuál se adapta mejor al tamaño y madurez digital de tu campo.
-            </p>
-          </div>
+          
         </Section>
       </section>
 
