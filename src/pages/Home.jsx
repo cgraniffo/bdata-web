@@ -235,7 +235,7 @@ export default function Home() {
                   <div className="h-8 w-px bg-slate-200"></div>
                   <div>
                     <span className="text-xs text-slate-500 font-bold uppercase block">Mensualidad</span>
-                    <span className="text-xl md:text-2xl font-bold text-slate-900">1 Sueldo Mínimo</span>
+                    <span className="text-xl md:text-2xl font-bold text-slate-900">Desde 1 Sueldo Mínimo</span>
                     <span className="text-xs text-slate-400 ml-1">/ mes</span>
                   </div>
                 </div>
