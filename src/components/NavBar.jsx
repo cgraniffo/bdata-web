@@ -8,49 +8,36 @@ const homeSections = [
   { hash: "#porque",      label: "¿Por qué BData?" },
   { hash: "#casos",       label: "Casos de éxito" },
   { hash: "#planes",      label: "Nuestros planes" },
-
 ];
 
 const extraItems = [
   { to: "/contacto", label: "Contacto", type: "route" },
 ];
 
-// Menú "Camino Digital" (reemplaza “Herramientas IA”)
 const caminoItems = [
   { to: "/camino-digital",        label: "¿Cómo lo hacemos?", type: "route" },
   { to: "/diagnostico-digital",   label: "Diagnóstico Digital", type: "route" },
   { to: "/calculadora-roi",       label: "Calculadora ROI",     type: "route" },
-  
-  //{ href: "https://optimizador.bdata.cl", label: "Optimizar fertilización (Beta)", type: "external" },
 ];
-
-
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
+  const caminoRoutes = caminoItems
+    .filter(i => i.type === "route")
+    .map(i => i.to);
 
-  // rutas que pertenecen al “Camino Digital”
-const caminoRoutes = caminoItems
-  .filter(i => i.type === "route")
-  .map(i => i.to);
+  const isCaminoActive = caminoRoutes.some(r => pathname.startsWith(r));
 
-// ¿estoy en alguna de esas rutas?
-const isCaminoActive = caminoRoutes.some(r => pathname.startsWith(r));
+  const baseLink =
+    "text-zinc-800 hover:text-emerald-700 font-medium transition-colors";
 
-
-// base: link normal
-const baseLink =
-  "text-zinc-800 hover:text-emerald-700 font-medium transition-colors";
-
-const activeLink =
-  "font-semibold text-white bg-emerald-600 px-3 py-1 rounded-lg " +   // móvil (pastilla)
-  "md:text-emerald-700 md:bg-transparent md:px-0 md:py-0 " +          // override en desktop
-  "md:underline md:underline-offset-4 md:decoration-2";               // desktop (subrayado)
-
-
+  const activeLink =
+    "font-semibold text-white bg-emerald-600 px-3 py-1 rounded-lg " +
+    "md:text-emerald-700 md:bg-transparent md:px-0 md:py-0 " +
+    "md:underline md:underline-offset-4 md:decoration-2";
 
   const scrollToId = (id) => {
     const el = document.getElementById(id);
@@ -107,46 +94,41 @@ const activeLink =
 
           {/* Dropdown Camino Digital */}
           <li className="relative group">
-  <button
-    className={activeLink + " text-sm md:text-base"}
-  >
-    Tu Camino Digital
-  </button>
-
-  
-  <div className="absolute left-0 top-full z-10 pt-2">
-    <div className="hidden group-hover:block group-focus-within:block bg-white border rounded-md shadow-lg min-w-[14rem]">
-      <ul className="py-2">
-        {caminoItems.map((item) => (
-          <li key={item.label}>
-            {item.type === "route" ? (
-              <NavLink
-                to={item.to}
-                className={({ isActive }) =>
-                  (isActive ? activeLink : baseLink) + " block px-4 py-2 text-sm"
-                }
-                onClick={() => setOpen(false)}
-              >
-                {item.label}
-              </NavLink>
-            ) : (
-              <a
-                href={item.href}
-                className={baseLink + " block px-4 py-2 text-sm"}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setOpen(false)}
-              >
-                {item.label}
-              </a>
-            )}
+            <button className={activeLink + " text-sm md:text-base"}>
+              Tu Camino Digital
+            </button>
+            <div className="absolute left-0 top-full z-10 pt-2">
+              <div className="hidden group-hover:block group-focus-within:block bg-white border rounded-md shadow-lg min-w-[14rem]">
+                <ul className="py-2">
+                  {caminoItems.map((item) => (
+                    <li key={item.label}>
+                      {item.type === "route" ? (
+                        <NavLink
+                          to={item.to}
+                          className={({ isActive }) =>
+                            (isActive ? activeLink : baseLink) + " block px-4 py-2 text-sm"
+                          }
+                          onClick={() => setOpen(false)}
+                        >
+                          {item.label}
+                        </NavLink>
+                      ) : (
+                        
+                          href={item.href}
+                          className={baseLink + " block px-4 py-2 text-sm"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setOpen(false)}
+                        >
+                          {item.label}
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </li>
-        ))}
-      </ul>
-    </div>
-  </div>
-</li>
-
 
           {extraItems.map(({ to, label }) => (
             <li key={to}>
@@ -161,6 +143,18 @@ const activeLink =
               </NavLink>
             </li>
           ))}
+
+          {/* ✅ NUEVO: Botón Acceso Clientes - Desktop */}
+          <li>
+            
+              href="https://app.bdata.cl"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm"
+            >
+              Acceso Clientes
+            </a>
+          </li>
         </ul>
       </nav>
 
@@ -180,10 +174,9 @@ const activeLink =
 
           {/* Camino Digital (móvil) */}
           <li className="pt-2">
-            <div className="text-xs uppercase px-1 text-white bg-emerald-600 inline-block px-2 py-1 rounded">
-  Camino Digital
-</div>
-
+            <div className="text-xs uppercase text-white bg-emerald-600 inline-block px-2 py-1 rounded">
+              Camino Digital
+            </div>
           </li>
           {caminoItems.map((item) => (
             <li key={item.label}>
@@ -198,7 +191,7 @@ const activeLink =
                   {item.label}
                 </NavLink>
               ) : (
-                <a
+                
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -224,6 +217,19 @@ const activeLink =
               </NavLink>
             </li>
           ))}
+
+          {/* ✅ NUEVO: Botón Acceso Clientes - Móvil */}
+          <li className="pt-2">
+            
+              href="https://app.bdata.cl"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full text-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg transition-colors duration-200"
+              onClick={() => setOpen(false)}
+            >
+              Acceso Clientes
+            </a>
+          </li>
         </ul>
       </div>
     </header>
