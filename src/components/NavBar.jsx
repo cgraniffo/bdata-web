@@ -146,7 +146,7 @@ export default function NavBar() {
 
           {/* Botón Acceso Clientes - Desktop */}
           <li>
-            
+            <a
               href="https://app.bdata.cl"
               target="_blank"
               rel="noopener noreferrer"
@@ -191,7 +191,7 @@ export default function NavBar() {
                   {item.label}
                 </NavLink>
               ) : (
-                
+                <a
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -220,7 +220,7 @@ export default function NavBar() {
 
           {/* Botón Acceso Clientes - Móvil */}
           <li className="pt-2 pb-1">
-            
+            <a
               href="https://app.bdata.cl"
               target="_blank"
               rel="noopener noreferrer"
