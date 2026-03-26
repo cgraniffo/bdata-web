@@ -15,9 +15,9 @@ const extraItems = [
 ];
 
 const caminoItems = [
-  { to: "/camino-digital",        label: "¿Cómo lo hacemos?", type: "route" },
-  { to: "/diagnostico-digital",   label: "Diagnóstico Digital", type: "route" },
-  { to: "/calculadora-roi",       label: "Calculadora ROI",     type: "route" },
+  { to: "/camino-digital",       label: "¿Cómo lo hacemos?", type: "route" },
+  { to: "/diagnostico-digital",  label: "Diagnóstico Digital", type: "route" },
+  { to: "/calculadora-roi",      label: "Calculadora ROI",    type: "route" },
 ];
 
 export default function NavBar() {
@@ -144,7 +144,7 @@ export default function NavBar() {
             </li>
           ))}
 
-          {/* ✅ NUEVO: Botón Acceso Clientes - Desktop */}
+          {/* Botón Acceso Clientes - Desktop */}
           <li>
             
               href="https://app.bdata.cl"
@@ -218,8 +218,8 @@ export default function NavBar() {
             </li>
           ))}
 
-          {/* ✅ NUEVO: Botón Acceso Clientes - Móvil */}
-          <li className="pt-2">
+          {/* Botón Acceso Clientes - Móvil */}
+          <li className="pt-2 pb-1">
             
               href="https://app.bdata.cl"
               target="_blank"
