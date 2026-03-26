@@ -113,7 +113,7 @@ export default function NavBar() {
                           {item.label}
                         </NavLink>
                       ) : (
-                        
+                        <a
                           href={item.href}
                           className={baseLink + " block px-4 py-2 text-sm"}
                           target="_blank"
