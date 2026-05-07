@@ -1,0 +1,3549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BData en acción · Software a la medida del agricultor chileno</title>
+<meta name="description" content="Desarrollos agrícolas listos en semanas, no en años. Si en un mes no ves resultado tangible, no pagas.">
+<meta name="theme-color" content="#059669">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    /* Paleta real BData (Tailwind emerald) */
+    --green: #059669;          /* emerald-600 - primario */
+    --green-dark: #047857;     /* emerald-700 - hover */
+    --green-deep: #064e3b;     /* emerald-900 - profundo */
+    --green-bright: #10b981;   /* emerald-500 - acento */
+    --green-text: #065f46;     /* emerald-800 - texto verde */
+    --green-soft: #ecfdf5;     /* emerald-50 - fondo claro */
+    --green-soft2: #d1fae5;    /* emerald-100 - badges bg */
+    --green-line: #a7f3d0;     /* emerald-200 - bordes */
+    --green-mint: #f6fbf8;     /* mint hero bg */
+
+    --accent: #f4a02b;
+    --accent-deep: #c97f1a;
+
+    /* Neutrals (zinc) */
+    --bg: #fafafa;             /* zinc-50 fondo página */
+    --bg-soft: #f6fbf8;        /* mint suave */
+    --bg-deep: #f4f4f5;        /* zinc-100 */
+    --ink: #18181b;            /* zinc-900 */
+    --ink-soft: #3f3f46;       /* zinc-700 */
+    --ink-mute: #71717a;       /* zinc-500 */
+    --line: #e4e4e7;           /* zinc-200 */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .container {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 16px; padding-bottom: 16px;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink);
+  }
+  .logo img {
+    height: 40px;
+    width: auto;
+    display: block;
+  }
+  .nav-cta {
+    background: var(--green); color: white;
+    padding: 10px 20px; border-radius: 8px;
+    text-decoration: none; font-size: 14px; font-weight: 600;
+    transition: all 0.25s ease;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .nav-cta:hover { background: var(--green-dark); transform: translateY(-1px); }
+  .nav-cta svg { width: 16px; height: 16px; }
+
+  /* HERO */
+  .hero {
+    padding: 140px 0 60px;
+    background: linear-gradient(180deg, var(--green-mint) 0%, #ffffff 100%);
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(5, 150, 105, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-grid {
+    text-align: center;
+    max-width: 880px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--green-soft2); color: var(--green-text);
+    padding: 6px 14px; border-radius: 999px;
+    font-size: 13px; font-weight: 600;
+    margin-bottom: 28px; border: 1px solid var(--green-line);
+  }
+  .badge::before {
+    content: ''; width: 6px; height: 6px;
+    background: var(--green); border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+  h1 {
+    font-size: clamp(40px, 6vw, 68px); line-height: 1.05;
+    letter-spacing: -0.03em; font-weight: 800;
+    margin-bottom: 24px; color: var(--ink);
+  }
+  h1 span.highlight {
+    color: var(--green); position: relative; white-space: nowrap;
+  }
+  h1 span.highlight::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: 4px;
+    height: 8px; background: rgba(244, 160, 43, 0.3); z-index: -1;
+  }
+  .hero-lead {
+    font-size: 19px; line-height: 1.6;
+    color: var(--ink-soft); max-width: 640px; margin: 0 auto 36px;
+  }
+  .hero-ctas {
+    display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
+    justify-content: center;
+    margin-bottom: 32px;
+  }
+  .btn-primary {
+    background: var(--green); color: white;
+    padding: 16px 28px; border-radius: 10px;
+    text-decoration: none; font-weight: 600; font-size: 15px;
+    display: inline-flex; align-items: center; gap: 10px;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25);
+  }
+  .btn-primary:hover {
+    background: var(--green-dark); transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(5, 150, 105, 0.35);
+  }
+  .btn-primary svg { width: 18px; height: 18px; }
+  .btn-ghost {
+    color: var(--ink); text-decoration: none;
+    font-weight: 600; font-size: 15px;
+    padding: 16px 24px; border-radius: 10px;
+    border: 1px solid var(--line);
+    transition: all 0.25s ease;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-ghost:hover { border-color: var(--green); color: var(--green); }
+  .hero-trust {
+    display: flex; gap: 24px; align-items: center;
+    justify-content: center;
+    color: var(--ink-mute); font-size: 13px; flex-wrap: wrap;
+  }
+  .hero-trust span { display: flex; align-items: center; gap: 6px; }
+  .hero-trust svg { width: 14px; height: 14px; color: var(--green); }
+
+  .hero-visual { position: relative; aspect-ratio: 1/1.15; }
+  .mock-card {
+    position: absolute; background: white;
+    border: 1px solid var(--line); border-radius: 14px;
+    box-shadow: 0 20px 50px -10px rgba(6, 78, 59, 0.18);
+    padding: 18px; font-size: 12px;
+  }
+
+  /* SHOWCASE - Carrusel full-width */
+  .showcase {
+    position: relative;
+    padding: 40px 0 80px;
+    background: linear-gradient(180deg, #ffffff 0%, var(--green-mint) 50%, #ffffff 100%);
+    overflow: hidden;
+  }
+  .showcase::before {
+    content: ''; position: absolute; top: 0; bottom: 0;
+    left: 0; right: 0;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(5, 150, 105, 0.06) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(244, 160, 43, 0.05) 0%, transparent 40%);
+    pointer-events: none;
+  }
+  .showcase-frame {
+    position: relative;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .showcase-window {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 30px 80px -20px rgba(6, 78, 59, 0.25),
+                0 10px 30px -10px rgba(6, 78, 59, 0.15);
+    border: 1px solid var(--line);
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 16/9;
+  }
+  /* Browser-style top bar */
+  .showcase-bar {
+    background: var(--bg-deep);
+    border-bottom: 1px solid var(--line);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .showcase-bar .dot {
+    width: 11px; height: 11px; border-radius: 50%;
+  }
+  .showcase-bar .dot:nth-child(1) { background: #ff5f57; }
+  .showcase-bar .dot:nth-child(2) { background: #ffbd2e; }
+  .showcase-bar .dot:nth-child(3) { background: #28c840; }
+  .showcase-bar .url {
+    margin-left: 16px;
+    font-size: 12px;
+    color: var(--ink-mute);
+    background: white;
+    padding: 4px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    flex: 1;
+    max-width: 360px;
+    text-align: center;
+  }
+  .showcase-stage {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 41px);
+    overflow: hidden;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 32px;
+    opacity: 0;
+    transform: translateX(40px) scale(0.98);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+  .slide.active {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    pointer-events: auto;
+  }
+  .slide-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green-soft2);
+    color: var(--green-text);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .slide-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  .slide-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 18px;
+    letter-spacing: -0.02em;
+  }
+  .slide-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    height: calc(100% - 70px);
+  }
+
+  /* Slide 1: Mapa satelital REALISTA */
+  .big-map {
+    grid-column: span 2;
+    background:
+      /* Caminos */
+      linear-gradient(105deg, transparent 48%, rgba(180, 160, 120, 0.4) 48%, rgba(180, 160, 120, 0.4) 50%, transparent 50%),
+      linear-gradient(15deg, transparent 70%, rgba(180, 160, 120, 0.3) 70%, rgba(180, 160, 120, 0.3) 71%, transparent 71%),
+      /* Parcelas grandes - colores tierra/cultivo */
+      radial-gradient(ellipse 280px 180px at 18% 25%, #6b8e4e 0%, #5a7d40 60%, transparent 100%),
+      radial-gradient(ellipse 240px 200px at 55% 18%, #8b9b5c 0%, #74844a 60%, transparent 100%),
+      radial-gradient(ellipse 200px 160px at 82% 30%, #b8a473 0%, #9c8a5e 60%, transparent 100%),
+      radial-gradient(ellipse 260px 180px at 25% 70%, #4a7340 0%, #3a5d32 60%, transparent 100%),
+      radial-gradient(ellipse 220px 200px at 60% 78%, #7a8c4e 0%, #65763e 60%, transparent 100%),
+      radial-gradient(ellipse 200px 180px at 88% 75%, #a89863 0%, #8b7d50 60%, transparent 100%),
+      /* Base */
+      linear-gradient(135deg, #3d5a2e 0%, #2d4222 100%);
+    background-blend-mode: normal;
+    border-radius: 14px;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+  }
+  .big-map::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 30% 50%, transparent 0%, rgba(0,0,0,0.15) 100%),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.25'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+  /* Pin tipo Leaflet con pill */
+  .big-pin {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    z-index: 2;
+    transition: all 0.3s ease;
+  }
+  .big-pin-dot {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    position: relative;
+  }
+  .big-pin-dot::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+  }
+  .big-pin.green .big-pin-dot {
+    background: var(--green-bright);
+    animation: pinPulseGreen 2s ease-in-out infinite;
+  }
+  .big-pin.amber .big-pin-dot {
+    background: var(--accent);
+    animation: pinPulseAmber 2s ease-in-out infinite 0.5s;
+  }
+  .big-pin.idle .big-pin-dot {
+    background: rgba(255,255,255,0.6);
+  }
+  .big-pin.danger .big-pin-dot {
+    background: #ef4444;
+    animation: pinPulseRed 2s ease-in-out infinite 1s;
+  }
+  @keyframes pinPulseGreen {
+    0%, 100% { box-shadow: 0 2px 6px rgba(0,0,0,0.5), 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    50% { box-shadow: 0 2px 6px rgba(0,0,0,0.5), 0 0 0 10px rgba(16, 185, 129, 0); }
+  }
+  @keyframes pinPulseAmber {
+    0%, 100% { box-shadow: 0 2px 6px rgba(0,0,0,0.5), 0 0 0 0 rgba(244, 160, 43, 0.7); }
+    50% { box-shadow: 0 2px 6px rgba(0,0,0,0.5), 0 0 0 10px rgba(244, 160, 43, 0); }
+  }
+  @keyframes pinPulseRed {
+    0%, 100% { box-shadow: 0 2px 6px rgba(0,0,0,0.5), 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    50% { box-shadow: 0 2px 6px rgba(0,0,0,0.5), 0 0 0 10px rgba(239, 68, 68, 0); }
+  }
+  .big-pin-label {
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .big-pin.green .big-pin-label {
+    background: rgba(16, 185, 129, 0.9);
+    border-color: rgba(255,255,255,0.3);
+  }
+  .big-pin.amber .big-pin-label {
+    background: rgba(244, 160, 43, 0.9);
+    border-color: rgba(255,255,255,0.3);
+  }
+  .big-pin.danger .big-pin-label {
+    background: rgba(239, 68, 68, 0.9);
+    border-color: rgba(255,255,255,0.3);
+  }
+  /* Controles tipo Leaflet */
+  .map-controls {
+    position: absolute;
+    top: 14px; left: 14px;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    overflow: hidden;
+    z-index: 3;
+  }
+  .map-control-btn {
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+  }
+  .map-control-btn:last-child { border: none; }
+  .map-attribution {
+    position: absolute;
+    bottom: 4px; right: 8px;
+    font-size: 8px;
+    color: rgba(255,255,255,0.7);
+    background: rgba(0,0,0,0.5);
+    padding: 2px 6px;
+    border-radius: 3px;
+    z-index: 3;
+  }
+  .map-legend {
+    position: absolute;
+    bottom: 16px; left: 16px;
+    background: rgba(255,255,255,0.95);
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: flex; gap: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink);
+    z-index: 3;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .map-legend .leg-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .map-stats {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: rgba(255,255,255,0.95);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 11px;
+    z-index: 3;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .map-stats strong { display: block; font-size: 18px; color: var(--green); font-weight: 800; }
+
+  /* Slide Gantt: Carta de labores */
+  .gantt-wrap {
+    grid-column: span 2;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .gantt-toolbar {
+    display: flex; align-items: center; gap: 8px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .gantt-tab {
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--bg-deep);
+    color: var(--ink-soft);
+  }
+  .gantt-tab.active {
+    background: var(--green-deep);
+    color: white;
+  }
+  .gantt-chip {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+  .gantt-chip.active {
+    background: var(--green-deep);
+    color: white;
+    border-color: var(--green-deep);
+  }
+  .gantt-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 8px;
+    overflow: hidden;
+    position: relative;
+  }
+  .gantt-side {
+    display: flex; flex-direction: column;
+    gap: 6px;
+    padding-top: 22px;
+  }
+  .gantt-row-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink);
+    padding: 6px 8px;
+    background: var(--bg-soft);
+    border-radius: 5px;
+    border-left: 3px solid var(--green);
+    height: 24px;
+    display: flex;
+    align-items: center;
+    line-height: 1;
+  }
+  .gantt-row-label.amber { border-left-color: var(--accent); }
+  .gantt-row-label.danger { border-left-color: #ef4444; }
+  .gantt-row-label.idle { border-left-color: #9ca3af; }
+  .gantt-track {
+    position: relative;
+    overflow: hidden;
+  }
+  .gantt-weeks {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    height: 18px;
+    margin-bottom: 4px;
+    font-size: 9px;
+    color: var(--ink-mute);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .gantt-week {
+    text-align: center;
+    border-right: 1px dashed var(--line);
+    padding: 3px 0;
+  }
+  .gantt-week:last-child { border: none; }
+  .gantt-week.today {
+    background: rgba(5, 150, 105, 0.08);
+    color: var(--green);
+    font-weight: 800;
+  }
+  .gantt-rows {
+    display: flex; flex-direction: column;
+    gap: 6px;
+  }
+  .gantt-row {
+    height: 24px;
+    background:
+      linear-gradient(to right,
+        transparent calc(100%/7 - 1px),
+        var(--line) calc(100%/7 - 1px),
+        var(--line) calc(100%/7),
+        transparent calc(100%/7));
+    background-size: calc(100%/7 * 7) 100%;
+    background-image:
+      repeating-linear-gradient(to right,
+        transparent 0,
+        transparent calc((100% - 1px) / 7),
+        var(--bg-deep) calc((100% - 1px) / 7),
+        var(--bg-deep) calc(100% / 7));
+    position: relative;
+    border-radius: 4px;
+  }
+  .gantt-bar {
+    position: absolute;
+    top: 3px; bottom: 3px;
+    border-radius: 5px;
+    font-size: 9px;
+    font-weight: 700;
+    color: white;
+    display: flex; align-items: center;
+    padding: 0 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    animation: ganttSlide 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+  .gantt-bar.green { background: linear-gradient(90deg, var(--green) 0%, var(--green-bright) 100%); }
+  .gantt-bar.amber { background: linear-gradient(90deg, var(--accent-deep) 0%, var(--accent) 100%); }
+  .gantt-bar.danger { background: linear-gradient(90deg, #b91c1c 0%, #ef4444 100%); }
+  .gantt-bar.idle { background: linear-gradient(90deg, #6b7280 0%, #9ca3af 100%); }
+  @keyframes ganttSlide {
+    from { opacity: 0; transform: translateX(-12px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .gantt-today-line {
+    position: absolute;
+    top: 22px; bottom: 0;
+    width: 2px;
+    background: var(--green);
+    z-index: 2;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .gantt-today-line::before {
+    content: 'HOY';
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--green);
+    color: white;
+    font-size: 8px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+  }
+  .big-dash {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 10px;
+    height: 100%;
+    grid-auto-rows: auto;
+  }
+  .big-kpi {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    grid-column: span 3;
+    position: relative;
+    overflow: hidden;
+  }
+  .big-kpi::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 3px;
+    background: var(--green);
+  }
+  .big-kpi.accent::before { background: var(--accent); }
+  .big-kpi.danger::before { background: #ef4444; }
+  .big-kpi .lab {
+    font-size: 9px; color: var(--ink-mute);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    font-weight: 700; margin-bottom: 4px;
+  }
+  .big-kpi .val {
+    font-size: 20px; font-weight: 800;
+    letter-spacing: -0.02em; color: var(--ink);
+    line-height: 1.1;
+  }
+  .big-kpi .val.green { color: var(--green); }
+  .big-kpi .val.accent { color: var(--accent-deep); }
+  .big-kpi .val.danger { color: #dc2626; }
+  .big-kpi .delta {
+    font-size: 10px; margin-top: 3px;
+    color: var(--green); font-weight: 600;
+  }
+  .big-kpi .delta.down { color: #dc2626; }
+
+  .big-chart {
+    grid-column: span 8;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .big-chart-header {
+    display: flex; justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .big-chart-title {
+    font-size: 10px; color: var(--ink-mute);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    font-weight: 700;
+  }
+  .big-chart-legend {
+    display: flex; gap: 12px;
+    font-size: 9px; font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .big-chart-legend span {
+    display: flex; align-items: center; gap: 4px;
+  }
+  .big-chart-legend i {
+    width: 8px; height: 8px; border-radius: 2px;
+    display: inline-block;
+  }
+  .big-bars {
+    display: flex; align-items: flex-end;
+    gap: 6px; flex: 1;
+    padding-bottom: 18px;
+    position: relative;
+    min-height: 0;
+  }
+  .big-bar-group {
+    flex: 1;
+    display: flex; gap: 2px;
+    align-items: flex-end;
+    height: 100%;
+    position: relative;
+  }
+  .big-bar-group::after {
+    content: attr(data-month);
+    position: absolute;
+    bottom: -16px;
+    left: 50%; transform: translateX(-50%);
+    font-size: 9px; color: var(--ink-mute);
+    font-weight: 600;
+  }
+  .big-bar {
+    flex: 1;
+    border-radius: 3px 3px 0 0;
+    animation: rise 1s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    min-height: 4px;
+  }
+  .big-bar.income { background: linear-gradient(180deg, var(--green-bright) 0%, var(--green) 100%); }
+  .big-bar.cost { background: linear-gradient(180deg, #fbbf24 0%, var(--accent) 100%); }
+  @keyframes rise {
+    from { transform: scaleY(0); transform-origin: bottom; }
+    to { transform: scaleY(1); transform-origin: bottom; }
+  }
+
+  .big-side {
+    grid-column: span 4;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .big-side-title {
+    font-size: 10px; color: var(--ink-mute);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    font-weight: 700; margin-bottom: 10px;
+  }
+  .big-pipeline {
+    flex: 1;
+    display: flex; flex-direction: column;
+    gap: 8px;
+    justify-content: space-between;
+  }
+  .big-pipe-row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .big-pipe-icon {
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .big-pipe-icon.green { background: var(--green-soft); }
+  .big-pipe-icon.amber { background: #fef3c7; }
+  .big-pipe-icon.danger { background: #fee2e2; }
+  .big-pipe-info { flex: 1; min-width: 0; }
+  .big-pipe-name {
+    font-size: 10px; font-weight: 700;
+    color: var(--ink);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .big-pipe-detail {
+    font-size: 9px; color: var(--ink-mute);
+    font-weight: 500;
+  }
+  .big-pipe-val {
+    font-size: 11px; font-weight: 800;
+    color: var(--ink);
+  }
+  .big-pipe-val.green { color: var(--green); }
+  .big-pipe-val.danger { color: #dc2626; }
+
+  /* Slide 3: Asignación IA - factura + reparto */
+  .ia-invoice {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px;
+    height: 100%;
+  }
+  .ia-invoice-head {
+    display: flex; justify-content: space-between;
+    padding-bottom: 12px; margin-bottom: 14px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .ia-invoice-head .num { font-weight: 700; font-size: 13px; }
+  .ia-invoice-head .total { color: var(--green); font-weight: 800; font-size: 16px; }
+  .ia-line { display: flex; justify-content: space-between; padding: 6px 0; font-size: 12px; color: var(--ink-soft); }
+  .ia-line strong { color: var(--ink); }
+  .ia-suggest {
+    background: var(--green-soft);
+    border: 1px solid var(--green-line);
+    border-radius: 12px;
+    padding: 18px;
+    height: 100%;
+    position: relative;
+  }
+  .ia-suggest-badge {
+    position: absolute; top: -10px; right: 16px;
+    background: var(--green); color: white;
+    padding: 4px 12px; border-radius: 999px;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .ia-suggest-title {
+    font-size: 12px; font-weight: 700;
+    color: var(--green-deep); margin-bottom: 14px;
+  }
+  .ia-up {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(167, 243, 208, 0.5);
+  }
+  .ia-up:last-child { border: none; }
+  .ia-up-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .ia-up-info { flex: 1; }
+  .ia-up-name { font-size: 12px; font-weight: 700; color: var(--ink); }
+  .ia-up-bar {
+    height: 4px; background: rgba(255,255,255,0.6); border-radius: 2px;
+    margin-top: 4px; overflow: hidden;
+  }
+  .ia-up-bar-fill { height: 100%; background: var(--green); border-radius: 2px; animation: fillBar 1.2s ease-out; }
+  @keyframes fillBar {
+    from { width: 0; }
+  }
+  .ia-up-pct { font-size: 14px; font-weight: 800; color: var(--green); }
+
+  /* Slide 4: Chat IA */
+  .chat-side {
+    display: flex; flex-direction: column;
+    gap: 12px; padding: 8px;
+    height: 100%; overflow: hidden;
+  }
+  .chat-msg {
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 13px;
+    line-height: 1.45;
+    max-width: 85%;
+    animation: chatIn 0.5s ease backwards;
+  }
+  .chat-msg.user {
+    background: var(--green);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .chat-msg.bot {
+    background: white;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .chat-msg.bot strong { color: var(--green); }
+  .chat-typing {
+    background: white;
+    border: 1px solid var(--line);
+    padding: 12px 16px;
+    border-radius: 14px;
+    border-bottom-left-radius: 4px;
+    align-self: flex-start;
+    display: flex; gap: 4px;
+  }
+  .chat-typing span {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green);
+    animation: blink 1.4s infinite both;
+  }
+  .chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+  .chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink {
+    0%, 80%, 100% { opacity: 0.3; }
+    40% { opacity: 1; }
+  }
+  @keyframes chatIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .chat-viz {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px;
+    height: 100%;
+    display: flex; flex-direction: column;
+  }
+  .chat-viz-title { font-size: 11px; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; margin-bottom: 14px; }
+  .chat-viz-amount { font-size: 32px; font-weight: 800; color: var(--green); letter-spacing: -0.02em; }
+  .chat-viz-delta { font-size: 13px; color: var(--green); font-weight: 600; margin-top: 4px; }
+  .chat-viz-chart {
+    flex: 1; margin-top: 14px;
+    display: flex; align-items: flex-end;
+    gap: 6px;
+  }
+  .chat-viz-chart .b {
+    flex: 1;
+    background: linear-gradient(180deg, var(--green-bright) 0%, var(--green) 100%);
+    border-radius: 3px 3px 0 0;
+    opacity: 0.8;
+  }
+  .chat-viz-chart .b.hi { opacity: 1; }
+
+  /* Slide Inventario */
+  .inv-wrap {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 14px;
+    height: 100%;
+  }
+  .inv-table {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .inv-table-head {
+    display: flex; justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 8px;
+  }
+  .inv-table-title {
+    font-size: 11px; color: var(--ink-mute);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    font-weight: 700;
+  }
+  .inv-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 10px;
+    padding: 8px 6px;
+    border-bottom: 1px solid var(--bg-deep);
+    align-items: center;
+    font-size: 12px;
+    animation: slideInLeft 0.5s ease backwards;
+  }
+  .inv-row:last-child { border: none; }
+  .inv-name {
+    font-weight: 700;
+    color: var(--ink);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .inv-name-icon {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    background: var(--green-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+  .inv-stock {
+    display: flex; flex-direction: column;
+    align-items: flex-end;
+    min-width: 90px;
+  }
+  .inv-stock-bar-wrap {
+    width: 80px; height: 5px;
+    background: var(--bg-deep);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 3px;
+  }
+  .inv-stock-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-bright), var(--green));
+    border-radius: 3px;
+    animation: fillBar 1.2s ease-out;
+  }
+  .inv-stock-bar.warn { background: linear-gradient(90deg, #fbbf24, var(--accent)); }
+  .inv-stock-bar.danger { background: linear-gradient(90deg, #f87171, #dc2626); }
+  .inv-stock-val {
+    font-size: 11px; font-weight: 700;
+    color: var(--ink);
+  }
+  .inv-status {
+    padding: 3px 9px; border-radius: 999px;
+    font-size: 9px; font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--green-soft); color: var(--green-text);
+    min-width: 60px; text-align: center;
+  }
+  .inv-status.warn { background: #fef3c7; color: var(--accent-deep); }
+  .inv-status.danger { background: #fee2e2; color: #b91c1c; }
+
+  /* Side: Indicadores inventario */
+  .inv-side {
+    display: flex; flex-direction: column;
+    gap: 12px;
+  }
+  .inv-summary {
+    background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-dark) 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .inv-summary::before {
+    content: ''; position: absolute;
+    top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    background: radial-gradient(circle, rgba(244, 160, 43, 0.25) 0%, transparent 70%);
+  }
+  .inv-summary-lab {
+    font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.08em; opacity: 0.8;
+    font-weight: 700; margin-bottom: 6px;
+    position: relative;
+  }
+  .inv-summary-val {
+    font-size: 30px; font-weight: 800;
+    letter-spacing: -0.03em; line-height: 1;
+    position: relative;
+  }
+  .inv-summary-sub {
+    margin-top: 6px;
+    font-size: 12px; opacity: 0.9;
+    position: relative;
+  }
+  .inv-rotation {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px;
+    flex: 1;
+    display: flex; flex-direction: column;
+  }
+  .inv-rotation-title {
+    font-size: 10px; color: var(--ink-mute);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    font-weight: 700; margin-bottom: 10px;
+  }
+  .inv-pies {
+    display: flex; flex-direction: column;
+    gap: 8px;
+  }
+  .inv-pie-row {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .inv-pie-svg {
+    width: 32px; height: 32px;
+    flex-shrink: 0;
+  }
+  .inv-pie-info { flex: 1; }
+  .inv-pie-name {
+    font-size: 11px; font-weight: 700; color: var(--ink);
+    line-height: 1.2;
+  }
+  .inv-pie-detail {
+    font-size: 9px; color: var(--ink-mute);
+    font-weight: 500;
+  }
+  .inv-pie-pct {
+    font-size: 13px; font-weight: 800;
+    color: var(--green);
+    letter-spacing: -0.02em;
+  }
+  .inv-pie-pct.amber { color: var(--accent-deep); }
+  .inv-pie-pct.danger { color: #dc2626; }
+
+  /* Mini mockup inventario para case-mock */
+  .cm-inv-summary {
+    background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-dark) 100%);
+    color: white;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .cm-inv-summary .lab {
+    font-size: 9px; text-transform: uppercase;
+    letter-spacing: 0.06em; font-weight: 700; opacity: 0.85;
+  }
+  .cm-inv-summary .val {
+    font-size: 16px; font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .cm-inv-summary .badge {
+    background: rgba(255,255,255,0.2);
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 10px; font-weight: 700;
+  }
+  .cm-inv-row {
+    display: grid;
+    grid-template-columns: 1fr 70px auto;
+    gap: 8px;
+    align-items: center;
+    padding: 7px 8px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    margin-bottom: 4px;
+    font-size: 10px;
+  }
+  .cm-inv-name { font-weight: 700; color: var(--ink); }
+  .cm-inv-bar-wrap {
+    height: 5px; background: var(--bg-deep);
+    border-radius: 3px; overflow: hidden;
+  }
+  .cm-inv-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-bright), var(--green));
+    border-radius: 3px;
+    animation: fillBar 1.2s ease-out;
+  }
+  .cm-inv-bar.warn { background: linear-gradient(90deg, #fbbf24, var(--accent)); }
+  .cm-inv-bar.danger { background: linear-gradient(90deg, #f87171, #dc2626); }
+  .cm-inv-tag {
+    font-size: 9px; font-weight: 700;
+    padding: 2px 7px; border-radius: 999px;
+    background: var(--green-soft); color: var(--green-text);
+  }
+  .cm-inv-tag.warn { background: #fef3c7; color: var(--accent-deep); }
+  .cm-inv-tag.danger { background: #fee2e2; color: #b91c1c; }
+  .alerts-side {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px;
+    height: 100%;
+  }
+  .alerts-head {
+    display: flex; justify-content: space-between;
+    padding-bottom: 12px; margin-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .alerts-title { font-weight: 700; font-size: 13px; }
+  .alert-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    background: var(--bg-soft);
+    border-left: 3px solid var(--green);
+    font-size: 12px;
+    animation: slideInLeft 0.5s ease backwards;
+  }
+  .alert-row.warn { border-left-color: var(--accent); background: #fff8ed; }
+  .alert-row.danger { border-left-color: #dc2626; background: #fef2f2; }
+  .alert-row .name { flex: 1; font-weight: 600; color: var(--ink); }
+  .alert-row .time { font-size: 11px; color: var(--ink-mute); font-weight: 600; }
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .alerts-summary {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+    border-radius: 12px;
+    padding: 24px;
+    color: white;
+    height: 100%;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .alerts-summary::before {
+    content: ''; position: absolute;
+    top: -50px; right: -50px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+  }
+  .alerts-sum-label {
+    font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.08em; opacity: 0.8;
+    margin-bottom: 8px; font-weight: 700;
+  }
+  .alerts-sum-val {
+    font-size: 42px; font-weight: 800;
+    letter-spacing: -0.03em; line-height: 1;
+  }
+  .alerts-sum-sub {
+    margin-top: 14px;
+    font-size: 13px; opacity: 0.9;
+  }
+  .alerts-sum-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 16px;
+  }
+
+  /* Indicators */
+  .showcase-indicators {
+    display: flex; justify-content: center;
+    gap: 8px; margin-top: 24px;
+  }
+  .showcase-indicators button {
+    width: 32px; height: 4px;
+    border-radius: 2px;
+    border: none;
+    background: var(--green-line);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+  }
+  .showcase-indicators button.active {
+    background: var(--green);
+    width: 64px;
+  }
+  .showcase-label {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--ink-mute);
+    font-weight: 500;
+  }
+  .showcase-label strong { color: var(--green-deep); font-weight: 700; }
+  .mock-card-1 {
+    top: 0; right: 0; width: 82%;
+    transform: rotate(2deg);
+    animation: float1 6s ease-in-out infinite;
+    z-index: 2;
+  }
+  .mock-card-2 {
+    bottom: 0; left: 0; width: 70%;
+    transform: rotate(-3deg);
+    animation: float2 7s ease-in-out infinite;
+    z-index: 1;
+  }
+  @keyframes float1 {
+    0%, 100% { transform: rotate(2deg) translateY(0); }
+    50% { transform: rotate(2deg) translateY(-8px); }
+  }
+  @keyframes float2 {
+    0%, 100% { transform: rotate(-3deg) translateY(0); }
+    50% { transform: rotate(-3deg) translateY(-6px); }
+  }
+  .mock-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 12px; border-bottom: 1px solid var(--bg-deep);
+    margin-bottom: 14px;
+  }
+  .mock-title { font-weight: 700; color: var(--ink); font-size: 13px; }
+  .mock-pill {
+    background: var(--green-soft2); color: var(--green-text);
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 10px; font-weight: 600;
+  }
+  .mock-row {
+    display: flex; justify-content: space-between;
+    padding: 8px 0; border-bottom: 1px solid var(--bg-deep);
+    color: var(--ink-soft);
+  }
+  .mock-row:last-child { border: none; }
+  .mock-row strong { color: var(--ink); font-weight: 700; }
+  .mock-bars { display: flex; gap: 5px; align-items: flex-end; height: 62px; margin-top: 14px; }
+  .mock-bar { flex: 1; background: var(--green); border-radius: 3px 3px 0 0; opacity: 0.7; }
+  .mock-bar:nth-child(2) { background: var(--accent); opacity: 1; }
+  .mock-bar:nth-child(4) { opacity: 1; }
+
+  /* STRIP */
+  .strip {
+    background: linear-gradient(90deg, var(--green-deep) 0%, var(--green-dark) 100%);
+    color: white;
+    padding: 24px 0; overflow: hidden;
+  }
+  .strip-track {
+    display: flex; gap: 48px;
+    animation: scroll 20s linear infinite;
+    white-space: nowrap; font-size: 16px; font-weight: 500;
+  }
+  .strip-track span {
+    display: flex; align-items: center; gap: 48px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .strip-track span::after {
+    content: '●'; color: var(--accent); font-size: 8px;
+  }
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* SECTIONS */
+  section { padding: 100px 0; position: relative; }
+  .section-head { max-width: 720px; margin-bottom: 64px; }
+  .eyebrow {
+    display: inline-block; font-size: 13px;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--green); margin-bottom: 20px; font-weight: 700;
+  }
+  h2 {
+    font-size: clamp(34px, 4.5vw, 48px); line-height: 1.1;
+    letter-spacing: -0.025em; font-weight: 800;
+    margin-bottom: 20px; color: var(--ink);
+  }
+  h2 span { color: var(--green); }
+  .section-lead { font-size: 18px; line-height: 1.6; color: var(--ink-soft); }
+
+  /* PROMISE */
+  .promise {
+    background: var(--bg-deep);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .promise-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .promise-card {
+    background: white; padding: 36px 32px;
+    border-radius: 16px; border: 1px solid var(--line);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .promise-card:hover {
+    border-color: var(--green); transform: translateY(-4px);
+    box-shadow: 0 16px 32px -12px rgba(5, 150, 105, 0.18);
+  }
+  .promise-card .label {
+    font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--ink-mute);
+    font-weight: 700; margin-bottom: 24px;
+  }
+  .promise-number {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 14px;
+    line-height: 1;
+  }
+  .promise-number .num {
+    font-size: 56px; font-weight: 800;
+    color: var(--green);
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .promise-number .sub {
+    font-size: 15px; color: var(--ink-mute);
+    font-weight: 600;
+  }
+  .promise-card h3 {
+    font-size: 20px; font-weight: 700;
+    margin-bottom: 12px; color: var(--ink);
+  }
+  .promise-card p {
+    color: var(--ink-soft); font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  /* Mini visualización: timeline 30 días */
+  .promise-viz-timeline {
+    display: flex; align-items: center; gap: 4px;
+    margin-top: auto;
+  }
+  .promise-viz-timeline .dot {
+    flex: 1;
+    height: 6px;
+    background: var(--green-soft2);
+    border-radius: 3px;
+    position: relative;
+  }
+  .promise-viz-timeline .dot.filled {
+    background: var(--green);
+    animation: timelineFill 2.5s ease-out infinite;
+  }
+  .promise-viz-timeline .dot.last {
+    background: var(--green);
+    height: 10px;
+  }
+  .promise-viz-timeline .dot.last::after {
+    content: '✓';
+    position: absolute;
+    top: -22px; right: -4px;
+    width: 22px; height: 22px;
+    background: var(--green);
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 6px rgba(5, 150, 105, 0.4);
+    animation: bounceCheck 2s ease-in-out infinite;
+  }
+  @keyframes timelineFill {
+    0%, 100% { opacity: 0.85; }
+    50% { opacity: 1; }
+  }
+  @keyframes bounceCheck {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+  .promise-viz-labels {
+    display: flex; justify-content: space-between;
+    margin-top: 8px;
+    font-size: 10px; color: var(--ink-mute);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Mini visualización: balanza riesgo */
+  .promise-viz-risk {
+    display: flex; align-items: stretch;
+    height: 60px;
+    margin-top: auto;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .promise-viz-risk .you, .promise-viz-risk .bdata {
+    flex: 1;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    text-align: center;
+  }
+  .promise-viz-risk .you {
+    background: var(--bg-soft);
+    color: var(--ink-soft);
+  }
+  .promise-viz-risk .bdata {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+    color: white;
+  }
+  .promise-viz-risk .role {
+    font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 3px;
+    opacity: 0.75;
+  }
+  .promise-viz-risk .what {
+    font-size: 12px; font-weight: 700;
+  }
+  .promise-viz-risk .bdata .what::before {
+    content: '🛡️ ';
+  }
+
+  /* Mini visualización: customización (sliders) */
+  .promise-viz-custom {
+    display: flex; flex-direction: column;
+    gap: 10px;
+    margin-top: auto;
+  }
+  .promise-viz-custom .row {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .promise-viz-custom .lab {
+    font-size: 11px; color: var(--ink-soft);
+    font-weight: 600;
+    width: 70px; flex-shrink: 0;
+  }
+  .promise-viz-custom .track {
+    flex: 1; height: 6px;
+    background: var(--bg-deep);
+    border-radius: 3px;
+    position: relative;
+  }
+  .promise-viz-custom .fill {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-bright), var(--green));
+    border-radius: 3px;
+    animation: customFill 2s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+  .promise-viz-custom .knob {
+    position: absolute;
+    top: 50%;
+    width: 14px; height: 14px;
+    background: white;
+    border: 2px solid var(--green);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  }
+  @keyframes customFill {
+    from { width: 0; }
+  }
+
+  /* CASES */
+  .cases-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .case {
+    background: white; border: 1px solid var(--line);
+    border-radius: 16px; padding: 32px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative; overflow: hidden;
+  }
+  .case::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 100%; height: 3px; background: var(--green);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .case:hover {
+    transform: translateY(-4px); border-color: var(--green-line);
+    box-shadow: 0 20px 40px -12px rgba(6, 78, 59, 0.15);
+  }
+  .case:hover::before { transform: scaleX(1); }
+  .case-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: var(--green-soft);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 24px; color: var(--green);
+  }
+  .case-icon svg { width: 24px; height: 24px; }
+  .case h3 {
+    font-size: 22px; font-weight: 700; line-height: 1.2;
+    letter-spacing: -0.015em; margin-bottom: 12px; color: var(--ink);
+  }
+  .case p { color: var(--ink-soft); font-size: 15px; line-height: 1.6; margin-bottom: 20px; }
+  .case-tag {
+    display: inline-block; background: var(--bg-deep);
+    color: var(--green-dark); padding: 5px 12px;
+    border-radius: 6px; font-size: 12px; font-weight: 600;
+  }
+
+  /* MOCKUPS dentro de cases - rediseñados */
+  .case-mock {
+    background: linear-gradient(180deg, #ffffff 0%, var(--bg-soft) 100%);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+    font-size: 11px;
+    overflow: hidden;
+    position: relative;
+    min-height: 180px;
+  }
+  .cm-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .cm-title { font-weight: 700; color: var(--ink); font-size: 12px; }
+  .cm-pill {
+    background: var(--green-soft2); color: var(--green-text);
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 9px; font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .cm-pill::before {
+    content: ''; width: 5px; height: 5px;
+    border-radius: 50%; background: var(--green);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  .cm-pill.warn { background: #fef3c7; color: var(--accent-deep); }
+  .cm-pill.warn::before { background: var(--accent); }
+  .cm-pill.danger { background: #fee2e2; color: #b91c1c; }
+  .cm-pill.danger::before { background: #dc2626; }
+  .cm-row {
+    display: flex; justify-content: space-between;
+    padding: 6px 0; color: var(--ink-soft);
+    font-size: 11px;
+  }
+  .cm-row strong { color: var(--ink); font-weight: 700; }
+
+  /* Mock 1: Asignación facturas - con avatares de UPs */
+  .cm-invoice-head {
+    display: flex; justify-content: space-between;
+    padding: 10px 12px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  .cm-invoice-head .num {
+    font-size: 10px; color: var(--ink-mute); font-weight: 600;
+  }
+  .cm-invoice-head .total {
+    font-size: 14px; font-weight: 800; color: var(--green);
+    letter-spacing: -0.02em;
+  }
+  .cm-up-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    border: 1px solid var(--line);
+  }
+  .cm-up-icon {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    background: var(--green-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .cm-up-name {
+    flex: 1;
+    font-size: 11px;
+    font-weight: 600; color: var(--ink);
+  }
+  .cm-up-bar-wrap {
+    width: 60px; height: 5px;
+    background: var(--bg-deep); border-radius: 3px;
+    overflow: hidden;
+  }
+  .cm-up-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-bright), var(--green));
+    border-radius: 3px;
+    animation: fillBar 1.5s ease-out;
+  }
+  .cm-up-pct {
+    font-size: 12px; font-weight: 800; color: var(--green);
+    min-width: 32px; text-align: right;
+  }
+  .cm-ai-hint {
+    margin-top: 8px; padding: 8px 10px;
+    background: var(--green-soft);
+    border: 1px dashed var(--green-line);
+    border-radius: 8px;
+    font-size: 10px;
+    color: var(--green-text);
+    font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* Mock 2: Mapa satelital realista (estilo Leaflet) */
+  .cm-map {
+    background:
+      linear-gradient(105deg, transparent 48%, rgba(180, 160, 120, 0.4) 48%, rgba(180, 160, 120, 0.4) 50%, transparent 50%),
+      linear-gradient(15deg, transparent 70%, rgba(180, 160, 120, 0.3) 70%, rgba(180, 160, 120, 0.3) 71%, transparent 71%),
+      radial-gradient(ellipse 120px 80px at 18% 25%, #6b8e4e 0%, #5a7d40 60%, transparent 100%),
+      radial-gradient(ellipse 100px 90px at 55% 18%, #8b9b5c 0%, #74844a 60%, transparent 100%),
+      radial-gradient(ellipse 90px 70px at 82% 30%, #b8a473 0%, #9c8a5e 60%, transparent 100%),
+      radial-gradient(ellipse 110px 80px at 25% 75%, #4a7340 0%, #3a5d32 60%, transparent 100%),
+      radial-gradient(ellipse 100px 90px at 60% 80%, #7a8c4e 0%, #65763e 60%, transparent 100%),
+      radial-gradient(ellipse 90px 80px at 88% 75%, #a89863 0%, #8b7d50 60%, transparent 100%),
+      linear-gradient(135deg, #3d5a2e 0%, #2d4222 100%);
+    border-radius: 10px;
+    height: 140px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .cm-map::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 30% 50%, transparent 0%, rgba(0,0,0,0.15) 100%),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.25'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+  .cm-pin {
+    position: absolute;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 1px;
+    z-index: 2;
+  }
+  .cm-pin-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    position: relative;
+  }
+  .cm-pin.green .cm-pin-dot {
+    background: var(--green-bright);
+    animation: pinPulseGreen 2s ease-in-out infinite;
+  }
+  .cm-pin.amber .cm-pin-dot {
+    background: var(--accent);
+    animation: pinPulseAmber 2s ease-in-out infinite 0.5s;
+  }
+  .cm-pin.idle .cm-pin-dot { background: rgba(255,255,255,0.7); }
+  .cm-pin.danger .cm-pin-dot {
+    background: #ef4444;
+    animation: pinPulseRed 2s ease-in-out infinite 1s;
+  }
+  .cm-pin-label {
+    background: rgba(0,0,0,0.75);
+    color: white;
+    font-size: 7.5px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 3px;
+    white-space: nowrap;
+    backdrop-filter: blur(4px);
+  }
+  .cm-pin.green .cm-pin-label { background: rgba(16, 185, 129, 0.92); }
+  .cm-pin.amber .cm-pin-label { background: rgba(244, 160, 43, 0.92); }
+  .cm-pin.danger .cm-pin-label { background: rgba(239, 68, 68, 0.92); }
+  .cm-map-controls {
+    position: absolute;
+    top: 8px; left: 8px;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    overflow: hidden;
+    z-index: 3;
+  }
+  .cm-map-controls div {
+    width: 18px; height: 18px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--line);
+  }
+  .cm-map-controls div:last-child { border: none; }
+  .cm-map-attr {
+    position: absolute;
+    bottom: 3px; right: 5px;
+    font-size: 7px;
+    color: rgba(255,255,255,0.7);
+    background: rgba(0,0,0,0.5);
+    padding: 1px 5px;
+    border-radius: 2px;
+    z-index: 3;
+  }
+  .cm-map-stats {
+    display: flex; justify-content: space-between;
+    padding: 0 4px;
+  }
+  .cm-map-stat {
+    font-size: 10px; color: var(--ink-mute);
+    font-weight: 600;
+  }
+  .cm-map-stat strong {
+    color: var(--green); font-size: 14px;
+    font-weight: 800; display: block;
+  }
+
+  /* Mock 3: Chat IA mejorado */
+  .cm-chat {
+    display: flex; flex-direction: column;
+    gap: 6px; padding: 4px;
+  }
+  .cm-chat-msg {
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    line-height: 1.4;
+    max-width: 85%;
+    animation: chatIn 0.5s ease backwards;
+  }
+  .cm-chat-msg.user {
+    background: var(--green);
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 3px;
+  }
+  .cm-chat-msg.bot {
+    background: white;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    border-bottom-left-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .cm-chat-msg.bot strong { color: var(--green); }
+  .cm-chat-typing {
+    background: white;
+    border: 1px solid var(--line);
+    padding: 8px 12px;
+    border-radius: 12px;
+    border-bottom-left-radius: 3px;
+    align-self: flex-start;
+    display: flex; gap: 3px;
+    width: fit-content;
+  }
+  .cm-chat-typing span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    animation: blink 1.4s infinite both;
+  }
+  .cm-chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+  .cm-chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+  /* Mock 4: Optimizador con timeline */
+  .cm-optim {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .cm-optim-summary {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+    color: white;
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 4px;
+  }
+  .cm-optim-summary .lab {
+    font-size: 9px; text-transform: uppercase;
+    letter-spacing: 0.06em; font-weight: 700; opacity: 0.85;
+  }
+  .cm-optim-summary .val {
+    font-size: 18px; font-weight: 800; letter-spacing: -0.02em;
+  }
+  .cm-optim-summary .badge {
+    background: rgba(255,255,255,0.2);
+    padding: 4px 8px; border-radius: 6px;
+    font-size: 10px; font-weight: 700;
+  }
+  .cm-alert {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px;
+    border-radius: 7px;
+    font-size: 10px;
+    background: white;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--green);
+    animation: slideInLeft 0.5s ease backwards;
+  }
+  .cm-alert.warn { border-left-color: var(--accent); background: #fffbf0; }
+  .cm-alert.danger { border-left-color: #dc2626; background: #fef5f5; }
+  .cm-alert-icon {
+    font-size: 14px; flex-shrink: 0;
+  }
+  .cm-alert-text { flex: 1; color: var(--ink); font-weight: 600; }
+  .cm-alert-date {
+    color: var(--ink-mute); font-size: 9px;
+    background: var(--bg-deep); padding: 2px 7px;
+    border-radius: 999px; font-weight: 700;
+  }
+  .cm-alert.warn .cm-alert-date { background: #fef3c7; color: var(--accent-deep); }
+  .cm-alert.danger .cm-alert-date { background: #fee2e2; color: #b91c1c; }
+
+  /* Mock 5: Contratos con timeline */
+  .cm-contract {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .cm-contract.warn {
+    background: linear-gradient(90deg, #fffbf0 0%, white 100%);
+    border-color: #fde68a;
+  }
+  .cm-contract-bar {
+    width: 4px; height: 36px;
+    background: var(--green);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .cm-contract.warn .cm-contract-bar { background: var(--accent); }
+  .cm-contract-info { flex: 1; }
+  .cm-contract-name {
+    font-size: 11px; font-weight: 700; color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .cm-contract-detail {
+    font-size: 10px; color: var(--ink-mute); font-weight: 500;
+  }
+  .cm-contract-status {
+    font-size: 9px; font-weight: 700;
+    padding: 3px 8px; border-radius: 999px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    background: var(--green-soft); color: var(--green-text);
+  }
+  .cm-contract.warn .cm-contract-status { background: #fef3c7; color: var(--accent-deep); }
+
+  /* Mock 6: Donut + barras NPK */
+  .cm-fert {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    align-items: center;
+  }
+  .cm-donut svg { width: 90px; height: 90px; }
+  .cm-fert-list {
+    display: flex; flex-direction: column;
+    gap: 8px;
+  }
+  .cm-fert-row {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px;
+  }
+  .cm-fert-dot {
+    width: 10px; height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .cm-fert-label {
+    flex: 1; color: var(--ink-soft); font-weight: 600;
+  }
+  .cm-fert-pct {
+    font-weight: 800; color: var(--ink);
+  }
+  .cm-fert-savings {
+    margin-top: 8px; padding: 8px 10px;
+    background: var(--green-soft);
+    border-radius: 8px;
+    font-size: 10px;
+    color: var(--green-text);
+    font-weight: 700;
+    text-align: center;
+  }
+
+  /* Mock 7: Dashboard KPIs grande */
+  .cm-kpis {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .cm-kpi {
+    background: white; padding: 10px;
+    border-radius: 8px; border: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  .cm-kpi::before {
+    content: ''; position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 3px; background: var(--green);
+  }
+  .cm-kpi.accent::before { background: var(--accent); }
+  .cm-kpi-label {
+    font-size: 9px; color: var(--ink-mute);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    font-weight: 700;
+  }
+  .cm-kpi-val {
+    font-size: 16px; font-weight: 800; color: var(--ink);
+    margin-top: 4px;
+    letter-spacing: -0.02em;
+  }
+  .cm-kpi-val.green { color: var(--green); }
+  .cm-kpi-val.accent { color: var(--accent-deep); }
+  .cm-kpi-delta {
+    font-size: 9px; margin-top: 2px;
+    color: var(--green); font-weight: 600;
+  }
+  .cm-kpi-delta.down { color: #dc2626; }
+  .cm-mini-chart {
+    margin-top: 10px;
+    background: white; border: 1px solid var(--line);
+    border-radius: 8px; padding: 10px;
+  }
+  .cm-mini-chart-title {
+    font-size: 9px; color: var(--ink-mute);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    font-weight: 700; margin-bottom: 6px;
+  }
+  .cm-mini-bars {
+    display: flex; gap: 4px; align-items: flex-end;
+    height: 36px;
+  }
+  .cm-mini-bar {
+    flex: 1;
+    background: linear-gradient(180deg, var(--green-bright), var(--green));
+    border-radius: 2px 2px 0 0;
+    opacity: 0.7;
+  }
+  .cm-mini-bar.hi { opacity: 1; }
+  .cm-mini-bar.acc {
+    background: linear-gradient(180deg, #fbbf24, var(--accent));
+    opacity: 1;
+  }
+
+  /* Mock 9: Mini Gantt para case grid */
+  .cm-gantt {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px;
+    overflow: hidden;
+  }
+  .cm-gantt-head {
+    display: grid; grid-template-columns: 70px 1fr;
+    gap: 6px; margin-bottom: 6px;
+  }
+  .cm-gantt-week-head {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    font-size: 8px; color: var(--ink-mute);
+    font-weight: 700; text-align: center;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .cm-gantt-week-head span { padding: 3px 0; }
+  .cm-gantt-week-head .today {
+    background: rgba(5, 150, 105, 0.08);
+    color: var(--green);
+    border-radius: 3px;
+  }
+  .cm-gantt-line {
+    display: grid; grid-template-columns: 70px 1fr;
+    gap: 6px; align-items: center;
+    margin-bottom: 4px;
+    height: 18px;
+  }
+  .cm-gantt-name {
+    font-size: 9px; font-weight: 700;
+    color: var(--ink); white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis;
+    padding-left: 6px;
+    border-left: 2px solid var(--green);
+  }
+  .cm-gantt-name.amber { border-left-color: var(--accent); }
+  .cm-gantt-name.danger { border-left-color: #ef4444; }
+  .cm-gantt-track {
+    position: relative;
+    height: 18px;
+    background: repeating-linear-gradient(to right,
+      var(--bg-soft) 0,
+      var(--bg-soft) calc((100% - 1px) / 7),
+      var(--bg-deep) calc((100% - 1px) / 7),
+      var(--bg-deep) calc(100% / 7));
+    border-radius: 3px;
+  }
+  .cm-gantt-bar {
+    position: absolute;
+    top: 2px; bottom: 2px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--green) 0%, var(--green-bright) 100%);
+    font-size: 8px; color: white;
+    font-weight: 700;
+    padding: 0 5px;
+    display: flex; align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+  .cm-gantt-bar.amber {
+    background: linear-gradient(90deg, var(--accent-deep), var(--accent));
+  }
+  .cm-gantt-bar.danger {
+    background: linear-gradient(90deg, #b91c1c, #ef4444);
+  }
+  .cm-gantt-bar.idle {
+    background: linear-gradient(90deg, #6b7280, #9ca3af);
+  }
+  .cm-gantt-today {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: var(--green);
+    z-index: 2;
+    pointer-events: none;
+  }
+  .cm-receipt-wrap {
+    background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-dark) 100%);
+    border-radius: 10px;
+    padding: 12px;
+  }
+  .cm-receipt-header {
+    display: flex; align-items: center; gap: 10px;
+    color: white;
+    margin-bottom: 10px;
+  }
+  .cm-receipt-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+  }
+  .cm-receipt-name {
+    font-size: 12px; font-weight: 700;
+  }
+  .cm-receipt-status {
+    font-size: 10px; opacity: 0.8;
+  }
+  .cm-receipt-progress {
+    margin-left: auto;
+    background: rgba(255,255,255,0.15);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .cm-receipt-body {
+    background: white;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: ui-monospace, monospace;
+  }
+  .cm-receipt-row {
+    display: flex; justify-content: space-between;
+    padding: 4px 0; font-size: 10px; color: var(--ink-soft);
+    border-bottom: 1px dashed var(--line);
+  }
+  .cm-receipt-row:last-child { border: none; padding-top: 6px; }
+  .cm-receipt-row.total {
+    border: none;
+    margin-top: 4px;
+    padding-top: 6px;
+    border-top: 1px solid var(--ink);
+    font-weight: 700;
+  }
+  .cm-receipt-row.total strong {
+    color: var(--green);
+    font-size: 13px;
+  }
+  .cm-receipt-photos {
+    display: flex; gap: 4px;
+    margin-top: 8px;
+  }
+  .cm-receipt-photo {
+    width: 24px; height: 24px;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    color: white;
+    border: 2px solid white;
+  }
+  .cm-receipt-photo.more {
+    background: rgba(255,255,255,0.3);
+    color: white;
+    font-weight: 700;
+    font-size: 9px;
+  }
+
+  /* HOW */
+  .how {
+    background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-dark) 100%);
+    color: white;
+    position: relative; overflow: hidden;
+  }
+  .how::before {
+    content: ''; position: absolute;
+    top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(244, 160, 43, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .how h2 { color: white; }
+  .how h2 span { color: var(--accent); }
+  .how .eyebrow { color: var(--accent); }
+  .how .section-lead { color: rgba(255, 255, 255, 0.75); }
+  .steps {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 24px; margin-top: 48px; position: relative;
+  }
+  .step {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 28px 24px; border-radius: 14px;
+    backdrop-filter: blur(8px); transition: all 0.3s ease;
+  }
+  .step:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(244, 160, 43, 0.3);
+    transform: translateY(-4px);
+  }
+  .step-num {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--accent); color: var(--green-deep);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 18px; margin-bottom: 20px;
+  }
+  .step h4 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .step p { color: rgba(255, 255, 255, 0.7); font-size: 14px; line-height: 1.55; }
+
+  /* GUARANTEE */
+  .guarantee {
+    background: var(--bg-soft);
+    text-align: center; padding: 120px 0; position: relative;
+  }
+  .guarantee-icon {
+    width: 80px; height: 80px; margin: 0 auto 32px;
+    background: var(--green); border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; box-shadow: 0 20px 40px -10px rgba(5, 150, 105, 0.4);
+    transform: rotate(-6deg);
+  }
+  .guarantee-icon svg { width: 36px; height: 36px; }
+  .guarantee h2 { max-width: 880px; margin: 0 auto 20px; }
+  .guarantee p {
+    max-width: 620px; margin: 0 auto;
+    font-size: 18px; line-height: 1.6; color: var(--ink-soft);
+  }
+
+  /* FINAL */
+  .final {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+    color: white;
+    padding: 120px 0; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .final::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 30%, rgba(244, 160, 43, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .final h2 { color: white; position: relative; max-width: 800px; margin: 0 auto; }
+  .final h2 span { color: var(--accent); }
+  .final p {
+    max-width: 580px; margin: 24px auto 40px;
+    font-size: 18px; color: rgba(255, 255, 255, 0.85); position: relative;
+  }
+  .btn-whatsapp {
+    background: white; color: var(--green-deep);
+    padding: 20px 36px; border-radius: 12px;
+    text-decoration: none; font-weight: 700; font-size: 17px;
+    display: inline-flex; align-items: center; gap: 12px;
+    position: relative; transition: all 0.25s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+  .btn-whatsapp:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+  }
+  .btn-whatsapp svg { width: 22px; height: 22px; color: #25d366; }
+  .final-sub {
+    margin-top: 24px; font-size: 14px;
+    color: rgba(255, 255, 255, 0.7); position: relative;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink); color: rgba(255, 255, 255, 0.5);
+    padding: 32px 0; font-size: 13px;
+  }
+  footer .container {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 16px; flex-wrap: wrap;
+  }
+  footer a { color: rgba(255, 255, 255, 0.8); text-decoration: none; }
+  footer a:hover { color: white; }
+  footer .brand {
+    display: flex; align-items: center; gap: 10px;
+    color: white; font-weight: 600;
+  }
+  footer .brand img {
+    height: 28px;
+    width: auto;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero { padding: 110px 0 40px; }
+    .hero-grid { text-align: center; }
+    .promise-grid { grid-template-columns: 1fr; gap: 16px; }
+    .cases-grid { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    section { padding: 70px 0; }
+    .section-head { margin-bottom: 40px; }
+    .container { padding: 0 20px; }
+    nav .container { padding: 12px 20px; }
+
+    /* Showcase mobile - aspect más alto */
+    .showcase { padding: 20px 0 60px; }
+    .showcase-window { aspect-ratio: 3/4; }
+    .slide { padding: 18px; }
+    .slide-title { font-size: 15px; margin-bottom: 12px; }
+    .slide-tag { font-size: 9px; padding: 3px 8px; }
+    .slide-body { grid-template-columns: 1fr; gap: 12px; }
+    .big-map { grid-column: 1; min-height: 280px; }
+    .big-plot { font-size: 9px; }
+    .big-plot .plot-label { font-size: 11px; }
+    .big-plot .plot-info { font-size: 8px; }
+    .big-dash { grid-column: 1; grid-template-columns: repeat(2, 1fr); }
+    .big-kpi { grid-column: span 1; padding: 10px 12px; }
+    .big-kpi .val { font-size: 16px; }
+    .big-kpi .lab { font-size: 8px; }
+    .big-chart { grid-column: span 2; min-height: 140px; }
+    .big-side { grid-column: span 2; }
+    .big-pipeline { gap: 6px; }
+    .inv-wrap { grid-column: 1; grid-template-columns: 1fr; }
+    .inv-row { grid-template-columns: 1fr auto; gap: 6px; }
+    .inv-row .inv-status { display: none; }
+    .inv-summary-val { font-size: 22px; }
+    .ia-invoice, .ia-suggest { padding: 14px; }
+    .alerts-summary { padding: 18px; }
+    .alerts-sum-val { font-size: 32px; }
+    .chat-msg { font-size: 12px; padding: 10px 14px; }
+    .chat-viz-amount { font-size: 24px; }
+    .showcase-bar .url { font-size: 10px; max-width: 200px; }
+  }
+  @media (max-width: 540px) {
+    .steps { grid-template-columns: 1fr; }
+    .case { padding: 24px; }
+    .nav-cta { padding: 8px 14px; font-size: 13px; }
+    .nav-cta span { display: none; }
+    h1 { font-size: 36px; }
+    .hero-trust { gap: 14px; font-size: 12px; }
+    .showcase-window { aspect-ratio: 2/3; }
+    .slide-title { font-size: 14px; }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <div class="logo">
+      <img src="bdata-logo.png" alt="BData">
+    </div>
+    <a href="#contacto" class="nav-cta">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+      <span>Hablar por WhatsApp</span>
+    </a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="badge">BData en acción · 2026</div>
+        <h1>¿Cuántas horas pierdes <span class="highlight">cuadrando planillas</span> en vez de <span class="highlight">caminando tu campo</span>?</h1>
+        <p class="hero-lead">
+          Tu campo produce datos todos los días. La mayoría se pierden en Excel, en la cabeza del administrador o en boletas que nunca llegan. Nosotros los convertimos en información útil. En 30 días, hecho a tu medida. Si no resulta, no pagas.
+        </p>
+        <div class="hero-ctas">
+          <a href="#contacto" class="btn-primary">
+            Cuéntame tu problema
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#casos" class="btn-ghost">Ver lo que hemos hecho</a>
+        </div>
+        <div class="hero-trust">
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>
+            Sin riesgo: si no resulta, no pagas
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>
+            Inversión acotada
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>
+            100% customizable
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SHOWCASE CARRUSEL ===== -->
+<section class="showcase">
+  <div class="showcase-frame">
+    <div class="showcase-window">
+      <div class="showcase-bar">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="url">campo.bdata.cl</span>
+      </div>
+      <div class="showcase-stage">
+
+        <!-- Slide 1: Mapa satelital -->
+        <div class="slide active" data-slide="0">
+          <span class="slide-tag">En vivo · 07:52 a.m.</span>
+          <div class="slide-title">Mapa del campo · Los Crisoles</div>
+          <div class="slide-body">
+            <div class="big-map">
+              <div class="map-controls">
+                <div class="map-control-btn">+</div>
+                <div class="map-control-btn">−</div>
+              </div>
+              <div class="big-pin green" style="top:18%; left:14%;">
+                <div class="big-pin-dot"></div>
+                <div class="big-pin-label">Cerezos 25-26</div>
+              </div>
+              <div class="big-pin green" style="top:25%; left:42%;">
+                <div class="big-pin-dot"></div>
+                <div class="big-pin-label">Trigo 26-27</div>
+              </div>
+              <div class="big-pin idle" style="top:22%; left:72%;">
+                <div class="big-pin-dot"></div>
+                <div class="big-pin-label">Achicoria 25-26</div>
+              </div>
+              <div class="big-pin amber" style="top:48%; left:32%;">
+                <div class="big-pin-dot"></div>
+                <div class="big-pin-label">Pepino 25-26</div>
+              </div>
+              <div class="big-pin green" style="top:54%; left:58%;">
+                <div class="big-pin-dot"></div>
+                <div class="big-pin-label">NOG 26-27</div>
+              </div>
+              <div class="big-pin amber" style="top:46%; left:82%;">
+                <div class="big-pin-dot"></div>
+                <div class="big-pin-label">Repollo 25-26</div>
+              </div>
+              <div class="big-pin green" style="top:72%; left:22%;">
+                <div class="big-pin-dot"></div>
+                <div class="big-pin-label">Maíz 26-27</div>
+              </div>
+              <div class="big-pin danger" style="top:78%; left:50%;">
+                <div class="big-pin-dot"></div>
+                <div class="big-pin-label">Gastos Generales</div>
+              </div>
+              <div class="big-pin idle" style="top:75%; left:78%;">
+                <div class="big-pin-dot"></div>
+                <div class="big-pin-label">Frejol 25-26</div>
+              </div>
+
+              <div class="map-stats">
+                <span style="color:var(--ink-mute); font-size:10px; text-transform:uppercase; letter-spacing:0.05em; font-weight:700;">UPs activas</span>
+                <strong>22</strong>
+              </div>
+              <div class="map-legend">
+                <span><span class="leg-dot" style="background:var(--green-bright)"></span>En labor</span>
+                <span><span class="leg-dot" style="background:var(--accent)"></span>En proceso</span>
+                <span><span class="leg-dot" style="background:#9ca3af"></span>Sin actividad</span>
+                <span><span class="leg-dot" style="background:#ef4444"></span>Atención</span>
+              </div>
+              <div class="map-attribution">Leaflet | © Esri</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2: Carta Gantt de labores -->
+        <div class="slide" data-slide="1">
+          <span class="slide-tag">Plan semanal</span>
+          <div class="slide-title">Carta Gantt · Plan de labores</div>
+          <div class="slide-body">
+            <div class="gantt-wrap">
+              <div class="gantt-toolbar">
+                <span class="gantt-tab">Diaria</span>
+                <span class="gantt-tab active">Semanal</span>
+                <span class="gantt-chip active">Todos cultivos</span>
+                <span class="gantt-chip">En curso</span>
+                <span class="gantt-chip">Atrasada</span>
+                <span style="margin-left:auto; font-size:10px; color:var(--ink-mute); font-weight:700;">SEM 20 · MAY</span>
+              </div>
+              <div class="gantt-grid">
+                <div class="gantt-side">
+                  <div class="gantt-row-label">Cerezos 25-26</div>
+                  <div class="gantt-row-label amber">Pepino 25-26</div>
+                  <div class="gantt-row-label">Trigo 26-27</div>
+                  <div class="gantt-row-label idle">Achicoria 25-26</div>
+                  <div class="gantt-row-label">NOG 26-27</div>
+                  <div class="gantt-row-label amber">Repollo 25-26</div>
+                  <div class="gantt-row-label danger">Maíz 26-27</div>
+                </div>
+                <div class="gantt-track">
+                  <div class="gantt-weeks">
+                    <div class="gantt-week">L</div>
+                    <div class="gantt-week">M</div>
+                    <div class="gantt-week">M</div>
+                    <div class="gantt-week today">J 7</div>
+                    <div class="gantt-week">V</div>
+                    <div class="gantt-week">S</div>
+                    <div class="gantt-week">D</div>
+                  </div>
+                  <div class="gantt-rows">
+                    <div class="gantt-row">
+                      <div class="gantt-bar green" style="left:0%; width:42%; animation-delay:0.05s;">Poda · 4p</div>
+                      <div class="gantt-bar green" style="left:58%; width:30%; animation-delay:0.1s;">Riego</div>
+                    </div>
+                    <div class="gantt-row">
+                      <div class="gantt-bar amber" style="left:14%; width:58%; animation-delay:0.15s;">Aplicación foliar</div>
+                    </div>
+                    <div class="gantt-row">
+                      <div class="gantt-bar green" style="left:0%; width:28%; animation-delay:0.2s;">Siembra</div>
+                      <div class="gantt-bar green" style="left:42%; width:42%; animation-delay:0.25s;">Fertilización · 6p</div>
+                    </div>
+                    <div class="gantt-row">
+                      <div class="gantt-bar idle" style="left:28%; width:42%; animation-delay:0.3s;">Sin asignar</div>
+                    </div>
+                    <div class="gantt-row">
+                      <div class="gantt-bar green" style="left:0%; width:100%; animation-delay:0.35s;">Cosecha · 12 personas</div>
+                    </div>
+                    <div class="gantt-row">
+                      <div class="gantt-bar amber" style="left:14%; width:30%; animation-delay:0.4s;">Aplicación</div>
+                      <div class="gantt-bar green" style="left:58%; width:42%; animation-delay:0.45s;">Empaque</div>
+                    </div>
+                    <div class="gantt-row">
+                      <div class="gantt-bar danger" style="left:0%; width:42%; animation-delay:0.5s;">⚠ Atrasada · Pasar rastra</div>
+                      <div class="gantt-bar green" style="left:58%; width:30%; animation-delay:0.55s;">Riego</div>
+                    </div>
+                  </div>
+                  <div class="gantt-today-line" style="left:calc(100% / 7 * 3.5);"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3: Dashboard -->
+        <div class="slide" data-slide="2">
+          <span class="slide-tag">Resumen ejecutivo</span>
+          <div class="slide-title">Dashboard del campo · Temporada 2025-26</div>
+          <div class="slide-body">
+            <div class="big-dash">
+              <!-- Fila 1: 4 KPIs -->
+              <div class="big-kpi">
+                <div class="lab">Caja actual</div>
+                <div class="val green">$82.8M</div>
+                <div class="delta">+12% vs ayer</div>
+              </div>
+              <div class="big-kpi accent">
+                <div class="lab">Ingresos proyect.</div>
+                <div class="val accent">$860.4M</div>
+                <div class="delta">Temp 25-26</div>
+              </div>
+              <div class="big-kpi">
+                <div class="lab">Margen proyect.</div>
+                <div class="val green">$340.8M</div>
+                <div class="delta">+39.6% margen</div>
+              </div>
+              <div class="big-kpi danger">
+                <div class="lab">Labores vencidas</div>
+                <div class="val danger">30</div>
+                <div class="delta down">Requieren acción</div>
+              </div>
+
+              <!-- Fila 2: Chart + Pipeline -->
+              <div class="big-chart">
+                <div class="big-chart-header">
+                  <div class="big-chart-title">Ingresos vs Costos · Temporada</div>
+                  <div class="big-chart-legend">
+                    <span><i style="background:var(--green)"></i>Ingresos</span>
+                    <span><i style="background:var(--accent)"></i>Costos</span>
+                  </div>
+                </div>
+                <div class="big-bars">
+                  <div class="big-bar-group" data-month="Sep">
+                    <div class="big-bar income" style="height:35%; animation-delay:0.1s"></div>
+                    <div class="big-bar cost" style="height:48%; animation-delay:0.15s"></div>
+                  </div>
+                  <div class="big-bar-group" data-month="Oct">
+                    <div class="big-bar income" style="height:48%; animation-delay:0.2s"></div>
+                    <div class="big-bar cost" style="height:55%; animation-delay:0.25s"></div>
+                  </div>
+                  <div class="big-bar-group" data-month="Nov">
+                    <div class="big-bar income" style="height:52%; animation-delay:0.3s"></div>
+                    <div class="big-bar cost" style="height:62%; animation-delay:0.35s"></div>
+                  </div>
+                  <div class="big-bar-group" data-month="Dic">
+                    <div class="big-bar income" style="height:68%; animation-delay:0.4s"></div>
+                    <div class="big-bar cost" style="height:72%; animation-delay:0.45s"></div>
+                  </div>
+                  <div class="big-bar-group" data-month="Ene">
+                    <div class="big-bar income" style="height:75%; animation-delay:0.5s"></div>
+                    <div class="big-bar cost" style="height:65%; animation-delay:0.55s"></div>
+                  </div>
+                  <div class="big-bar-group" data-month="Feb">
+                    <div class="big-bar income" style="height:82%; animation-delay:0.6s"></div>
+                    <div class="big-bar cost" style="height:58%; animation-delay:0.65s"></div>
+                  </div>
+                  <div class="big-bar-group" data-month="Mar">
+                    <div class="big-bar income" style="height:88%; animation-delay:0.7s"></div>
+                    <div class="big-bar cost" style="height:62%; animation-delay:0.75s"></div>
+                  </div>
+                  <div class="big-bar-group" data-month="Abr">
+                    <div class="big-bar income" style="height:96%; animation-delay:0.8s"></div>
+                    <div class="big-bar cost" style="height:68%; animation-delay:0.85s"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="big-side">
+                <div class="big-side-title">Pipeline productivo</div>
+                <div class="big-pipeline">
+                  <div class="big-pipe-row">
+                    <div class="big-pipe-icon green">✓</div>
+                    <div class="big-pipe-info">
+                      <div class="big-pipe-name">Labores completadas</div>
+                      <div class="big-pipe-detail">Este mes</div>
+                    </div>
+                    <div class="big-pipe-val green">10</div>
+                  </div>
+                  <div class="big-pipe-row">
+                    <div class="big-pipe-icon danger">!</div>
+                    <div class="big-pipe-info">
+                      <div class="big-pipe-name">Atrasadas</div>
+                      <div class="big-pipe-detail">Esta semana</div>
+                    </div>
+                    <div class="big-pipe-val danger">30</div>
+                  </div>
+                  <div class="big-pipe-row">
+                    <div class="big-pipe-icon amber">⏱</div>
+                    <div class="big-pipe-info">
+                      <div class="big-pipe-name">UPs con atención</div>
+                      <div class="big-pipe-detail">Próximos 7 días</div>
+                    </div>
+                    <div class="big-pipe-val">6</div>
+                  </div>
+                  <div class="big-pipe-row">
+                    <div class="big-pipe-icon green">📋</div>
+                    <div class="big-pipe-info">
+                      <div class="big-pipe-name">Contratos vigentes</div>
+                      <div class="big-pipe-detail">$441M proyect.</div>
+                    </div>
+                    <div class="big-pipe-val">14</div>
+                  </div>
+                  <div class="big-pipe-row">
+                    <div class="big-pipe-icon green">🌾</div>
+                    <div class="big-pipe-info">
+                      <div class="big-pipe-name">UPs productivas</div>
+                      <div class="big-pipe-detail">300 ha · 21 UPs</div>
+                    </div>
+                    <div class="big-pipe-val green">22</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 4: Asignación IA -->
+        <div class="slide" data-slide="3">
+          <span class="slide-tag">IA · Sugerencia</span>
+          <div class="slide-title">Asignación automática de facturas a unidades productivas</div>
+          <div class="slide-body">
+            <div class="ia-invoice">
+              <div class="ia-invoice-head">
+                <div>
+                  <div class="num">Factura #4827</div>
+                  <div style="font-size:11px; color:var(--ink-mute); margin-top:2px;">Fertilizantes Norte SpA</div>
+                </div>
+                <div class="total">$2.450.000</div>
+              </div>
+              <div class="ia-line"><span>Urea 46% · 1.000 kg</span><strong>$890.000</strong></div>
+              <div class="ia-line"><span>Sulfato K · 800 kg</span><strong>$720.000</strong></div>
+              <div class="ia-line"><span>Ácido bórico · 300 kg</span><strong>$540.000</strong></div>
+              <div class="ia-line"><span>Costo flete</span><strong>$300.000</strong></div>
+              <div style="margin-top:14px; padding:10px; background:var(--green-soft); border-radius:8px; font-size:11px; color:var(--green-text); font-weight:600;">
+                ✦ La IA detectó patrón: facturas similares se asignan 60/40 entre Cerezos y Manzanos
+              </div>
+            </div>
+            <div class="ia-suggest">
+              <div class="ia-suggest-badge">Reparto IA</div>
+              <div class="ia-suggest-title">Distribución sugerida</div>
+              <div class="ia-up">
+                <div class="ia-up-icon">🍒</div>
+                <div class="ia-up-info">
+                  <div class="ia-up-name">UP-12 · Cerezos Norte</div>
+                  <div class="ia-up-bar"><div class="ia-up-bar-fill" style="width:62%"></div></div>
+                </div>
+                <div class="ia-up-pct">62%</div>
+              </div>
+              <div class="ia-up">
+                <div class="ia-up-icon">🍎</div>
+                <div class="ia-up-info">
+                  <div class="ia-up-name">UP-07 · Manzanos Sur</div>
+                  <div class="ia-up-bar"><div class="ia-up-bar-fill" style="width:38%"></div></div>
+                </div>
+                <div class="ia-up-pct">38%</div>
+              </div>
+              <div style="margin-top:18px; padding:12px; background:white; border-radius:8px; font-size:11px; color:var(--ink-soft); text-align:center; font-weight:600;">
+                Confianza: <strong style="color:var(--green)">94%</strong> · Basado en 47 asignaciones previas
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 5: Chat IA Financiero -->
+        <div class="slide" data-slide="4">
+          <span class="slide-tag">Chat IA</span>
+          <div class="slide-title">Pregúntale a tus números en lenguaje natural</div>
+          <div class="slide-body">
+            <div class="chat-side">
+              <div class="chat-msg user" style="animation-delay:0.1s">¿Cuánto gasté en fertilizantes este mes vs el año pasado?</div>
+              <div class="chat-msg bot" style="animation-delay:0.4s">
+                En <strong>abril 2026</strong> gastaste <strong>$8.4M</strong> en fertilizantes. Eso es un <strong>23% menos</strong> que abril 2025 ($10.9M).
+              </div>
+              <div class="chat-msg user" style="animation-delay:1s">¿Y por cuartel?</div>
+              <div class="chat-typing" style="animation-delay:1.4s">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+            <div class="chat-viz">
+              <div class="chat-viz-title">Fertilizantes · Abril 2026</div>
+              <div class="chat-viz-amount">$8.4M</div>
+              <div class="chat-viz-delta">▼ 23% vs abril 2025</div>
+              <div class="chat-viz-chart">
+                <div class="b" style="height:40%"></div>
+                <div class="b" style="height:65%"></div>
+                <div class="b hi" style="height:90%"></div>
+                <div class="b" style="height:55%"></div>
+                <div class="b" style="height:48%"></div>
+                <div class="b hi" style="height:78%"></div>
+                <div class="b" style="height:35%"></div>
+              </div>
+              <div style="margin-top:8px; display:flex; justify-content:space-between; font-size:9px; color:var(--ink-mute); font-weight:600;">
+                <span>Oct</span><span>Nov</span><span>Dic</span><span>Ene</span><span>Feb</span><span>Mar</span><span>Abr</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 6: Inventario -->
+        <div class="slide" data-slide="5">
+          <span class="slide-tag">Stock en bodega</span>
+          <div class="slide-title">Control de inventario · Insumos y bodega</div>
+          <div class="slide-body">
+            <div class="inv-wrap">
+              <div class="inv-table">
+                <div class="inv-table-head">
+                  <div class="inv-table-title">Stock actual · 24 productos</div>
+                  <span class="cm-pill warn" style="font-size:10px; padding:3px 10px;">3 críticos</span>
+                </div>
+                <div class="inv-row" style="animation-delay:0.05s">
+                  <div class="inv-name">
+                    <div class="inv-name-icon">🧪</div>
+                    <span>Urea 46%</span>
+                  </div>
+                  <div class="inv-stock">
+                    <span class="inv-stock-val">120 kg</span>
+                    <div class="inv-stock-bar-wrap"><div class="inv-stock-bar danger" style="width:15%"></div></div>
+                  </div>
+                  <span class="inv-status danger">Crítico</span>
+                </div>
+                <div class="inv-row" style="animation-delay:0.15s">
+                  <div class="inv-name">
+                    <div class="inv-name-icon">🧪</div>
+                    <span>Sulfato de potasio</span>
+                  </div>
+                  <div class="inv-stock">
+                    <span class="inv-stock-val">340 kg</span>
+                    <div class="inv-stock-bar-wrap"><div class="inv-stock-bar warn" style="width:35%"></div></div>
+                  </div>
+                  <span class="inv-status warn">Bajo</span>
+                </div>
+                <div class="inv-row" style="animation-delay:0.25s">
+                  <div class="inv-name">
+                    <div class="inv-name-icon">🧪</div>
+                    <span>Ácido bórico</span>
+                  </div>
+                  <div class="inv-stock">
+                    <span class="inv-stock-val">85 kg</span>
+                    <div class="inv-stock-bar-wrap"><div class="inv-stock-bar warn" style="width:40%"></div></div>
+                  </div>
+                  <span class="inv-status warn">Bajo</span>
+                </div>
+                <div class="inv-row" style="animation-delay:0.35s">
+                  <div class="inv-name">
+                    <div class="inv-name-icon">🌾</div>
+                    <span>Semilla maíz HB</span>
+                  </div>
+                  <div class="inv-stock">
+                    <span class="inv-stock-val">2.4 t</span>
+                    <div class="inv-stock-bar-wrap"><div class="inv-stock-bar" style="width:78%"></div></div>
+                  </div>
+                  <span class="inv-status">OK</span>
+                </div>
+                <div class="inv-row" style="animation-delay:0.45s">
+                  <div class="inv-name">
+                    <div class="inv-name-icon">🛢</div>
+                    <span>Diesel</span>
+                  </div>
+                  <div class="inv-stock">
+                    <span class="inv-stock-val">1.850 L</span>
+                    <div class="inv-stock-bar-wrap"><div class="inv-stock-bar" style="width:85%"></div></div>
+                  </div>
+                  <span class="inv-status">OK</span>
+                </div>
+                <div class="inv-row" style="animation-delay:0.55s">
+                  <div class="inv-name">
+                    <div class="inv-name-icon">📦</div>
+                    <span>Bins cosecha</span>
+                  </div>
+                  <div class="inv-stock">
+                    <span class="inv-stock-val">420 un</span>
+                    <div class="inv-stock-bar-wrap"><div class="inv-stock-bar" style="width:92%"></div></div>
+                  </div>
+                  <span class="inv-status">OK</span>
+                </div>
+              </div>
+
+              <div class="inv-side">
+                <div class="inv-summary">
+                  <div class="inv-summary-lab">Valor inventario</div>
+                  <div class="inv-summary-val">$28.4M</div>
+                  <div class="inv-summary-sub">↓ 12% vs mes anterior · Liberación de capital</div>
+                </div>
+                <div class="inv-rotation">
+                  <div class="inv-rotation-title">Rotación por categoría</div>
+                  <div class="inv-pies">
+                    <div class="inv-pie-row">
+                      <svg class="inv-pie-svg" viewBox="0 0 36 36">
+                        <circle cx="18" cy="18" r="14" fill="none" stroke="#e4e4e7" stroke-width="5"/>
+                        <circle cx="18" cy="18" r="14" fill="none" stroke="#059669" stroke-width="5" stroke-dasharray="78 88" transform="rotate(-90 18 18)"/>
+                      </svg>
+                      <div class="inv-pie-info">
+                        <div class="inv-pie-name">Fertilizantes</div>
+                        <div class="inv-pie-detail">12 productos · Alta rotación</div>
+                      </div>
+                      <div class="inv-pie-pct">89%</div>
+                    </div>
+                    <div class="inv-pie-row">
+                      <svg class="inv-pie-svg" viewBox="0 0 36 36">
+                        <circle cx="18" cy="18" r="14" fill="none" stroke="#e4e4e7" stroke-width="5"/>
+                        <circle cx="18" cy="18" r="14" fill="none" stroke="#f4a02b" stroke-width="5" stroke-dasharray="55 88" transform="rotate(-90 18 18)"/>
+                      </svg>
+                      <div class="inv-pie-info">
+                        <div class="inv-pie-name">Semillas</div>
+                        <div class="inv-pie-detail">5 productos · Media</div>
+                      </div>
+                      <div class="inv-pie-pct amber">62%</div>
+                    </div>
+                    <div class="inv-pie-row">
+                      <svg class="inv-pie-svg" viewBox="0 0 36 36">
+                        <circle cx="18" cy="18" r="14" fill="none" stroke="#e4e4e7" stroke-width="5"/>
+                        <circle cx="18" cy="18" r="14" fill="none" stroke="#dc2626" stroke-width="5" stroke-dasharray="22 88" transform="rotate(-90 18 18)"/>
+                      </svg>
+                      <div class="inv-pie-info">
+                        <div class="inv-pie-name">Repuestos</div>
+                        <div class="inv-pie-detail">7 productos · Stock muerto</div>
+                      </div>
+                      <div class="inv-pie-pct danger">25%</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 7: Alertas + Optimizador -->
+        <div class="slide" data-slide="6">
+          <span class="slide-tag">Optimizador</span>
+          <div class="slide-title">Compras sugeridas · Próximos 7 días</div>
+          <div class="slide-body">
+            <div class="alerts-side">
+              <div class="alerts-head">
+                <div class="alerts-title">Inventario crítico</div>
+                <span style="background:#fee2e2; color:#b91c1c; padding:3px 10px; border-radius:999px; font-size:10px; font-weight:700;">3 urgentes</span>
+              </div>
+              <div class="alert-row danger" style="animation-delay:0.1s">
+                <span style="font-size:18px;">⚠️</span>
+                <span class="name">Urea 46% · 800 kg</span>
+                <span class="time">Hoy</span>
+              </div>
+              <div class="alert-row warn" style="animation-delay:0.25s">
+                <span style="font-size:18px;">⏱</span>
+                <span class="name">Sulfato de potasio · 1.200 kg</span>
+                <span class="time">+3 días</span>
+              </div>
+              <div class="alert-row warn" style="animation-delay:0.4s">
+                <span style="font-size:18px;">⏱</span>
+                <span class="name">Ácido bórico · 50 kg</span>
+                <span class="time">+5 días</span>
+              </div>
+              <div class="alert-row" style="animation-delay:0.55s">
+                <span style="font-size:18px;">✓</span>
+                <span class="name">Cobre · stock OK</span>
+                <span class="time">+12 días</span>
+              </div>
+              <div class="alert-row" style="animation-delay:0.7s">
+                <span style="font-size:18px;">✓</span>
+                <span class="name">Calcio · stock OK</span>
+                <span class="time">+18 días</span>
+              </div>
+            </div>
+            <div class="alerts-summary">
+              <div class="alerts-sum-label">Ahorro estimado</div>
+              <div class="alerts-sum-val">$4.2M</div>
+              <div class="alerts-sum-sub">vs comprar último momento sin optimización</div>
+              <span class="alerts-sum-tag">↓ 18% en costos de insumos</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="showcase-indicators">
+      <button class="active" data-go="0" aria-label="Mapa satelital"></button>
+      <button data-go="1" aria-label="Carta Gantt"></button>
+      <button data-go="2" aria-label="Dashboard"></button>
+      <button data-go="3" aria-label="Asignación IA"></button>
+      <button data-go="4" aria-label="Chat IA"></button>
+      <button data-go="5" aria-label="Inventario"></button>
+      <button data-go="6" aria-label="Optimizador"></button>
+    </div>
+    <div class="showcase-label">
+      <strong id="showcase-current">Mapa satelital del campo</strong> · 1 de 7
+    </div>
+  </div>
+</section>
+
+<div class="strip">
+  <div class="strip-track">
+    <span>Asignación de facturas con IA</span>
+    <span>Mapa satelital de labores</span>
+    <span>Carta Gantt de labores</span>
+    <span>Reporte financiero + chat IA</span>
+    <span>Optimizador de órdenes de compra</span>
+    <span>Control de inventario</span>
+    <span>Control de contratos</span>
+    <span>Optimización de fertilización</span>
+    <span>Dashboard unificado</span>
+    <span>Rendición de gastos</span>
+    <span>Asignación de facturas con IA</span>
+    <span>Mapa satelital de labores</span>
+    <span>Carta Gantt de labores</span>
+    <span>Reporte financiero + chat IA</span>
+    <span>Optimizador de órdenes de compra</span>
+    <span>Control de inventario</span>
+    <span>Control de contratos</span>
+    <span>Optimización de fertilización</span>
+    <span>Dashboard unificado</span>
+    <span>Rendición de gastos</span>
+  </div>
+</div>
+
+<section class="promise">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow">La promesa</div>
+      <h2>Tres reglas simples. <span>Sin letra chica.</span></h2>
+    </div>
+    <div class="promise-grid">
+      <div class="promise-card reveal">
+        <div class="label">Velocidad</div>
+        <div class="promise-number">
+          <span class="num">30</span>
+          <span class="sub">días máximo</span>
+        </div>
+        <h3>De problema a herramienta</h3>
+        <p>Desde que entendemos tu problema hasta que tienes una herramienta funcionando en tu campo. Punto.</p>
+        <div class="promise-viz-timeline">
+          <div class="dot filled" style="animation-delay:0s"></div>
+          <div class="dot filled" style="animation-delay:0.1s"></div>
+          <div class="dot filled" style="animation-delay:0.2s"></div>
+          <div class="dot filled" style="animation-delay:0.3s"></div>
+          <div class="dot filled" style="animation-delay:0.4s"></div>
+          <div class="dot filled" style="animation-delay:0.5s"></div>
+          <div class="dot filled" style="animation-delay:0.6s"></div>
+          <div class="dot filled" style="animation-delay:0.7s"></div>
+          <div class="dot last"></div>
+        </div>
+        <div class="promise-viz-labels">
+          <span>Día 1</span>
+          <span>Entrega</span>
+        </div>
+      </div>
+
+      <div class="promise-card reveal">
+        <div class="label">Riesgo cero</div>
+        <div class="promise-number">
+          <span class="num">$0</span>
+          <span class="sub">si falla</span>
+        </div>
+        <h3>Si no resulta, no pagas</h3>
+        <p>Si en un mes no ves un resultado tangible, no nos pagas. Te queda lo desarrollado instalado y funcionando.</p>
+        <div class="promise-viz-risk">
+          <div class="you">
+            <div class="role">Tú</div>
+            <div class="what">Cuentas el problema</div>
+          </div>
+          <div class="bdata">
+            <div class="role">BData</div>
+            <div class="what">Asume el riesgo</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="promise-card reveal">
+        <div class="label">A tu medida</div>
+        <div class="promise-number">
+          <span class="num">100%</span>
+          <span class="sub">tuyo</span>
+        </div>
+        <h3>Úsalo o customízalo</h3>
+        <p>Úsalo como está o lo adaptamos a tu operación. Cada campo tiene su forma de trabajar y la respetamos.</p>
+        <div class="promise-viz-custom">
+          <div class="row">
+            <span class="lab">Reportes</span>
+            <div class="track">
+              <div class="fill" style="width:85%; animation-delay:0.1s"><span class="knob" style="left:100%"></span></div>
+            </div>
+          </div>
+          <div class="row">
+            <span class="lab">Cuarteles</span>
+            <div class="track">
+              <div class="fill" style="width:65%; animation-delay:0.3s"><span class="knob" style="left:100%"></span></div>
+            </div>
+          </div>
+          <div class="row">
+            <span class="lab">Flujo OC</span>
+            <div class="track">
+              <div class="fill" style="width:92%; animation-delay:0.5s"><span class="knob" style="left:100%"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="casos">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow">Lo que hemos hecho</div>
+      <h2>Algunas de las soluciones que desarrollamos <span>en menos de 3 meses.</span></h2>
+      <p class="section-lead">No son demos ni mockups. Cada una está operando hoy día en campos chilenos, generando información que antes se perdía en planillas o no existía.</p>
+    </div>
+
+    <div class="cases-grid">
+      <div class="case reveal">
+        <div class="case-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 10h8M8 14h5"/><circle cx="17" cy="15" r="2"/></svg></div>
+        <h3>Asignación de facturas con IA</h3>
+        <p>La IA aprende cómo has asignado antes y propone el reparto por cuartel o unidad productiva. Tú apruebas con un click. Lo que tomaba horas, ahora son minutos.</p>
+        <div class="case-mock">
+          <div class="cm-head">
+            <span class="cm-title">Factura de proveedor</span>
+            <span class="cm-pill">Sugerido IA</span>
+          </div>
+          <div class="cm-invoice-head">
+            <div>
+              <div class="num">#4827 · Fert. Norte SpA</div>
+            </div>
+            <div class="total">$2.450.000</div>
+          </div>
+          <div class="cm-up-row">
+            <div class="cm-up-icon">🍒</div>
+            <div class="cm-up-name">UP-12 Cerezos</div>
+            <div class="cm-up-bar-wrap"><div class="cm-up-bar-fill" style="width:62%"></div></div>
+            <div class="cm-up-pct">62%</div>
+          </div>
+          <div class="cm-up-row">
+            <div class="cm-up-icon">🍎</div>
+            <div class="cm-up-name">UP-07 Manzanos</div>
+            <div class="cm-up-bar-wrap"><div class="cm-up-bar-fill" style="width:38%"></div></div>
+            <div class="cm-up-pct">38%</div>
+          </div>
+          <div class="cm-ai-hint">
+            <span>✦</span>
+            <span>Confianza 94% · 47 asignaciones similares</span>
+          </div>
+        </div>
+        <span class="case-tag">Costos · Trazabilidad</span>
+      </div>
+
+      <div class="case reveal">
+        <div class="case-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg></div>
+        <h3>Mapa satelital de labores</h3>
+        <p>Vista satelital del campo con la labor del día por cuartel. Saber quién está haciendo qué, dónde, en tiempo real. Sin radios, sin llamadas.</p>
+        <div class="case-mock">
+          <div class="cm-head">
+            <span class="cm-title">Labores en curso</span>
+            <span class="cm-pill">En vivo</span>
+          </div>
+          <div class="cm-map">
+            <div class="cm-map-controls">
+              <div>+</div>
+              <div>−</div>
+            </div>
+            <div class="cm-pin green" style="top:18%; left:14%;">
+              <div class="cm-pin-dot"></div>
+              <div class="cm-pin-label">Cerezos</div>
+            </div>
+            <div class="cm-pin green" style="top:22%; left:42%;">
+              <div class="cm-pin-dot"></div>
+              <div class="cm-pin-label">Trigo</div>
+            </div>
+            <div class="cm-pin idle" style="top:20%; left:72%;">
+              <div class="cm-pin-dot"></div>
+              <div class="cm-pin-label">Achicoria</div>
+            </div>
+            <div class="cm-pin amber" style="top:48%; left:30%;">
+              <div class="cm-pin-dot"></div>
+              <div class="cm-pin-label">Pepino</div>
+            </div>
+            <div class="cm-pin green" style="top:54%; left:58%;">
+              <div class="cm-pin-dot"></div>
+              <div class="cm-pin-label">NOG</div>
+            </div>
+            <div class="cm-pin amber" style="top:48%; left:82%;">
+              <div class="cm-pin-dot"></div>
+              <div class="cm-pin-label">Repollo</div>
+            </div>
+            <div class="cm-map-attr">© Esri</div>
+          </div>
+          <div class="cm-map-stats">
+            <div class="cm-map-stat">
+              UPs activas
+              <strong>22</strong>
+            </div>
+            <div class="cm-map-stat">
+              En labor
+              <strong>5/6</strong>
+            </div>
+            <div class="cm-map-stat">
+              Hectáreas
+              <strong>142 ha</strong>
+            </div>
+          </div>
+        </div>
+        <span class="case-tag">Operaciones · Campo</span>
+      </div>
+
+      <div class="case reveal">
+        <div class="case-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M7 14h4M7 18h7"/></svg></div>
+        <h3>Carta Gantt de labores</h3>
+        <p>Plan semanal o diario de todas las labores del campo, por cuartel y cultivo. Visualiza atrasos, asignaciones y avance en tiempo real, con alertas automáticas.</p>
+        <div class="case-mock">
+          <div class="cm-head">
+            <span class="cm-title">Plan semanal · 7 mayo</span>
+            <span class="cm-pill warn">1 atrasada</span>
+          </div>
+          <div class="cm-gantt">
+            <div class="cm-gantt-head">
+              <div></div>
+              <div class="cm-gantt-week-head">
+                <span>L</span><span>M</span><span>M</span><span class="today">J</span><span>V</span><span>S</span><span>D</span>
+              </div>
+            </div>
+            <div class="cm-gantt-line">
+              <span class="cm-gantt-name">Cerezos</span>
+              <div class="cm-gantt-track">
+                <div class="cm-gantt-bar" style="left:0%; width:42%;">Poda</div>
+                <div class="cm-gantt-bar" style="left:58%; width:30%;">Riego</div>
+                <div class="cm-gantt-today" style="left:50%;"></div>
+              </div>
+            </div>
+            <div class="cm-gantt-line">
+              <span class="cm-gantt-name amber">Pepino</span>
+              <div class="cm-gantt-track">
+                <div class="cm-gantt-bar amber" style="left:14%; width:58%;">Aplicación</div>
+                <div class="cm-gantt-today" style="left:50%;"></div>
+              </div>
+            </div>
+            <div class="cm-gantt-line">
+              <span class="cm-gantt-name">NOG</span>
+              <div class="cm-gantt-track">
+                <div class="cm-gantt-bar" style="left:0%; width:100%;">Cosecha · 12p</div>
+                <div class="cm-gantt-today" style="left:50%;"></div>
+              </div>
+            </div>
+            <div class="cm-gantt-line">
+              <span class="cm-gantt-name danger">Maíz</span>
+              <div class="cm-gantt-track">
+                <div class="cm-gantt-bar danger" style="left:0%; width:42%;">⚠ Atrasada</div>
+                <div class="cm-gantt-today" style="left:50%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="case-tag">Operaciones · Planificación</span>
+      </div>
+
+      <div class="case reveal">
+        <div class="case-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg></div>
+        <h3>Reporte financiero con chat IA</h3>
+        <p>Caja, costos, ingresos y márgenes en una sola vista. Le preguntas en lenguaje natural y la IA te responde sobre tus propios números.</p>
+        <div class="case-mock">
+          <div class="cm-head">
+            <span class="cm-title">Asistente financiero</span>
+            <span class="cm-pill">IA</span>
+          </div>
+          <div class="cm-chat">
+            <div class="cm-chat-msg user" style="animation-delay:0.1s">¿Cuánto gasté en fertilizantes este mes?</div>
+            <div class="cm-chat-msg bot" style="animation-delay:0.4s">
+              En abril gastaste <strong>$8.4M</strong>, un 23% menos que el año pasado.
+            </div>
+            <div class="cm-chat-msg user" style="animation-delay:0.9s">¿Por cuál cuartel?</div>
+            <div class="cm-chat-typing" style="animation-delay:1.3s">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+        <span class="case-tag">Finanzas · Decisión</span>
+      </div>
+
+      <div class="case reveal">
+        <div class="case-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+        <h3>Optimizador de órdenes de compra</h3>
+        <p>Te muestra cuándo, cuánto y a qué proveedor comprar para no romper inventario ni quedar atrapado con plata muerta en bodega.</p>
+        <div class="case-mock">
+          <div class="cm-head">
+            <span class="cm-title">Compras sugeridas · 7 días</span>
+            <span class="cm-pill warn">3 urgentes</span>
+          </div>
+          <div class="cm-optim">
+            <div class="cm-optim-summary">
+              <div>
+                <div class="lab">Ahorro estimado</div>
+                <div class="val">$4.2M</div>
+              </div>
+              <div class="badge">↓ 18%</div>
+            </div>
+            <div class="cm-alert danger" style="animation-delay:0.1s">
+              <span class="cm-alert-icon">⚠️</span>
+              <span class="cm-alert-text">Urea 46% · 800 kg</span>
+              <span class="cm-alert-date">Hoy</span>
+            </div>
+            <div class="cm-alert warn" style="animation-delay:0.25s">
+              <span class="cm-alert-icon">⏱</span>
+              <span class="cm-alert-text">Sulfato K · 1.200 kg</span>
+              <span class="cm-alert-date">+3 días</span>
+            </div>
+            <div class="cm-alert" style="animation-delay:0.4s">
+              <span class="cm-alert-icon">✓</span>
+              <span class="cm-alert-text">Bórico · 50 kg</span>
+              <span class="cm-alert-date">+6 días</span>
+            </div>
+          </div>
+        </div>
+        <span class="case-tag">Insumos · Caja</span>
+      </div>
+
+      <div class="case reveal">
+        <div class="case-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg></div>
+        <h3>Control de inventario</h3>
+        <p>Stock en tiempo real de fertilizantes, semillas, repuestos y más. Detecta productos críticos, calcula valor de bodega y rotación por categoría. Adiós al stock muerto.</p>
+        <div class="case-mock">
+          <div class="cm-head">
+            <span class="cm-title">Stock · 24 productos</span>
+            <span class="cm-pill warn">3 críticos</span>
+          </div>
+          <div class="cm-inv-summary">
+            <div>
+              <div class="lab">Valor inventario</div>
+              <div class="val">$28.4M</div>
+            </div>
+            <div class="badge">↓ 12%</div>
+          </div>
+          <div class="cm-inv-row">
+            <span class="cm-inv-name">Urea 46%</span>
+            <div class="cm-inv-bar-wrap"><div class="cm-inv-bar danger" style="width:15%"></div></div>
+            <span class="cm-inv-tag danger">120 kg</span>
+          </div>
+          <div class="cm-inv-row">
+            <span class="cm-inv-name">Sulfato K</span>
+            <div class="cm-inv-bar-wrap"><div class="cm-inv-bar warn" style="width:35%"></div></div>
+            <span class="cm-inv-tag warn">340 kg</span>
+          </div>
+          <div class="cm-inv-row">
+            <span class="cm-inv-name">Semilla maíz</span>
+            <div class="cm-inv-bar-wrap"><div class="cm-inv-bar" style="width:78%"></div></div>
+            <span class="cm-inv-tag">2.4 t</span>
+          </div>
+        </div>
+        <span class="case-tag">Bodega · Insumos</span>
+      </div>
+
+      <div class="case reveal">
+        <div class="case-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg></div>
+        <h3>Control de contratos</h3>
+        <p>Vencimientos, hectáreas comprometidas, tarifas, saldos por liquidar. Todos los contratos del campo en un solo lugar, con alertas automáticas.</p>
+        <div class="case-mock">
+          <div class="cm-head">
+            <span class="cm-title">Contratos activos · 14</span>
+            <span class="cm-pill warn">2 por vencer</span>
+          </div>
+          <div class="cm-contract">
+            <div class="cm-contract-bar"></div>
+            <div class="cm-contract-info">
+              <div class="cm-contract-name">Comprador Cerezas SpA</div>
+              <div class="cm-contract-detail">45 ha · $2.850/kg · liquida 30 abr</div>
+            </div>
+            <span class="cm-contract-status">Activo</span>
+          </div>
+          <div class="cm-contract warn">
+            <div class="cm-contract-bar"></div>
+            <div class="cm-contract-info">
+              <div class="cm-contract-name">Servicio cosecha Hnos.</div>
+              <div class="cm-contract-detail">Vence 12 may · $14.5M pendiente</div>
+            </div>
+            <span class="cm-contract-status">5 días</span>
+          </div>
+          <div class="cm-contract">
+            <div class="cm-contract-bar"></div>
+            <div class="cm-contract-info">
+              <div class="cm-contract-name">Arriendo bodega Centro</div>
+              <div class="cm-contract-detail">12 meses · UF 28/mes</div>
+            </div>
+            <span class="cm-contract-status">Activo</span>
+          </div>
+        </div>
+        <span class="case-tag">Comercial · Legal</span>
+      </div>
+
+      <div class="case reveal">
+        <div class="case-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg></div>
+        <h3>Optimización de fertilización</h3>
+        <p>Calcula el plan de fertilización óptimo según análisis de suelo, requerimientos del cultivo y precios de mercado. Ahorra plata sin sacrificar rendimiento.</p>
+        <div class="case-mock">
+          <div class="cm-head">
+            <span class="cm-title">Plan UP-12 Cerezos</span>
+            <span class="cm-pill">Optimizado</span>
+          </div>
+          <div class="cm-fert">
+            <div class="cm-donut">
+              <svg viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="14" fill="none" stroke="#e4e4e7" stroke-width="5"/>
+                <circle cx="18" cy="18" r="14" fill="none" stroke="#059669" stroke-width="5" stroke-dasharray="42 88" stroke-dashoffset="0" transform="rotate(-90 18 18)"/>
+                <circle cx="18" cy="18" r="14" fill="none" stroke="#f4a02b" stroke-width="5" stroke-dasharray="28 88" stroke-dashoffset="-42" transform="rotate(-90 18 18)"/>
+                <circle cx="18" cy="18" r="14" fill="none" stroke="#064e3b" stroke-width="5" stroke-dasharray="18 88" stroke-dashoffset="-70" transform="rotate(-90 18 18)"/>
+              </svg>
+            </div>
+            <div class="cm-fert-list">
+              <div class="cm-fert-row">
+                <span class="cm-fert-dot" style="background:#059669"></span>
+                <span class="cm-fert-label">Nitrógeno</span>
+                <span class="cm-fert-pct">48%</span>
+              </div>
+              <div class="cm-fert-row">
+                <span class="cm-fert-dot" style="background:#f4a02b"></span>
+                <span class="cm-fert-label">Fósforo</span>
+                <span class="cm-fert-pct">32%</span>
+              </div>
+              <div class="cm-fert-row">
+                <span class="cm-fert-dot" style="background:#064e3b"></span>
+                <span class="cm-fert-label">Potasio</span>
+                <span class="cm-fert-pct">20%</span>
+              </div>
+            </div>
+          </div>
+          <div class="cm-fert-savings">
+            ↓ 18% costo · mismo rendimiento esperado
+          </div>
+        </div>
+        <span class="case-tag">Agronómico · Costos</span>
+      </div>
+
+      <div class="case reveal">
+        <div class="case-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></div>
+        <h3>Dashboard unificado</h3>
+        <p>Todo el campo en una pantalla: caja, costos, labores, producción, finanzas. Lo que antes era abrir cinco planillas, ahora es entrar a una URL.</p>
+        <div class="case-mock">
+          <div class="cm-head">
+            <span class="cm-title">Resumen del campo</span>
+            <span class="cm-pill">Hoy</span>
+          </div>
+          <div class="cm-kpis">
+            <div class="cm-kpi">
+              <div class="cm-kpi-label">Caja</div>
+              <div class="cm-kpi-val green">$61.8M</div>
+              <div class="cm-kpi-delta">+12% hoy</div>
+            </div>
+            <div class="cm-kpi">
+              <div class="cm-kpi-label">Costos</div>
+              <div class="cm-kpi-val">$184M</div>
+              <div class="cm-kpi-delta down">-8% vs ppto</div>
+            </div>
+            <div class="cm-kpi">
+              <div class="cm-kpi-label">Producción</div>
+              <div class="cm-kpi-val">142 ton</div>
+              <div class="cm-kpi-delta">+18% YoY</div>
+            </div>
+            <div class="cm-kpi accent">
+              <div class="cm-kpi-label">Sin asignar</div>
+              <div class="cm-kpi-val accent">12 docs</div>
+              <div class="cm-kpi-delta down">$3.4M</div>
+            </div>
+          </div>
+          <div class="cm-mini-chart">
+            <div class="cm-mini-chart-title">Costos · Últimos 8 meses</div>
+            <div class="cm-mini-bars">
+              <div class="cm-mini-bar" style="height:38%"></div>
+              <div class="cm-mini-bar" style="height:52%"></div>
+              <div class="cm-mini-bar" style="height:46%"></div>
+              <div class="cm-mini-bar acc" style="height:78%"></div>
+              <div class="cm-mini-bar" style="height:64%"></div>
+              <div class="cm-mini-bar" style="height:58%"></div>
+              <div class="cm-mini-bar" style="height:72%"></div>
+              <div class="cm-mini-bar acc" style="height:90%"></div>
+            </div>
+          </div>
+        </div>
+        <span class="case-tag">Vista global</span>
+      </div>
+
+      <div class="case reveal">
+        <div class="case-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M12 7v5l3 2"/></svg></div>
+        <h3>Rendición de gastos</h3>
+        <p>Fondos a rendir por encargado, con foto de boleta, GPS y aprobación móvil. Cierre rápido, sin Excel cruzados ni boletas perdidas.</p>
+        <div class="case-mock">
+          <div class="cm-head">
+            <span class="cm-title">Rendición de fondo</span>
+            <span class="cm-pill">App móvil</span>
+          </div>
+          <div class="cm-receipt-wrap">
+            <div class="cm-receipt-header">
+              <div class="cm-receipt-avatar">JP</div>
+              <div>
+                <div class="cm-receipt-name">Juan Pérez</div>
+                <div class="cm-receipt-status">Mayordomo · UP-12</div>
+              </div>
+              <div class="cm-receipt-progress">5/8</div>
+            </div>
+            <div class="cm-receipt-body">
+              <div class="cm-receipt-row"><span>Combustible Copec</span><strong>$45.300</strong></div>
+              <div class="cm-receipt-row"><span>Repuestos tractor</span><strong>$128.900</strong></div>
+              <div class="cm-receipt-row"><span>Almuerzo cuadrilla</span><strong>$32.500</strong></div>
+              <div class="cm-receipt-row total">
+                <span>Total rendido</span>
+                <strong>$206.700</strong>
+              </div>
+            </div>
+            <div class="cm-receipt-photos">
+              <div class="cm-receipt-photo">📷</div>
+              <div class="cm-receipt-photo">📷</div>
+              <div class="cm-receipt-photo">📷</div>
+              <div class="cm-receipt-photo more">+5</div>
+            </div>
+          </div>
+        </div>
+        <span class="case-tag">Administración</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow">Cómo funciona</div>
+      <h2>De tu problema a la herramienta, <span>en cuatro pasos.</span></h2>
+      <p class="section-lead">Sin reuniones eternas, sin documentos de 80 páginas, sin gerentes de proyecto. Tú nos cuentas, nosotros construimos.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">1</div>
+        <h4>Conversamos</h4>
+        <p>30 minutos por WhatsApp o video. Nos cuentas qué te duele, qué planilla no soportas más, qué información no tienes.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">2</div>
+        <h4>Acotamos</h4>
+        <p>Te volvemos con una propuesta concreta de qué se va a entregar en 30 días. Inversión acotada, sin sorpresas.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">3</div>
+        <h4>Construimos</h4>
+        <p>Desarrollo a tu medida, con tus datos, en tu lenguaje. Mostramos avances semanales por WhatsApp.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">4</div>
+        <h4>Pruebas y decides</h4>
+        <p>Lo usas un mes. Si sirve, pagas. Si no, no nos debes nada y te queda funcionando igual.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="guarantee">
+  <div class="container">
+    <div class="guarantee-icon reveal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M9 12l2 2 4-4"/>
+        <path d="M12 2L4 5v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V5l-8-3z"/>
+      </svg>
+    </div>
+    <h2 class="reveal">Si no ves resultado en un mes, <span>es gratis.</span></h2>
+    <p class="reveal">No es un slogan. Es la única forma justa de hacer esto: tú asumes el riesgo de contarnos tu problema, nosotros asumimos el riesgo de resolverlo bien. Si no lo logramos, te queda la herramienta instalada y funcionando, gratis.</p>
+  </div>
+</section>
+
+<section class="final" id="contacto">
+  <div class="container">
+    <h2 class="reveal">¿Cuál es <span>el problema</span><br>que más te molesta hoy?</h2>
+    <p class="reveal">Escríbenos directo por WhatsApp. Sin formularios, sin esperar 3 días para una llamada. Te respondemos en persona, te decimos si podemos ayudarte y partimos.</p>
+    <a href="https://wa.me/56944645774?text=Hola%2C%20vi%20la%20p%C3%A1gina%20de%20BData%20y%20quiero%20contarles%20un%20problema%20que%20tengo%20en%20mi%20campo." class="btn-whatsapp reveal">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Contáctate directo con nuestro equipo
+    </a>
+    <div class="final-sub reveal">+56 9 4464 5774 · Respuesta directa</div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="brand">
+      <img src="bdata-logo.png" alt="BData">
+    </div>
+    <div>Rentabilizamos tu campo a través de datos e IA</div>
+    <div>Santiago, Chile · 2026 · <a href="https://bdata.cl">bdata.cl</a></div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('in'), i * 50);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ===== Carrusel showcase =====
+  (function() {
+    const slides = document.querySelectorAll('.slide');
+    const indicators = document.querySelectorAll('.showcase-indicators button');
+    const labels = [
+      'Mapa satelital del campo',
+      'Carta Gantt de labores',
+      'Dashboard del campo',
+      'Asignación de facturas con IA',
+      'Chat IA financiero',
+      'Control de inventario',
+      'Optimizador de compras'
+    ];
+    const labelEl = document.getElementById('showcase-current');
+    const labelParent = labelEl ? labelEl.parentElement : null;
+    let current = 0;
+    let timer;
+
+    function go(i) {
+      slides[current].classList.remove('active');
+      indicators[current].classList.remove('active');
+      current = i;
+      slides[current].classList.add('active');
+      indicators[current].classList.add('active');
+      if (labelEl && labelParent) {
+        labelEl.textContent = labels[current];
+        labelParent.innerHTML = '<strong id="showcase-current">' + labels[current] + '</strong> · ' + (current + 1) + ' de ' + slides.length;
+      }
+    }
+
+    function next() { go((current + 1) % slides.length); }
+
+    function start() {
+      stop();
+      timer = setInterval(next, 4000);
+    }
+    function stop() { if (timer) clearInterval(timer); }
+
+    indicators.forEach((btn, i) => {
+      btn.addEventListener('click', () => { go(i); start(); });
+    });
+
+    // Pausar al hover, reanudar al salir
+    const stage = document.querySelector('.showcase-window');
+    if (stage) {
+      stage.addEventListener('mouseenter', stop);
+      stage.addEventListener('mouseleave', start);
+    }
+
+    start();
+  })();
+</script>
+
+</body>
+</html>
